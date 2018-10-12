@@ -11,10 +11,10 @@
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="ScaladocSettings">
-    <option name="outputDir" value="C:\Users\feroc\OneDrive\Dokumente\Thesis" />
+    <option name="outputDir" value="C:\Users\feroc\IdeaProjects\GeneticSimulations\Documentation" />
     <option name="additionalFlags" value="" />
     <option name="maxHeapSize" value="" />
-    <option name="docTitle" value="Simple2 documentation" />
+    <option name="docTitle" value="GeneticSimulation Documentation" />
     <option name="verbose" value="false" />
     <option name="openInBrowser" value="true" />
   </component>
