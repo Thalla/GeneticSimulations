@@ -1,0 +1,10 @@
+[error] C:\Users\feroc\IdeaProjects\GeneticSimulations\src\main\scala\Earth.scala:99:16: value += is not a member of Map[TRNA,Vector[AARS]]
+[error]   Expression does not convert to assignment because:
+[error]     type mismatch;
+[error]      found   : AA.AA
+[error]         (which expands to)  AA.Value
+[error]      required: AARS
+[error]     expansion: tRNAaaRS = tRNAaaRS.+(tRNAs(t).$minus$greater(Vector(initAA(t.%(initAA.length)))))
+[error]       tRNAaaRS += (tRNAs(t) -> Vector(initAA(t % (initAA.length))))
+[error]                ^
+[error] one error found

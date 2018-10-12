@@ -1,0 +1,23 @@
+[info] Packaging C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\simple0_2.12-0.1.jar ...
+[debug] Input file mappings:
+[debug] 	Base$.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\Base$.class
+[debug] 	Cell.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\Cell.class
+[debug] 	Earth.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\Earth.class
+[debug] 	AARS.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\AARS.class
+[debug] 	AA.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\AA.class
+[debug] 	AA$.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\AA$.class
+[debug] 	Earth$.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\Earth$.class
+[debug] 	Biojavatest.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\Biojavatest.class
+[debug] 	Base.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\Base.class
+[debug] 	TRNA.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations\target\scala-2.12\classes\TRNA.class
+[info] Done packaging.
