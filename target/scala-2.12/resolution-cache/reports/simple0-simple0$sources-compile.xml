@@ -7,28 +7,28 @@
 		revision="0.1"
 		conf="compile"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
-		date="20181010093838"/>
+		date="20181015140515"/>
 	<dependencies>
+		<module organisation="org.scala-lang.modules" name="scala-swing_2.12">
+			<revision name="2.0.0-M2" status="release" pubdate="20161029011126" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.scala-lang.org/" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="2">
+				<license name="BSD 3-clause" url="http://opensource.org/licenses/BSD-3-Clause"/>
+				<metadata-artifact status="no" details="" size="2699" time="0" location="C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-swing_2.12\ivy-2.0.0-M2.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2.pom"/>
+				<caller organisation="simple0" name="simple0$sources" conf="compile" rev="2.0.0-M2" rev-constraint-default="2.0.0-M2" rev-constraint-dynamic="2.0.0-M2" callerrev="0.1"/>
+				<artifacts>
+					<artifact name="scala-swing_2.12" type="src" ext="jar" extra-classifier="sources" status="successful" details="" size="80955" time="173" location="C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-swing_2.12\srcs\scala-swing_2.12-2.0.0-M2-sources.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2-sources.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
 		<module organisation="org.scala-lang.modules" name="scala-parser-combinators_2.12">
-			<revision name="1.1.0" status="release" pubdate="20180201221040" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.scala-lang.org/" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="2">
+			<revision name="1.1.0" status="release" pubdate="20180201221040" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.scala-lang.org/" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="1">
 				<license name="BSD 3-clause" url="http://opensource.org/licenses/BSD-3-Clause"/>
 				<metadata-artifact status="no" details="" size="2964" time="0" location="C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-parser-combinators_2.12\ivy-1.1.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.12/1.1.0/scala-parser-combinators_2.12-1.1.0.pom"/>
 				<caller organisation="simple0" name="simple0$sources" conf="compile" rev="1.1.0" rev-constraint-default="1.1.0" rev-constraint-dynamic="1.1.0" callerrev="0.1"/>
 				<artifacts>
 					<artifact name="scala-parser-combinators_2.12" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="46978" time="0" location="C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-parser-combinators_2.12\srcs\scala-parser-combinators_2.12-1.1.0-sources.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.12/1.1.0/scala-parser-combinators_2.12-1.1.0-sources.jar"/>
-					</artifact>
-				</artifacts>
-			</revision>
-		</module>
-		<module organisation="org.biojava" name="biojava3-core">
-			<revision name="3.0" status="release" pubdate="20110506103512" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.biojava.org" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="1">
-				<license name="GNU LGPL v2" url="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt"/>
-				<metadata-artifact status="no" details="" size="3321" time="0" location="C:\Users\feroc\.ivy2\cache\org.biojava\biojava3-core\ivy-3.0.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/biojava/biojava3-core/3.0/biojava3-core-3.0.pom"/>
-				<caller organisation="simple0" name="simple0$sources" conf="compile" rev="3.0" rev-constraint-default="3.0" rev-constraint-dynamic="3.0" callerrev="0.1"/>
-				<artifacts>
-					<artifact name="biojava3-core" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="190116" time="0" location="C:\Users\feroc\.ivy2\cache\org.biojava\biojava3-core\srcs\biojava3-core-3.0-sources.jar">
-						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/biojava/biojava3-core/3.0/biojava3-core-3.0-sources.jar"/>
 					</artifact>
 				</artifacts>
 			</revision>

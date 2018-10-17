@@ -24,21 +24,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default]
-[debug] sbt-chain: Checking cache for: dependency: org.biojava#biojava3-core;3.0 {compile=[default, compile, runtime, default(compile), master], runtime=[default, compile, runtime, default(compile), master], test=[default, compile, runtime, default(compile), master], compile-internal=[default, compile, runtime, default(compile), master], runtime-internal=[default, compile, runtime, default(compile), master], test-internal=[default, compile, runtime, default(compile), master]}
-[debug] sbt-chain: module revision found in cache: org.biojava#biojava3-core;3.0
-[debug] 	found org.biojava#biojava3-core;3.0 in sbt-chain
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->default]
 [debug] sbt-chain: Checking cache for: dependency: org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 {compile=[default, compile, runtime, default(compile), master], runtime=[default, compile, runtime, default(compile), master], test=[default, compile, runtime, default(compile), master], compile-internal=[default, compile, runtime, default(compile), master], runtime-internal=[default, compile, runtime, default(compile), master], test-internal=[default, compile, runtime, default(compile), master]}
 [debug] sbt-chain: module revision found in cache: org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0
@@ -54,6 +39,21 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default]
+[debug] sbt-chain: Checking cache for: dependency: org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 {compile=[default, compile, runtime, default(compile), master], runtime=[default, compile, runtime, default(compile), master], test=[default, compile, runtime, default(compile), master], compile-internal=[default, compile, runtime, default(compile), master], runtime-internal=[default, compile, runtime, default(compile), master], test-internal=[default, compile, runtime, default(compile), master]}
+[debug] sbt-chain: module revision found in cache: org.scala-lang.modules#scala-swing_2.12;2.0.0-M2
+[debug] 	found org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 in sbt-chain
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
 [debug] resolving dependencies for configuration 'runtime'
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [runtime]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [compile]
@@ -73,18 +73,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
@@ -97,6 +85,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->compile]
@@ -113,18 +113,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->compile]
@@ -137,6 +125,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
 [debug] resolving dependencies for configuration 'test'
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [test]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [runtime]
@@ -157,18 +157,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
@@ -181,6 +169,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->compile]
@@ -197,18 +197,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->compile]
@@ -221,6 +209,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->compile]
@@ -237,18 +237,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->compile]
@@ -261,6 +249,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->master]
 [debug] resolving dependencies for configuration 'provided'
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [provided]
 [debug] resolving dependencies for configuration 'optional'
@@ -284,18 +284,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
@@ -308,6 +296,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [optional]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [provided]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile-internal->default]
@@ -326,18 +326,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile-internal->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile-internal->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile-internal->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile-internal->compile]
@@ -350,6 +338,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile-internal->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile-internal->master]
 [debug] resolving dependencies for configuration 'runtime-internal'
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [runtime-internal]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [runtime]
@@ -370,18 +370,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
@@ -394,6 +382,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->compile]
@@ -410,18 +410,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->compile]
@@ -434,6 +422,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [optional]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime-internal->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime-internal->runtime]
@@ -451,18 +451,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime-internal->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime-internal->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime-internal->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime-internal->compile]
@@ -475,6 +463,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime-internal->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime-internal->master]
 [debug] resolving dependencies for configuration 'test-internal'
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [test-internal]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [test]
@@ -496,18 +496,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
@@ -520,6 +508,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [compile->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->compile]
@@ -536,18 +536,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->compile]
@@ -560,6 +548,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [runtime->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->compile]
@@ -576,18 +576,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->compile]
@@ -600,6 +588,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test->master]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [optional]
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [provided]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test-internal->default]
@@ -618,18 +618,6 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test-internal->compile(*)]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-library;2.12.6 [test-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->default]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->default(compile)]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->runtime]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->compile]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->master]
-[debug] == resolving dependencies simple0#simple0$sources;0.1->org.biojava#biojava3-core;3.0 [test-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test-internal->default]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test-internal->runtime]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test-internal->compile]
@@ -642,6 +630,18 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test-internal->compile]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test-internal->master]
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0 [test-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->default]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->default(compile)]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->runtime]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->compile]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->master]
+[debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang.modules#scala-swing_2.12;2.0.0-M2 [test-internal->master]
 [debug] resolving dependencies for configuration 'plugin'
 [debug] == resolving dependencies for simple0#simple0$sources;0.1 [plugin]
 [debug] resolving dependencies for configuration 'pom'
@@ -707,55 +707,24 @@
 [debug] == resolving dependencies simple0#simple0$sources;0.1->org.scala-lang#scala-reflect;2.12.6 [scala-tool->master]
 [debug] 	resolved ivy file produced in cache
 [debug] :: downloading artifacts ::
-[debug] 	[NOT REQUIRED] org.scala-lang#scala-library;2.12.6!scala-library.jar(src)
-[debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0!scala-parser-combinators_2.12.jar(src)
-[debug] 	[NOT REQUIRED] org.biojava#biojava3-core;3.0!biojava3-core.jar(src)
-[debug] 	[NOT REQUIRED] jline#jline;2.14.6!jline.jar(src)
-[debug] no default ivy user dir defined: set to C:\Users\feroc\.ivy2
-[debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.12;1.0.6!scala-xml_2.12.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-lang#scala-compiler;2.12.6!scala-compiler.jar(src)
+[debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-parser-combinators_2.12;1.1.0!scala-parser-combinators_2.12.jar(src)
+[debug] 	[NOT REQUIRED] org.scala-lang#scala-library;2.12.6!scala-library.jar(src)
 [debug] no default ivy user dir defined: set to C:\Users\feroc\.ivy2
+[debug] 	[NOT REQUIRED] jline#jline;2.14.6!jline.jar(src)
+[debug] 		tried C:\Users\feroc\.ivy2\local\org.scala-lang.modules\scala-swing_2.12\2.0.0-M2\srcs\scala-swing_2.12-sources.jar
+[debug] 		tried https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2-sources.jar
+[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
 [debug] 	[NOT REQUIRED] org.scala-lang#scala-reflect;2.12.6!scala-reflect.jar(src)
-[debug] no default ivy user dir defined: set to C:\Users\feroc\.ivy2
-[debug] no default ivy user dir defined: set to C:\Users\feroc\.ivy2
-[debug] no default ivy user dir defined: set to C:\Users\feroc\.ivy2
-[debug] no default ivy user dir defined: set to C:\Users\feroc\.ivy2
-[debug] no default ivy user dir defined: set to C:\Users\feroc\.ivy2
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
+[debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.12;1.0.6!scala-xml_2.12.jar(src)
 [debug] no default cache defined: set to C:\Users\feroc\.ivy2\cache
 [debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
-[debug] no default cache defined: set to C:\Users\feroc\.ivy2\cache
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
-[debug] no default cache defined: set to C:\Users\feroc\.ivy2\cache
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
-[debug] no default cache defined: set to C:\Users\feroc\.ivy2\cache
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
-[debug] no default cache defined: set to C:\Users\feroc\.ivy2\cache
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
-[debug] no default cache defined: set to C:\Users\feroc\.ivy2\cache
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
-[debug] no default cache defined: set to C:\Users\feroc\.ivy2\cache
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
 [debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
 [debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
+[info] downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2-sources.jar ...
+[debug] 	public: downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2-sources.jar
 [debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
-[debug] settings loaded (278ms)
+[debug] settings loaded (28ms)
 [debug] 	default cache: C:\Users\feroc\.ivy2\cache
 [debug] 	default resolver: default
 [debug] 	-- 5 resolvers:
@@ -764,78 +733,19 @@
 [debug] 	public [ibiblio]
 [debug] 	main [chain] [shared, public]
 [debug] 	local [file]
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
-[debug] settings loaded (393ms)
-[debug] 	default cache: C:\Users\feroc\.ivy2\cache
-[debug] 	default resolver: default
-[debug] 	-- 5 resolvers:
-[debug] 	shared [file]
-[debug] 	default [chain] [local, main]
-[debug] 	public [ibiblio]
-[debug] 	main [chain] [shared, public]
-[debug] 	local [file]
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
-[debug] settings loaded (419ms)
-[debug] 	default cache: C:\Users\feroc\.ivy2\cache
-[debug] 	default resolver: default
-[debug] 	-- 5 resolvers:
-[debug] 	shared [file]
-[debug] 	default [chain] [local, main]
-[debug] 	public [ibiblio]
-[debug] 	main [chain] [shared, public]
-[debug] 	local [file]
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
-[debug] settings loaded (429ms)
-[debug] 	default cache: C:\Users\feroc\.ivy2\cache
-[debug] 	default resolver: default
-[debug] 	-- 5 resolvers:
-[debug] 	shared [file]
-[debug] 	default [chain] [local, main]
-[debug] 	public [ibiblio]
-[debug] 	main [chain] [shared, public]
-[debug] 	local [file]
-[debug] settings loaded (489ms)
-[debug] 	default cache: C:\Users\feroc\.ivy2\cache
-[debug] 	default resolver: default
-[debug] 	-- 5 resolvers:
-[debug] 	shared [file]
-[debug] 	default [chain] [local, main]
-[debug] 	public [ibiblio]
-[debug] 	main [chain] [shared, public]
-[debug] 	local [file]
-[debug] including url: jar:file:/C:/Users/feroc/.sbt/boot/scala-2.12.6/org.scala-sbt/sbt/1.2.3/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
-[debug] settings loaded (349ms)
-[debug] 	default cache: C:\Users\feroc\.ivy2\cache
-[debug] 	default resolver: default
-[debug] 	-- 5 resolvers:
-[debug] 	shared [file]
-[debug] 	default [chain] [local, main]
-[debug] 	public [ibiblio]
-[debug] 	main [chain] [shared, public]
-[debug] 	local [file]
-[debug] settings loaded (435ms)
-[debug] 	default cache: C:\Users\feroc\.ivy2\cache
-[debug] 	default resolver: default
-[debug] 	-- 5 resolvers:
-[debug] 	shared [file]
-[debug] 	default [chain] [local, main]
-[debug] 	public [ibiblio]
-[debug] 	main [chain] [shared, public]
-[debug] 	local [file]
-[debug] :: resolution report :: resolve 3148ms :: artifacts dl 547ms
-[debug] 	report for simple0#simple0$sources;0.1 compile produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-compile.xml
-[debug] 	report for simple0#simple0$sources;0.1 runtime produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-runtime.xml
-[debug] 	report for simple0#simple0$sources;0.1 test produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-test.xml
-[debug] 	report for simple0#simple0$sources;0.1 provided produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-provided.xml
-[debug] 	report for simple0#simple0$sources;0.1 optional produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-optional.xml
-[debug] 	report for simple0#simple0$sources;0.1 compile-internal produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-compile-internal.xml
-[debug] 	report for simple0#simple0$sources;0.1 runtime-internal produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-runtime-internal.xml
-[debug] 	report for simple0#simple0$sources;0.1 test-internal produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-test-internal.xml
-[debug] 	report for simple0#simple0$sources;0.1 plugin produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-plugin.xml
-[debug] 	report for simple0#simple0$sources;0.1 pom produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-pom.xml
-[debug] 	report for simple0#simple0$sources;0.1 scala-tool produced in C:\Users\feroc\IdeaProjects\Simple2\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-scala-tool.xml
-[debug] 	resolve done (3148ms resolve - 547ms download)
+[debug] 	public: downloading https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2-sources.jar.sha1
+[debug] sha1 OK for https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2-sources.jar
+[info] 	[SUCCESSFUL ] org.scala-lang.modules#scala-swing_2.12;2.0.0-M2!scala-swing_2.12.jar(src) (173ms)
+[debug] :: resolution report :: resolve 160ms :: artifacts dl 192ms
+[debug] 	report for simple0#simple0$sources;0.1 compile produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-compile.xml
+[debug] 	report for simple0#simple0$sources;0.1 runtime produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-runtime.xml
+[debug] 	report for simple0#simple0$sources;0.1 test produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-test.xml
+[debug] 	report for simple0#simple0$sources;0.1 provided produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-provided.xml
+[debug] 	report for simple0#simple0$sources;0.1 optional produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-optional.xml
+[debug] 	report for simple0#simple0$sources;0.1 compile-internal produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-compile-internal.xml
+[debug] 	report for simple0#simple0$sources;0.1 runtime-internal produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-runtime-internal.xml
+[debug] 	report for simple0#simple0$sources;0.1 test-internal produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-test-internal.xml
+[debug] 	report for simple0#simple0$sources;0.1 plugin produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-plugin.xml
+[debug] 	report for simple0#simple0$sources;0.1 pom produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-pom.xml
+[debug] 	report for simple0#simple0$sources;0.1 scala-tool produced in C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\resolution-cache\reports\simple0-simple0$sources-scala-tool.xml
+[debug] 	resolve done (160ms resolve - 192ms download)

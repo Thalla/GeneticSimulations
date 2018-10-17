@@ -1,4 +1,4 @@
-[error] sbt.librarymanagement.ResolveException: unresolved dependency: org.biojava#biojava3-core_2.12;3.0.8: not found
+[error] sbt.librarymanagement.ResolveException: unresolved dependency: org.scala-lang#scala-swing;2.12.5: not found
 [error] 	at sbt.internal.librarymanagement.IvyActions$.resolveAndRetrieve(IvyActions.scala:332)
 [error] 	at sbt.internal.librarymanagement.IvyActions$.$anonfun$updateEither$1(IvyActions.scala:208)
 [error] 	at sbt.internal.librarymanagement.IvySbt$Module.$anonfun$withModule$1(Ivy.scala:239)

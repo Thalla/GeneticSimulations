@@ -3,8 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Simple0.iml" filepath="$PROJECT_DIR$/.idea/modules/Simple0.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Simple2.iml" filepath="$PROJECT_DIR$/.idea/modules/Simple2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simple2-build.iml" filepath="$PROJECT_DIR$/.idea/modules/simple2-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/geneticsimulations1-build.iml" filepath="$PROJECT_DIR$/.idea/modules/geneticsimulations1-build.iml" />
     </modules>
   </component>
 </project>

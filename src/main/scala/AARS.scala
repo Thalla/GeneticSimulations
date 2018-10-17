@@ -1,37 +1,30 @@
 import AA._
 
-class AARS(val aaSeq: Vector[AA],  val aa:AA, val tRNA:TRNA, id: Int) {
+class AARS(val aaSeq: Vector[AA], val tRNAs:Vector[(Int,Int)], val aa:Vector[AA]) {
 
-  // Takes: mRNA for aaRS production
-  // Does: reads mRNA and translates codon by codon into amino acids
-  // Uses: genetic Code as basic for translation
-  // Result:
-  def translateNew(geneticCode:Seq[Tuple2[AA.Value, (Int, Int)]]): AARS ={
+  var lifeticks = 2  //be careful to also change resetLifeticks if initial value is changed
 
-    //var mRNAtoTranslate = mRNA
-    var newAaSeq:Vector[AA]= Vector()
+  def reduceLifeTicks():Unit ={
+    lifeticks -= 1
+  }
 
-    def go (newAaSeq:Vector[Any]): Vector[AA] ={
-      //var tuple:(Int, Int) = mRNAtoTranslate.head
-      //mRNAtoTranslate = mRNAtoTranslate.tail
-      geneticCode match{
-        case Seq(a,(tuple)) => go(newAaSeq :+ a)
-      }
-    }
-    go(newAaSeq)
+  def resetLifeticks():Unit ={
+    lifeticks = 2
+  }
 
-    def calculateNewAA(tRNA:TRNA, newAaSeq:Vector[AA]): AA ={
-      //TODO
-      Lys
-    }
-
-    new AARS(newAaSeq, aa, tRNA, id)
-
+  // when an aaRS dies the usage of its tRNAs stops, they are unloaded and can't recognize any codons
+  def apoptosis(allTRNA:Array[Array[TRNA]]):Array[Array[TRNA]]={
+    tRNAs.foreach(tRNA => {
+      allTRNA(tRNA._1)(tRNA._2).removeAARSsequence(aaSeq)
+    })
+    allTRNA
   }
 
 
+
+
   override def toString(): String ={
-    "\n" + id + ". aaRS: " + aaSeq.mkString(", ") + ",    bindingAA: " + aa + ",      bindingTRNA:  " + tRNA.stem + tRNA.anticodon
+    "\n" + "aaRS: " + aaSeq.mkString(", ") + "   " + aaSeq.toString() +  "TRNAs: " + tRNAs.mkString(", ")
   }
 
 
