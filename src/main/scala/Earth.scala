@@ -39,7 +39,7 @@ object Earth{
 
     //val auth = new InputParamsDialog().auth.getOrElse(throw new IllegalStateException("You should login!!!"))
     //println(auth.toString())
-    simulate(init())
+    simulate(init())           //
   }
 
 
