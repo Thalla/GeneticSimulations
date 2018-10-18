@@ -7,7 +7,7 @@
 		revision="0.1"
 		conf="compile-internal"
 		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
-		date="20181015140515"/>
+		date="20181018200803"/>
 	<dependencies>
 		<module organisation="org.scala-lang.modules" name="scala-swing_2.12">
 			<revision name="2.0.0-M2" status="release" pubdate="20161029011126" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.scala-lang.org/" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="2">
@@ -15,7 +15,7 @@
 				<metadata-artifact status="no" details="" size="2699" time="0" location="C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-swing_2.12\ivy-2.0.0-M2.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2.pom"/>
 				<caller organisation="simple0" name="simple0$sources" conf="compile-internal, compile, provided, optional" rev="2.0.0-M2" rev-constraint-default="2.0.0-M2" rev-constraint-dynamic="2.0.0-M2" callerrev="0.1"/>
 				<artifacts>
-					<artifact name="scala-swing_2.12" type="src" ext="jar" extra-classifier="sources" status="successful" details="" size="80955" time="173" location="C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-swing_2.12\srcs\scala-swing_2.12-2.0.0-M2-sources.jar">
+					<artifact name="scala-swing_2.12" type="src" ext="jar" extra-classifier="sources" status="no" details="" size="80955" time="0" location="C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-swing_2.12\srcs\scala-swing_2.12-2.0.0-M2-sources.jar">
 						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/scala-lang/modules/scala-swing_2.12/2.0.0-M2/scala-swing_2.12-2.0.0-M2-sources.jar"/>
 					</artifact>
 				</artifacts>

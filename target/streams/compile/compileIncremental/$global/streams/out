@@ -17,13 +17,13 @@
 [info] Compiling 1 Scala source to C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes ...
 [debug] Getting org.scala-sbt:compiler-bridge_2.12:1.2.2:compile for Scala 2.12.6
 [debug] Getting org.scala-sbt:compiler-bridge_2.12:1.2.2:compile for Scala 2.12.6
-[debug] [zinc] Running cached compiler 5fdb666 for Scala compiler version 2.12.6
+[debug] [zinc] Running cached compiler 31d8057 for Scala compiler version 2.12.6
 [debug] [zinc] The Scala compiler is invoked with:
 [debug] 	-bootclasspath
 [debug] 	C:\Users\feroc\.sbt\boot\scala-2.12.6\lib\scala-library.jar
 [debug] 	-classpath
 [debug] 	C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes;C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-parser-combinators_2.12\bundles\scala-parser-combinators_2.12-1.1.0.jar;C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-swing_2.12\bundles\scala-swing_2.12-2.0.0-M2.jar
-[debug] Scala compilation took 5.03132661 s
+[debug] Scala compilation took 4.484432052 s
 [info] Done compiling.
 [debug] New invalidations:
 [debug] 	Set()
