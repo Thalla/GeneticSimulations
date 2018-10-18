@@ -1,1 +1,33 @@
-[debug] No changes
+[debug] 
+[debug] Initial source changes: 
+[debug] 	removed:Set(C:\Users\feroc\IdeaProjects\Simple0\src\main\java\Biojavatest.java, C:\Users\feroc\IdeaProjects\GeneticSimulations1\src\main\scala\InputParamsDialog.scala, C:\Users\feroc\IdeaProjects\Simple2\src\main\java\Biojavatest.java, C:\Users\feroc\IdeaProjects\Simple1\src\main\java\Biojavatest.java, C:\Users\feroc\IdeaProjects\GeneticSimulations\src\main\java\Biojavatest.java)
+[debug] 	added: Set()
+[debug] 	modified: Set(C:\Users\feroc\IdeaProjects\GeneticSimulations1\src\main\scala\Earth.scala)
+[debug] Invalidated products: Set()
+[debug] External API changes: API Changes: Set()
+[debug] Modified binary dependencies: Set()
+[debug] Initial directly invalidated classes: Set(InputParamsDialog, Auth, Earth)
+[debug] 
+[debug] Sources indirectly invalidated by:
+[debug] 	product: Set()
+[debug] 	binary dep: Set()
+[debug] 	external source: Set()
+[debug] All initially invalidated classes: Set(InputParamsDialog, Auth, Earth)
+[debug] All initially invalidated sources:Set(C:\Users\feroc\IdeaProjects\GeneticSimulations1\src\main\scala\Earth.scala)
+[info] Compiling 1 Scala source to C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes ...
+[debug] Getting org.scala-sbt:compiler-bridge_2.12:1.2.2:compile for Scala 2.12.6
+[debug] Getting org.scala-sbt:compiler-bridge_2.12:1.2.2:compile for Scala 2.12.6
+[debug] [zinc] Running cached compiler 5fdb666 for Scala compiler version 2.12.6
+[debug] [zinc] The Scala compiler is invoked with:
+[debug] 	-bootclasspath
+[debug] 	C:\Users\feroc\.sbt\boot\scala-2.12.6\lib\scala-library.jar
+[debug] 	-classpath
+[debug] 	C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes;C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-parser-combinators_2.12\bundles\scala-parser-combinators_2.12-1.1.0.jar;C:\Users\feroc\.ivy2\cache\org.scala-lang.modules\scala-swing_2.12\bundles\scala-swing_2.12-2.0.0-M2.jar
+[debug] Scala compilation took 5.03132661 s
+[info] Done compiling.
+[debug] New invalidations:
+[debug] 	Set()
+[debug] Initial set of included nodes: Set()
+[debug] Previously invalidated, but (transitively) depend on new invalidations:
+[debug] 	Set()
+[debug] All newly invalidated classes after taking into account (previously) recompiled classes:Set()

@@ -1,1 +1,37 @@
-[debug] Jar uptodate: C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\simple0_2.12-0.1.jar
+[info] Packaging C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\simple0_2.12-0.1.jar ...
+[debug] Input file mappings:
+[debug] 	Earth$.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\Earth$.class
+[debug] 	AARS.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\AARS.class
+[debug] 	TRNA.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\TRNA.class
+[debug] 	Base$.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\Base$.class
+[debug] 	Auth$.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\Auth$.class
+[debug] 	Biojavatest.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\Biojavatest.class
+[debug] 	PrintElem.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\PrintElem.class
+[debug] 	AA$.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\AA$.class
+[debug] 	Auth.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\Auth.class
+[debug] 	AA.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\AA.class
+[debug] 	InputParamsDialog$$anon$1.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\InputParamsDialog$$anon$1.class
+[debug] 	Base.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\Base.class
+[debug] 	InputParamsDialog.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\InputParamsDialog.class
+[debug] 	PrintElem$.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\PrintElem$.class
+[debug] 	Cell.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\Cell.class
+[debug] 	Earth.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\Earth.class
+[debug] 	InputParamsDialog$$anon$2.class
+[debug] 	  C:\Users\feroc\IdeaProjects\GeneticSimulations1\target\scala-2.12\classes\InputParamsDialog$$anon$2.class
+[info] Done packaging.
