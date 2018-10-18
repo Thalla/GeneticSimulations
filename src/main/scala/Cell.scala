@@ -52,11 +52,11 @@ class Cell (val mRNA:List[List[Int]], var allTRNAs: Array[Array[TRNA]], var aaRS
         var tRNAs:Vector[(Int,Int)] = Vector()
 
         //AA
-        if(Random.nextInt(2) == 0){ //choose randomly if one or thwo aaRS shall be chosen randomly
-          aminoAcids = Vector(AA(Random.nextInt(initAA.length)))
-        }
-        else{
-          aminoAcids = Vector(AA(Random.nextInt(initAA.length))) :+ AA(Random.nextInt(initAA.length))
+        val numberOfAA = Random.nextInt(2)
+        for(
+          i <- 0 to numberOfAA
+        ){
+          aminoAcids = aminoAcids :+ initAA(Random.nextInt(initAA.length))
         }
 
         //tRNA

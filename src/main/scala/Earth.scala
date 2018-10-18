@@ -50,7 +50,8 @@ object Earth{
     *                 aaRSnumb defines the length of the code table.  TODO: allow codons to be translated by multiple aaRS (V1: to multiple AA (-> chaos?), V2: to always the same AA) -> changes in gene table and aaRSs creation
     * @param aaRSlength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
     * @param initAA initially existing and used amino acids, must be lower or same as maxTupleNumb(there are 16 twoTuple) TODO: allow having new/non proteinogenic amino acids
-    * @return start cell and all aaRS that can exist
+    * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created)
+    *  @return start cell and all aaRS that can exist
   */
   def init (aaRSnumb:Int = 20, aaRSlength:Int = 3, initAA:Vector[AA] = AA.values.toVector, codonNumb:Int = 16):Cell= {
     // create codons
@@ -109,7 +110,7 @@ object Earth{
     def printElements(toPrint:List[PrintElem]):Unit = {
       toPrint.foreach(elem => {
         elem match {
-          case PrintElem.codons => println(codons.toString())
+          case PrintElem.codons => println("Codons" + codons.toString())
           case PrintElem.mRNA => printMRNA(mRNA, codons)
           case PrintElem.tRNAs => println("tRNAs:\n" + tRNAs.toString()); println()
           case PrintElem.allTRNA => print2DimTRNAmatrix(allTRNA)
@@ -120,15 +121,35 @@ object Earth{
     }
     printElements(List(PrintElem.codons, PrintElem.mRNA, PrintElem.tRNAs, PrintElem.aaRSs))
 
-    new Cell(mRNA, allTRNA, aaRSs, allAARS, initAA, 0)
+    def getHTMLstring(toHTML:List[PrintElem]):String = {
+      var content = ""
+      toHTML.foreach(elem => {
+        elem match {
+          case PrintElem.codons => {
+            content += "<h2>Codons</h2>\n"
+            content += codons.mkString("<p>",", ","</p>") + "</br>\n"
+          }
+          case PrintElem.mRNA => content += "<h2>mRNA</h2>\n"
+            content += mRNAtoHTML(mRNA, codons)
+          case PrintElem.tRNAs => println("tRNAs:\n" + tRNAs.toString()); println()
+          case PrintElem.allTRNA => print2DimTRNAmatrix(allTRNA)
+          case PrintElem.aaRSs => aaRSs.toString()
+          case PrintElem.allAARS => print3DimAARSmatrix(allAARS)
+        }
+      })
+      content
+    }
+    val content = getHTMLstring(List(PrintElem.codons, PrintElem.mRNA, PrintElem.tRNAs, PrintElem.aaRSs))
 
-    /*
-    val file = new File("C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\allAaRs.txt")
+
+
+
+    val file = new File("C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\webpage.txt")
     val bw = new BufferedWriter(new FileWriter(file))
-    bw.write(allAaRS.toString())
+    bw.write(content.toString())
     bw.close()
-    */
 
+    new Cell(mRNA, allTRNA, aaRSs, allAARS, initAA, 0)
 
   }
 
@@ -154,7 +175,7 @@ object Earth{
 
   /** generate from nucleobases
     * @param codonNumb 16 -> twoTuples, 64 -> codons, 48 -> strong comma free codons
-    * @return either twoTuples or codons or strong comma free codons
+    * @return either list of twoTuples or codons or strong comma free codons
     */
   def getCodons(codonNumb:Int):IndexedSeq[(Any)] = {
     //range for adding third base
@@ -243,6 +264,17 @@ object Earth{
     })
     println()
     println()
+  }
+
+  def mRNAtoHTML(mRNA:List[List[Int]], codons:IndexedSeq[(Any)]):String = {
+    var content = "<ul>\n"
+    mRNA.foreach(gene => {
+      content += "<li>\n"
+      gene.foreach(codonID => content += codons(codonID).toString() )
+      content += "</li>\n"
+    })
+    content += "</ul>\n"
+   content
   }
 
   def print2DimTRNAmatrix (matrix:Array[Array[TRNA]]):Unit = {
