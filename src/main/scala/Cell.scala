@@ -1,172 +1,234 @@
+import java.io.{BufferedWriter, File, FileWriter}
+
 import AA.AA
 import Base.Base
-import Earth.{print2DimTRNAmatrix, print3DimAARSmatrix, printMRNA}
+import Earth.{mRNAtoHTML, print2DimTRNAmatrix, print3DimAARSmatrix, printMRNA, getCodons}
 import PrintElem.PrintElem
 
 import scala.util.Random
 
-/** Currently Cell doesn't aim to simulate a real cell (no cell division) but holds the state of the simulation.
+/** Cell holds the state of the simulation.
   * Each cell is a new state with no connection to the old state.
   * Cell is responsible for computing the next simulation state by translating mRNA, getting a new set of aaRS and creating a new cell with it
-  * TODO connect states
+  * TODO connect states, reduce constructor parameters
   * @param mRNA to be translated to get the aaRS and therefore the codeTable for the next cell generation
   * @param codeTable either check the code table or the current aaRSs themselves to find out about the translation from codon to amino acid
-  * @param transferRNAs not relevant yet
-  * @param aaRSs current set of aaRS, used for translating the mRNA to get the aaRS set for the next cell generation
+  * @param livingAARSs current set of aaRS, used for translating the mRNA to get the aaRS set for the next cell generation
   * @param allAARS this list holds all valid aaRS that could exist and their randomly predefined behaviour
-  * @param generationID
+  * @param generationID nextCell has generationID+1
   */
-class Cell (val mRNA:List[List[Int]], var allTRNAs: Array[Array[TRNA]], var aaRSs:Vector[Vector[AA.Value]], val allAARS:Array[Array[Array[AARS]]],  val initAA:Vector[AA], val generationID:Int){
+class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], var livingAARSs:Vector[AARS], val allAARS:Array[Array[Array[AARS]]], val initAA:Vector[AA], val codonNumb:Int, val aarsLength:Int, val generationID:Int) {
   /**
     *
     * @return
     */
-  def translate( ): Cell ={
-    var newAARSs:Vector[Vector[AA.Value]] = Vector()
-    var aaSequences: Vector[Vector[AA.Value]] = Vector()
-    for(gene <- mRNA) {
-      var sequence:Vector[AA.Value] = Vector()
-        for(codon <- gene) {
-           //to codon fitting tRNAs that are used by the current aaRS set
-          val fittingTRNAsInUse:Array[TRNA] = allTRNAs(codon).filter(tRNA => if(tRNA == null){false}else{tRNA.aaRSsequences.length > 0})
+  def translate(): Cell = {
 
-          val tRNA = fittingTRNAsInUse(Random.nextInt(fittingTRNAsInUse.length)) //random TRNA from the fitting list
-          val aaSeq:Vector[AA] = tRNA.aaRSsequences(Random.nextInt(tRNA.aaRSsequences.length))
-          val aaRS:AARS = allAARS(aaSeq(0).id)(aaSeq(1).id)(aaSeq(2).id)
-          sequence = sequence :+ aaRS.aa(Random.nextInt(aaRS.aa.length))              //TODO: else case, break if aaRS is too short? Can aaRS have different lengths? Sure. But not important? There are no more than 20^3 functional aaRS
-      }
-      var newAARS:AARS = allAARS(sequence(0).id)(sequence(1).id)(sequence(2).id)
-      if(newAARS != null){
-        if(aaRSs.contains(newAARS)) {  //lifeticks are not 0, remove aaRS from old list to not have it twice afterwards and to not reduce the lifeticks
-          aaRSs = aaRSs.filter(_ != newAARS.aaSeq)
-        }
-        else{
-          //activate tRNAs
-          newAARS.tRNAs.foreach(tRNA => allTRNAs(tRNA._1)(tRNA._2).addAARSsequence(newAARS.aaSeq))
-        }
-        newAARS.resetLifeticks()
-        newAARSs = newAARSs :+ newAARS.aaSeq
-      }
-      else{
-        var aminoAcids:Vector[AA] = Vector()
-        var tRNAs:Vector[(Int,Int)] = Vector()
-
-        //AA
-        val numberOfAA = Random.nextInt(2)
-        for(
-          i <- 0 to numberOfAA
-        ){
-          aminoAcids = aminoAcids :+ initAA(Random.nextInt(initAA.length))
-        }
-
-        //tRNA
-        val numberOfTRNAs = Random.nextInt(2)
-          for(
-            i <- 0 to numberOfTRNAs
-          ){
-          val anticodonPos = Random.nextInt(allTRNAs.length)
-          val stemPos = Random.nextInt(allTRNAs.length)
-          if(allTRNAs(anticodonPos)(stemPos) == null){
-            allTRNAs(anticodonPos)(stemPos) = new TRNA(anticodonPos, stemPos, Vector(sequence))
-          }
-            tRNAs = tRNAs :+ (anticodonPos, stemPos)
-        }
-
-        newAARS = new AARS(sequence,tRNAs,aminoAcids)
-
-        allAARS(sequence(0).id)(sequence(1).id)(sequence(2).id) = newAARS
-        newAARSs = newAARSs :+ newAARS.aaSeq
-      }
-    }
-    aaRSs.foreach(seq => {
-      allAARS(seq(0).id)(seq(1).id)(seq(2).id).reduceLifeTicks()
-      if(allAARS(seq(0).id)(seq(1).id)(seq(2).id).lifeticks <= 0){ //if aaRS is dead
-        allAARS(seq(0).id)(seq(1).id)(seq(2).id).tRNAs.foreach(tRNA => allTRNAs(tRNA._1)(tRNA._2).aaRSsequences.filter(_!=seq))  //delete tRNA connection to this aaRS
-      }
+    livingAARSs.foreach(aaRS => {
+      aaRS.reduceLifeTicks()
+      if(aaRS.lifeticks <= 0) livingAARSs = livingAARSs.filter(_ != aaRS)
     })
 
-    newAARSs = newAARSs ++ aaRSs
-
-    //print initial stuff
-    def printElements(toPrint:List[PrintElem]):Unit = {
-      toPrint.foreach(elem => {
-        elem match {
-          case PrintElem.allTRNA => print2DimTRNAmatrix(allTRNAs)
-          case PrintElem.aaRSs => aaRSs.toString()
-          case PrintElem.allAARS => print3DimAARSmatrix(allAARS)
+    var sequence: Vector[AA.Value] = Vector()
+    def go (mRNA:List[Int]):Unit ={
+      val codon::t = mRNA
+      val usableAARS = codeTable(codon).filter(_ != null) //find all aaRS that can translate this codon
+      if (!usableAARS.isEmpty){
+        val aarsList:List[AARS] = usableAARS(Random.nextInt(usableAARS.length))
+        val aaRS:AARS = aarsList(Random.nextInt(aarsList.length))
+        val translationKeys = aaRS.translations.keySet
+        val aa:AA = translationKeys.toList(Random.nextInt(translationKeys.size))._1
+        sequence = sequence :+ aa
+        if(sequence.length < aarsLength) {
+          if(t != List()) go(t)
         }
+        else{ //break the sequence as soon as the correct number of amino acids is reached
+          val newAARS = getAARS(sequence)
+          if(!livingAARSs.contains(getAARS(sequence))) {
+            livingAARSs = livingAARSs :+ newAARS
+          }
+          sequence = Vector()
+          if(t != List()) go(t)
+        }
+
+      }else{ //if stop codon, create aaRS if sequence has correct length
+        if(sequence.length == 3){
+          val newAARS = getAARS(sequence)
+          if(!livingAARSs.contains(getAARS(sequence))) {
+            livingAARSs = livingAARSs :+ newAARS
+          }
+          sequence = Vector()
+          if(t != List()) go(t)
+        }else{
+          if(t != List()) go(t)
+        }
+      }
+    }
+
+    go(mRNA.flatten)
+
+    val newCodeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb, initAA.length)
+    livingAARSs.foreach(aaRS => {
+      aaRS.translations.foreach(translation => {
+        if(newCodeTable(translation._1._2)(translation._1._1.id) == null) newCodeTable(translation._1._2)(translation._1._1.id)= List(aaRS)
+        else newCodeTable(translation._1._2)(translation._1._1.id) = newCodeTable(translation._1._2)(translation._1._1.id) :+ aaRS
+        allAARS(aaRS.aaSeq(0).id)(aaRS.aaSeq(1).id)(aaRS.aaSeq(2).id) = aaRS
       })
-    }
-    printElements(List(PrintElem.allTRNA, PrintElem.aaRSs, PrintElem.allAARS))
-    new Cell(mRNA, allTRNAs, newAARSs, allAARS, initAA, generationID+1)
-  }
-
-  /*def reduceLifeTicks():Vector[AARS]={
-    var updatedAARS:Vector[AARS] = for(
-      aaRS<- aaRSs
-    )yield{
-      //work with copy
-      aaRS.reduceLifeTicks()
-      if(aaRS.lifeticks <= 0){
-        allTRNAs = aaRS.apoptosis(allTRNAs)
-      }
-      //make copy real, replace old version
-      allAARS(aaRS.aaSeq(0).id)(aaRS.aaSeq(1).id)(aaRS.aaSeq(2).id) = aaRS
-      aaRS
-    }
-    updatedAARS.filter(aaRS => aaRS.lifeticks > 0)
-  }*/
+    })
 
 
-
-
-
-
-  override def toString(): String ={
-    var toPrint:String = ""
-    def go(aaRSsToBePrinted: Seq[AARS]): String ={
-      aaRSsToBePrinted match {
-        case h :: t => toPrint +=  h.toString(); go(t)
-        case _ => (s"\nGeneration $generationID: $toPrint")
-      }
-    }
-    go(List())
-
+    new Cell(mRNA, newCodeTable, livingAARSs, allAARS, initAA, codonNumb, aarsLength, generationID + 1)
   }
 
 
-
-
-
-
-
-
-
-
-
-
-  // same as above (create aaRSs)
-  /*for (i <- 1 to aaRSnumb){
-    var aaSeq:Vector[AA] = Vector()
-
-    for(j <- 1 to aaRSlength) {
-      aaSeq = aaSeq :+ AA(scala.util.Random.nextInt(AA.maxId))
+  /**
+    *
+    * @param sequence
+    * @return
+    */
+  def getAARS(sequence:Vector[AA.Value]):AARS={
+    var newAARS: AARS = allAARS(sequence(0).id)(sequence(1).id)(sequence(2).id)
+    if (newAARS != null) {
+      newAARS.resetLifeticks()
     }
-    aaRSs = aaRSs :+ new AARS(aaSeq, i)
-  }*/
+    else {
+      var translations:Map[(AA, Int),(Double, List[Int])] = Map()
+      val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6) //TODO remove copy paste
+      val numbAnticodons= numbOfAnticodonsForOneAARS(Random.nextInt(numbOfAnticodonsForOneAARS.length))
+      for(
+        _ <- 0 until numbAnticodons
+      ){
+        translations += (initAA(Random.nextInt(initAA.length)), Random.nextInt(codonNumb))->(1.0, List(Random.nextInt(codonNumb))) //TODO choose similar codons (first random, rest +x)
+      }
+      newAARS = new AARS(sequence, translations)
+      allAARS(sequence(0).id)(sequence(1).id)(sequence(2).id) = newAARS
+
+    }
+    newAARS
+  }
 
 
-  //println("AARSs")
-  //println((aaRSs(1)).toString())
+  /**
+    *
+    * @return
+    */
+  override def toString(): String = {
+    var toPrint: String = ""
+
+    def go(aaRSsToBePrinted: Seq[AARS]): String = {
+      aaRSsToBePrinted.toList match {
+        case h :: t => toPrint += h.toString(); go(t)
+        case _ => toPrint += (s"\nGeneration $generationID: $toPrint"); toPrint
+      }
+    }
+    go(livingAARSs)
+
+  }
+
+
+  /**
+    *
+    * @param toPrint
+    */
+  def toString(toPrint:List[PrintElem]):Unit = {
+    val codons:List[(Base, Base, Base)] = getCodons(codonNumb).asInstanceOf[List[Tuple3[Base, Base, Base]]]
+    toPrint.foreach(elem => {
+      elem match {
+        case PrintElem.codeTable => {
+          var codeTableAsText = ""
+          for (
+            codon <- 0 until codons.length;
+            aa <- 0 until initAA.length
+          ) {
+            codeTableAsText += codons(codon).toString() + " -> " + initAA(aa).toString + codeTable(codon)(aa).toString() + "\n"
+          }
+          "CodeTable\nShows for each codon the possible translations into an amino acid and the aaRSs that enable this.\n" + codeTableAsText
+        }
+         case PrintElem.mRNA => printMRNA(mRNA, getCodons(codonNumb))
+        //case PrintElem.tRNAs => println("tRNAs:\n" + tRNAs.toString()); println()
+        //case PrintElem.allTRNA => print2DimTRNAmatrix(allTRNA)
+        case PrintElem.`livingAARSs` => livingAARSs.toString()
+        case PrintElem.allAARS => print3DimAARSmatrix(allAARS)
+      }
+    })
+  }
+
+  /**
+    *
+    * @param toHTML
+    * @return
+    */
+  def toHtmlString(toHTML:List[PrintElem]):String = {
+    val codons = getCodons(codonNumb)
+    var content = "<!DOCTYPE html >\n<html>\n\t<head>\n\t\t<style>\n\t\t\ttable {\n\t\t\t\tfont-family: arial, sans-serif;\n\t\t\t\tborder-collapse: collapse;\n\t\t\t\twidth: 100%;\n\t\t\t}\n\n\t\t\ttd, th {\n\t\t\t\tborder: 1px solid #dddddd;\n\t\t\t\ttext-align: left;\n\t\t\t\tpadding: 8px;\n\t\t\t}\n\n\t\t\ttr:nth-child(even) {\n\t\t\t\tbackground-color: #dddddd;\n\t\t\t}\n\t\t</style>\n\t</head>\n\t<body>"
+    content += "</br><h1>Generation " + generationID + "</h1>"
+    toHTML.foreach(elem => {
+      elem match {
+        case PrintElem.codons => {
+          content += "<h2>Codons</h2>\n"
+          content += codons.mkString("<p>",", ","</p>") + "</br>\n"
+        }
+        case PrintElem.mRNA => {
+          content += "<h2>mRNA</h2>\n"
+          content += mRNAtoHTML(mRNA, getCodons(codonNumb))
+        }
+        case PrintElem.livingAARSs => {
+          content += "<h2>Living aaRS</h2>\n<table> \n <tr>\n<th>aaSeq</th>\n<th>Lifeticks</th>\n<th>translations: Amino Acid, Anticodon/Codon, tRNA stem</th>\n</tr>"
+          livingAARSs.foreach(aars =>{
+            content += "<tr>\n<td>" + aars.aaSeq.mkString(", ") + "</td>\n<td>" + aars.lifeticks + "</td><td>" + aars.translationsToHtmlString() + "</td>\n</tr>"
+          })
+          content += "</table>"
+        }
+        case PrintElem.allAARS => print3DimAARSmatrix(allAARS)
+        case PrintElem.codeTable => {
+          content += "<h2>Code Table</h2>\n<table>\n"
+          content += "<tr>\n<th></th>"
+          for(
+            aa <- 0 until initAA.length
+          ){
+            content += "<th>" + initAA(aa).toString() + "</th>\n"
+          }
+          content += "\n"
+
+          for(
+            codonPos <- 0 until codonNumb
+          ){
+            content += "</tr>\n<tr>\n<td>" + codons(codonPos) + "</td>\n"
+            for(
+              aa <- 0 until initAA.length
+            ){
+              val aaRSList:List[AARS] = codeTable(codonPos)(aa)
+              if(aaRSList != null){
+              content += "<td>"
+              for(
+                aaRS <- aaRSList
+              ){
+                val r = aaRS.aaSeq(0).id * initAA.length
+                val g = aaRS.aaSeq(1).id * initAA.length
+                val b = aaRS.aaSeq(2).id * initAA.length
+                val rback = 255 - aaRS.aaSeq(0).id * initAA.length
+                val gback = 255 - aaRS.aaSeq(1).id * initAA.length
+                val bback = 255 - aaRS.aaSeq(2).id * initAA.length
+                content += s"<p style='color: rgb($r, $g, $b); background-color: rgb($rback, $gback, $bback);'>" + aaRS.aaSeq.mkString(", ") + "</p></br>\n"
+              }
+              content += "</td>"
+              }else{
+                content += "<td></td>"
+              }
+            }
+          }
+          content += "\n</tr>\n</table>\n</body>\n</html>"
+        }
+        //case PrintElem.tRNAs => println("tRNAs:\n" + tRNAs.toString()); println()
+        //case PrintElem.allTRNA => print2DimTRNAmatrix(allTRNA)
+      }
+    })
+    content
+  }
 
 
 
-  /* def divide(): Cell ={
-     val newAARSs:Seq[AARS] = (for{
-       i <- 0 to 15          //CAUTION: 15 has to be replaced with start number of aa
-     } yield (aaRSs(i).translateNew(geneTable)))
-     new Cell(messengerRNA, geneTable, transferRNAs, newAARSs.toVector, genID+1)
-   }*/
+
 
 
 

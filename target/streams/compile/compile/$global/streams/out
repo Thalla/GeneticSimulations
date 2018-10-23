@@ -1,7 +1,6 @@
-[error] C:\Users\feroc\IdeaProjects\GeneticSimulations1\src\main\scala\AARS.scala:27:95: unclosed string literal
-[error]     "\n" + "aaRS: " + aaSeq.mkString(", ") + aaSeq.toString() +  TRNAs: " + tRNAs.mkString(", ")
-[error]                                                                                               ^
-[error] C:\Users\feroc\IdeaProjects\GeneticSimulations1\src\main\scala\AARS.scala:27:73: identifier expected but string literal found.
-[error]     "\n" + "aaRS: " + aaSeq.mkString(", ") + aaSeq.toString() +  TRNAs: " + tRNAs.mkString(", ")
-[error]                                                                         ^
-[error] two errors found
+[error] C:\Users\feroc\IdeaProjects\GeneticSimulations1\src\main\scala\Cell.scala:73:119: type mismatch;
+[error]  found   : List[AARS]
+[error]  required: AARS
+[error]         newCodeTable(translation._1._2)(translation._1._1.id) = newCodeTable(translation._1._2)(translation._1._1.id) :: List(aaRS)
+[error]                                                                                                                       ^
+[error] one error found

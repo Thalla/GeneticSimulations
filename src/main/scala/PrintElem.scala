@@ -1,4 +1,4 @@
 object PrintElem extends Enumeration {
   type PrintElem = Value
-  val  codons, mRNA, tRNAs, allTRNA, aaRSs, allAARS = Value
+  val  codons, mRNA, tRNAs, allTRNA, livingAARSs, allAARS, codeTable = Value
 }

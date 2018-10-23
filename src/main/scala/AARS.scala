@@ -1,33 +1,35 @@
 import AA._
+import Earth.{getCodons}
 
-class AARS(val aaSeq: Vector[AA], val tRNAs:Vector[(Int,Int)], val aa:Vector[AA]) {
+class AARS(val aaSeq: Vector[AA], var translations:Map[(AA, Int),(Double, List[Int])]) {
 
-  var lifeticks = 2  //be careful to also change resetLifeticks if initial value is changed
+  val lifeticksStartValue = 2
+  var lifeticks = lifeticksStartValue
 
-  def reduceLifeTicks():Unit ={
+  def reduceLifeTicks():AARS ={
     lifeticks -= 1
+    this
   }
 
   def resetLifeticks():Unit ={
-    lifeticks = 2
+    lifeticks = lifeticksStartValue
   }
-
-  // when an aaRS dies the usage of its tRNAs stops, they are unloaded and can't recognize any codons
-  def apoptosis(allTRNA:Array[Array[TRNA]]):Array[Array[TRNA]]={
-    tRNAs.foreach(tRNA => {
-      allTRNA(tRNA._1)(tRNA._2).removeAARSsequence(aaSeq)
-    })
-    allTRNA
-  }
-
-
-
 
   override def toString(): String ={
-    "\n" + "aaRS: " + aaSeq.mkString(", ") + "   " + aaSeq.toString() +  "TRNAs: " + tRNAs.mkString(", ")
+    "\n" + "aaRS: " + aaSeq.mkString(", ") + "\nlifeticks: " + lifeticks + "\nTranslations: " + translations.mkString(", ")
   }
 
-
+  def translationsToHtmlString():String={
+    val codons = getCodons(64)
+    var content = "<table>"
+    for(
+      translation <- translations
+    ){
+      content += "<tr>\n<td>" + translation._1._1.toString + "</td><td>" + codons(translation._1._2)+"</td><td>" + codons(translation._2._2.head) + "</td></tr>\n"
+    }
+    content += "</table>"
+    content
+  }
 
 }
 

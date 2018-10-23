@@ -11,26 +11,17 @@ import Base.Base
 import scala.util.Random
 
 
-/** first simple model
-  * uses twoTuples instead of codons, doesn't make use of tRNA stem
-  * made for 16 initial aaRS (for each twoTuple one) with random amino acid sequences of length 3, 20 amino acids to choose from, nearly every possible amino acid sequence is a valid aaRS
-  * @problem The next generation can have an aaRS recognizing anticodon XY and binding amino acid Abc as well as an aaRS also recognizing XY but binding it to Hij.
-  *          So there are two translations for one codon and the current code table holds just one
-  * @solutions V1: The case is not allowed because it would lead to chaos.
-  *            V2: The case is allowed because it is allowed in nature (TODO: some more research) .
-  *                => The code table must hold multiple translations.
-  *            Either way the code table must be extended to :TODO: include the last generations
-  *           (Delete code table and just use AARS? -> make AARS easier to use)
-  *           TODO: Define clear relationship between AARS and tRNA (n:m?)
-  * @codeGoal flexible NN construct?
+/** Third draft
+  * tRNAs have a less important role
+  * Uses 64 codons and 20 amino acids.
+  * The code table holds multiple translations.
+  * @nextSteps: similarity, probabilities, NN?, DM?, evo. Alg.?, analyse, parameters, Empirie
   * @author Hanna Schumacher
-  * @version 0.5 : more documentation (descriptions, undefined cases, param impact), added Base Enumeration (previous: GeneticSimulations)
+  * @version 0.6 -> + code table - circle relationship
   */
 object Earth{
-
   //TODO: check if start parameters are valid
   //TODO: tests, exceptions, logging, class diagram, cases, directly connect code/model decisions to research
-  //TODO: FIX aa for aaRS!! always use variable and not AA.Values! (Check in Cell too)
 
   /** initiates and starts simulation
     * @param args
@@ -39,117 +30,71 @@ object Earth{
 
     //val auth = new InputParamsDialog().auth.getOrElse(throw new IllegalStateException("You should login!!!"))
     //println(auth.toString())
-    simulate(init())           //
+
+    simulate(init())
   }
 
 
   /** creates a start cell, each cell is one generation
-    * @param aaRSnumb Number of how many different aaRS proteins exist initially.
-    *                 Must be same or lower as numb of possible twoTuples because aaRSnumb defines the length of the code table. Therefore aaRSnumb isn't allowed to be bigger than max numb of codons/tuples.
-    *                 It must be lower than initAA.length/nunmber of existing amino acids. Otherwise the same AA is coded by various aaRS.
-    *                 aaRSnumb defines the length of the code table.  TODO: allow codons to be translated by multiple aaRS (V1: to multiple AA (-> chaos?), V2: to always the same AA) -> changes in gene table and aaRSs creation
-    * @param aaRSlength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
-    * @param initAA initially existing and used amino acids, must be lower or same as maxTupleNumb(there are 16 twoTuple) TODO: allow having new/non proteinogenic amino acids
-    * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created)
-    *  @return start cell and all aaRS that can exist
+    * @param aaRSnumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
+    * @param aarsLength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
+    * @param initAA initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
+    * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
+    * @return start cell
   */
-  def init (aaRSnumb:Int = 20, aaRSlength:Int = 3, initAA:Vector[AA] = AA.values.toVector, codonNumb:Int = 16):Cell= {
+  def init (aaRSnumb:Int = 20, aarsLength:Int = 3, initAA:Vector[AA] = AA.values.toVector, codonNumb:Int = 64):Cell= {
     // create codons
     val codons = getCodons(codonNumb)
 
     // start connection is: codon with id x has tRNA with id x has aaRS with id x (three tRNA have a second aaRS) has amino acid with id x
 
-    // create random mRNA
-    val mRNA:List[List[Int]] = getRandomMRNA(codons.toList, aaRSlength, aaRSnumb)
+    // create random mRNA (List of genes. Each gene is a List of codon IDs as long as aarsLength)
+    val mRNA:List[List[Int]] = getRandomMRNA(codons.toList, aarsLength, aaRSnumb)
 
-
-    //create tRNAs: for each codon one (no codon anticodon translation, both are same)
-    var allTRNA =  Array.ofDim[TRNA](codons.length, codons.length)  //TODO needed???
-    var tRNAs:Vector[(Int, Int)] = Vector.tabulate(codons.length)(i => {
-      val stemCodonPos = Random.nextInt(codons.length)
-      val tRNA =  new TRNA(i, stemCodonPos, Vector()) //leere Hülle
-      allTRNA (i)(stemCodonPos) = tRNA
-      (i, stemCodonPos)
-    })
-    for(
-      i <- 0 until aaRSnumb - codons.length
-    ){
-      val anticodonPos = Random.nextInt(codons.length)
-      val stemCodonPos = Random.nextInt(codons.length)
-      var tRNA:TRNA =  new TRNA(anticodonPos, stemCodonPos, Vector())
-      tRNAs = tRNAs :+ (anticodonPos, stemCodonPos) //TODO Fehler wenn gleiche TRNA wie schon erzeugt
-      allTRNA (anticodonPos)(stemCodonPos) = tRNA
-    }
-
-    //create aaRSs
-    var allAARS =  Array.ofDim[AARS](20,20, 20) //TODO ? more dimensions ?
-    var aaRSs:Vector[Vector[AA.Value]] = Vector()
-    //create amino acid sequences
-    val aaRSsequences:IndexedSeq[IndexedSeq[AA]] = for(
-      i <- 0 until aaRSnumb
+    // prepare creation of aaRS
+    val allAARS =  Array.ofDim[AARS](initAA.length,initAA.length, initAA.length)    // Array that saves living and dead aaRS. Their position is defined by their amino acid sequence        TODO ? more dimensions ?
+    val aaRSsequences:IndexedSeq[IndexedSeq[AA]] = for(          // prepare random amino acid sequences to provide them later to the aaRS constructor
+      _ <- 0 until aaRSnumb
     )yield{
       val seq:IndexedSeq[AA] = for(
-        j <- 0 until aaRSlength
+        j <- 0 until aarsLength
       ) yield AA(Random.nextInt(initAA.length))
       seq
+    }  //TODO: check if any seqence is twice (find method in older code)
+
+    // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
+    val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)
+    var numbUsedCodons = 0
+
+    //create the start set of aaRS, codon with id 63 isn't used and therefore behaves as stop codon
+    val livingAARSs = for(
+      i <- 0 until aaRSnumb
+    )yield{
+      var translations:Map[(AA, Int),(Double, List[Int])] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
+      var antiCodonNumb = numbOfAnticodonsForOneAARS(Random.nextInt(numbOfAnticodonsForOneAARS.length))      //number of anticodons that are recognized by the aaRS is chosen randomly
+      if((aaRSnumb-i) > (codonNumb-numbUsedCodons-antiCodonNumb)){
+        antiCodonNumb -= (aaRSnumb-i) - (codonNumb-numbUsedCodons-antiCodonNumb)
+      }
+      for(
+        j <- 0 until antiCodonNumb
+      ){
+          translations += (initAA(i), numbUsedCodons)->(1.0, List(Random.nextInt(codons.length)))
+          numbUsedCodons += 1
+      }
+
+      new AARS(aaRSsequences(i).toVector, translations)
     }
-    // create an aaRS from each amino acid sequence in aaRSsequences and store it in an aaRS Vector (for current cell) and Matrix (collects all aaRS)
-    var counter:Int = 0
-    aaRSsequences.foreach(aaSeq => {
-      var x = tRNAs(17)
-      var y = allTRNA(tRNAs(17)._1)(tRNAs(17)._2)
-      allTRNA(tRNAs(counter)._1)(tRNAs(counter)._2).addAARSsequence(aaSeq.toVector)
-      val aaRS = new AARS(aaSeq.toVector, tRNAs, Vector(initAA(counter))) //TODO aaRSnumb > initAA.length
-      aaRSs = aaRSs :+ aaRS.aaSeq
-      allAARS(aaSeq(0).id) (aaSeq(1).id) (aaSeq(2).id) = aaRS
-      counter += 1
+
+    //create code Table: Array[Codon][AA] = List[AARS]
+    val codeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codons.length, initAA.length)
+    livingAARSs.foreach(aaRS => {
+      aaRS.translations.foreach(translation => {
+        codeTable(translation._1._2)(translation._1._1.id) = List(aaRS)
+        allAARS(aaRS.aaSeq(0).id)(aaRS.aaSeq(1).id)(aaRS.aaSeq(2).id) = aaRS
+      })
     })
 
-
-    //print initial stuff
-    def printElements(toPrint:List[PrintElem]):Unit = {
-      toPrint.foreach(elem => {
-        elem match {
-          case PrintElem.codons => println("Codons" + codons.toString())
-          case PrintElem.mRNA => printMRNA(mRNA, codons)
-          case PrintElem.tRNAs => println("tRNAs:\n" + tRNAs.toString()); println()
-          case PrintElem.allTRNA => print2DimTRNAmatrix(allTRNA)
-          case PrintElem.aaRSs => aaRSs.toString()
-          case PrintElem.allAARS => print3DimAARSmatrix(allAARS)
-        }
-      })
-    }
-    printElements(List(PrintElem.codons, PrintElem.mRNA, PrintElem.tRNAs, PrintElem.aaRSs))
-
-    def getHTMLstring(toHTML:List[PrintElem]):String = {
-      var content = ""
-      toHTML.foreach(elem => {
-        elem match {
-          case PrintElem.codons => {
-            content += "<h2>Codons</h2>\n"
-            content += codons.mkString("<p>",", ","</p>") + "</br>\n"
-          }
-          case PrintElem.mRNA => content += "<h2>mRNA</h2>\n"
-            content += mRNAtoHTML(mRNA, codons)
-          case PrintElem.tRNAs => println("tRNAs:\n" + tRNAs.toString()); println()
-          case PrintElem.allTRNA => print2DimTRNAmatrix(allTRNA)
-          case PrintElem.aaRSs => aaRSs.toString()
-          case PrintElem.allAARS => print3DimAARSmatrix(allAARS)
-        }
-      })
-      content
-    }
-    val content = getHTMLstring(List(PrintElem.codons, PrintElem.mRNA, PrintElem.tRNAs, PrintElem.aaRSs))
-
-
-
-
-    val file = new File("C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\webpage.txt")
-    val bw = new BufferedWriter(new FileWriter(file))
-    bw.write(content.toString())
-    bw.close()
-
-    new Cell(mRNA, allTRNA, aaRSs, allAARS, initAA, 0)
+    new Cell(mRNA, codeTable, livingAARSs.toVector, allAARS, initAA, codonNumb, aarsLength,  0)
 
   }
 
@@ -162,14 +107,36 @@ object Earth{
     var cells: Vector[Cell] = Vector()
     cells = cells :+ cell
 
+    //print cell
+    //print(cell.toString())
+    val content = cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
+    //writeToFile("generation0", content)
+    val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\simulationOutput.html")
+    val bw = new BufferedWriter(new FileWriter(file))
+    bw.write(content)
+
+
     def go(cell:Cell):Unit = {
       var newCell:Cell = cell.translate()
       cells = cells :+ newCell
-      go(newCell)
+
+      print("GENERATION" + cell.generationID + cell.toString())
+      val content = cell.toHtmlString(List(PrintElem.livingAARSs, PrintElem.codeTable))
+      bw.write(content)
+      //writeToFile("generation"+cell.generationID, content)
+      if(cell.livingAARSs.length != 0 && cell.generationID <= 20) go(newCell)
+
     }
     go(cell)
-
+    bw.close()
     cells
+  }
+
+  def writeToFile(filename:String, content:String): Unit ={
+    val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\$filename.html")
+    val bw = new BufferedWriter(new FileWriter(file))
+    bw.write(content)
+    bw.close()
   }
 
 
@@ -277,7 +244,7 @@ object Earth{
    content
   }
 
-  def print2DimTRNAmatrix (matrix:Array[Array[TRNA]]):Unit = {
+  def print2DimTRNAmatrix (matrix:Array[Array[Any]]):Unit = {
     for (
       i <- 0 until matrix.length;
       j <- 0 until matrix(0).length
@@ -319,68 +286,6 @@ object Earth{
 
 }
 
-
-
-//aaRSs = aaRSs :+ aaRSs(0)
-//              //dup.groupBy(identity).collect { case (x,ys) if ys.lengthCompare(1) > 0 => x }
-//    aaRSs = (aaRSs.groupBy(identity).collect { case (x, Vector(_,_*)) => x }).toVector
-
-
-
-
-/*
-// twoTuples: generate from nucleobases
-val twoTuples: IndexedSeq[(Int, Int)] = (for {
-  i <- 0 to 3 // four nucleobases
-  j <- 0 to 3
-} yield (i, j))
-println("twoTuples:\n" + twoTuples.toString())
-
-// codons: generate from nucleobases
-val codons: IndexedSeq[(Int, Int, Int)] = (for {
-  i <- 0 to 3 // four nucleobases
-  j <- 0 to 3
-  k <- 0 to 3 if(k != i)
-} yield (i, j, k))
-println("codons:\n" + codons.toString())*/
-
-/*    //generate tRNAs for aaRSs
-    var tRNAsReduced = tRNAs
-    val getRandTRNA = () => {
-        //get random tRNA
-        val randTRNA:TRNA = tRNAsReduced(Random.nextInt(tRNAsReduced.length))
-        //delete this tRNA from tRNA list
-        tRNAsReduced = tRNAsReduced.filter(_ != randTRNA)
-        randTRNA
-    }*/
-
-
-
-// funktioniert:
-/*val getRandAA = () => {initAA(Random.nextInt(initAA.length))}     // Get a random aminoacid
-val getAaSeq = () => (Seq.fill(aaRSlength){getRandAA()}).toVector // Get a random aminoacid sequence
-val getUniqueAaSequences = (numb:Int) => {
-      var aaSequences: Vector[Vector[AA.Value]] = Vector()
-      @annotation.tailrec
-      def go(counter: Int) :Vector[Vector[AA.Value]] = {
-        var aaSeq = getAaSeq()
-        //prevents having the same sequence twice
-        while(aaSequences.contains(aaSeq)){
-          aaSeq = getAaSeq()
-        }
-        // adds sequence to list
-        aaSequences = aaSequences :+ aaSeq
-        // checks if desired number of sequences was generated
-        if(counter >= numb){
-          aaSequences
-        }
-        else{
-          go(counter+1)
-        }
-      }
-      go(0)
-    }
-    val currentAaSequences = getUniqueAaSequences(aaRSnumb)*/
 
 
 /*object Earth extends SimpleSwingApplication {
