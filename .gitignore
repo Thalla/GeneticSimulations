@@ -43,3 +43,4 @@ idea/**/*
 
 .project/**/*
 .target/**/*
+*.cache
