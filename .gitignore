@@ -36,7 +36,10 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-.idea
+idea/**/*
 .idea/misc.xml
 .idea/workspace.xml
 .idea/modules/Simple0.iml
+
+.project/**/*
+.target/**/*
