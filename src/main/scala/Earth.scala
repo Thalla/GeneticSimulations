@@ -1,4 +1,4 @@
-
+import org.ddahl.rscala._
 import java.io.{BufferedWriter, File, FileWriter}
 
 import PrintElem.PrintElem
@@ -30,8 +30,9 @@ object Earth{
 
     //val auth = new InputParamsDialog().auth.getOrElse(throw new IllegalStateException("You should login!!!"))
     //println(auth.toString())
+    val cells:List[Cell] = simulate(init()).toList
+    val data = new Data(cells.toArray)
 
-    simulate(init())
   }
 
 
@@ -70,7 +71,7 @@ object Earth{
     val livingAARSs = for(
       i <- 0 until aaRSnumb
     )yield{
-      var translations:Map[(AA, Int),(Double, List[Int])] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
+      var translations:Map[(AA, Int),List[(Double, Int)]] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
       var antiCodonNumb = numbOfAnticodonsForOneAARS(Random.nextInt(numbOfAnticodonsForOneAARS.length))      //number of anticodons that are recognized by the aaRS is chosen randomly
       if((aaRSnumb-i) > (codonNumb-numbUsedCodons-antiCodonNumb)){
         antiCodonNumb -= (aaRSnumb-i) - (codonNumb-numbUsedCodons-antiCodonNumb)
@@ -78,7 +79,7 @@ object Earth{
       for(
         j <- 0 until antiCodonNumb
       ){
-          translations += (initAA(i), numbUsedCodons)->(1.0, List(Random.nextInt(codons.length)))
+          translations += (initAA(i), numbUsedCodons)->List((1.0, Random.nextInt(codons.length)))
           numbUsedCodons += 1
       }
 
@@ -94,7 +95,7 @@ object Earth{
       })
     })
 
-    new Cell(mRNA, codeTable, livingAARSs.toVector, allAARS, initAA, codonNumb, aarsLength,  0)
+    new Cell(mRNA, codeTable, livingAARSs.toVector, allAARS, initAA, codonNumb,0)
 
   }
 
@@ -109,7 +110,7 @@ object Earth{
 
     //print cell
     //print(cell.toString())
-    val content = cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
+    var content = cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
     //writeToFile("generation0", content)
     val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\simulationOutput.html")
     val bw = new BufferedWriter(new FileWriter(file))
@@ -117,18 +118,35 @@ object Earth{
 
 
     def go(cell:Cell):Unit = {
-      var newCell:Cell = cell.translate()
+      val newCell:Cell = cell.translate()
       cells = cells :+ newCell
+      if(newCell.generationID <=31){
+        //print("GENERATION" + cell.generationID + cell.toString())
+        content = newCell.toHtmlString(List(PrintElem.livingAARSs, PrintElem.codeTable))
+        bw.write(content)
+      }
 
-      print("GENERATION" + cell.generationID + cell.toString())
-      val content = cell.toHtmlString(List(PrintElem.livingAARSs, PrintElem.codeTable))
-      bw.write(content)
       //writeToFile("generation"+cell.generationID, content)
-      if(cell.livingAARSs.length != 0 && cell.generationID <= 20) go(newCell)
+      if(!(cell.livingAARSs.length != 0 && cell.generationID <=15)){
+
+      }else go(newCell)
 
     }
     go(cell)
+
     bw.close()
+
+
+    /*val R = RClient() // initialise an R interpreter
+    R.evalD2("as.matrix(eurodist)")
+    R.x = 3
+    R.matrix(3,2)=cell.codeTable // send x to R
+
+    R.eval("mod <- glm(y~x,family=poisson())") // fit the model in R
+    // pull the fitted coefficents back into scala
+    val beta = DenseVector[Double](R.evalD1("mod$coefficients"))
+*/
+
     cells
   }
 

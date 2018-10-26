@@ -17,7 +17,7 @@ import scala.util.Random
   * @param allAARS this list holds all valid aaRS that could exist and their randomly predefined behaviour
   * @param generationID nextCell has generationID+1
   */
-class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], var livingAARSs:Vector[AARS], val allAARS:Array[Array[Array[AARS]]], val initAA:Vector[AA], val codonNumb:Int, val aarsLength:Int, val generationID:Int) {
+class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], var livingAARSs:Vector[AARS], val allAARS:Array[Array[Array[AARS]]], val initAA:Vector[AA], val codonNumb:Int, val generationID:Int) {
   /**
     *
     * @return
@@ -29,43 +29,35 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
       if(aaRS.lifeticks <= 0) livingAARSs = livingAARSs.filter(_ != aaRS)
     })
 
-    var sequence: Vector[AA.Value] = Vector()
-    def go (mRNA:List[Int]):Unit ={
-      val codon::t = mRNA
-      val usableAARS = codeTable(codon).filter(_ != null) //find all aaRS that can translate this codon
-      if (!usableAARS.isEmpty){
-        val aarsList:List[AARS] = usableAARS(Random.nextInt(usableAARS.length))
-        val aaRS:AARS = aarsList(Random.nextInt(aarsList.length))
-        val translationKeys = aaRS.translations.keySet
-        val aa:AA = translationKeys.toList(Random.nextInt(translationKeys.size))._1
-        sequence = sequence :+ aa
-        if(sequence.length < aarsLength) {
-          if(t != List()) go(t)
+    for (
+      gene <- mRNA
+    ) {
+      var sequence: Vector[AA.Value] = Vector()
+      var isStopped:Boolean = false
+      for (
+        codon <- gene if !isStopped
+      ) {
+        val usableAARS = codeTable(codon).filter(_ != null) //find all aaRS that can translate this codon
+        if (!usableAARS.isEmpty) {
+          val aarsList: List[AARS] = usableAARS(Random.nextInt(usableAARS.length))
+          val aaRS: AARS = aarsList(Random.nextInt(aarsList.length))
+          val translationKeys = aaRS.translations.keySet
+          val toCodonFittingTranslationKeys = translationKeys.filter(_._2 == codon)
+          val aa: AA = toCodonFittingTranslationKeys.toList(Random.nextInt(toCodonFittingTranslationKeys.size))._1
+          sequence = sequence :+ aa
         }
-        else{ //break the sequence as soon as the correct number of amino acids is reached
-          val newAARS = getAARS(sequence)
-          if(!livingAARSs.contains(getAARS(sequence))) {
-            livingAARSs = livingAARSs :+ newAARS
-          }
-          sequence = Vector()
-          if(t != List()) go(t)
-        }
-
-      }else{ //if stop codon, create aaRS if sequence has correct length
-        if(sequence.length == 3){
-          val newAARS = getAARS(sequence)
-          if(!livingAARSs.contains(getAARS(sequence))) {
-            livingAARSs = livingAARSs :+ newAARS
-          }
-          sequence = Vector()
-          if(t != List()) go(t)
-        }else{
-          if(t != List()) go(t)
+        else {
+          isStopped = true
         }
       }
+      if(!isStopped){
+        val newAARS = getAARS(sequence)
+        if (!livingAARSs.contains(newAARS)) {
+          livingAARSs = livingAARSs :+ newAARS
+      }
+        sequence = Vector()
+      }
     }
-
-    go(mRNA.flatten)
 
     val newCodeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb, initAA.length)
     livingAARSs.foreach(aaRS => {
@@ -77,7 +69,7 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
     })
 
 
-    new Cell(mRNA, newCodeTable, livingAARSs, allAARS, initAA, codonNumb, aarsLength, generationID + 1)
+    new Cell(mRNA, newCodeTable, livingAARSs, allAARS, initAA, codonNumb, generationID + 1)
   }
 
 
@@ -92,13 +84,13 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
       newAARS.resetLifeticks()
     }
     else {
-      var translations:Map[(AA, Int),(Double, List[Int])] = Map()
+      var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
       val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6) //TODO remove copy paste
       val numbAnticodons= numbOfAnticodonsForOneAARS(Random.nextInt(numbOfAnticodonsForOneAARS.length))
       for(
         _ <- 0 until numbAnticodons
       ){
-        translations += (initAA(Random.nextInt(initAA.length)), Random.nextInt(codonNumb))->(1.0, List(Random.nextInt(codonNumb))) //TODO choose similar codons (first random, rest +x)
+        translations += (initAA(Random.nextInt(initAA.length)), Random.nextInt(codonNumb))-> List((1.0,Random.nextInt(codonNumb))) //TODO choose similar codons (first random, rest +x)
       }
       newAARS = new AARS(sequence, translations)
       allAARS(sequence(0).id)(sequence(1).id)(sequence(2).id) = newAARS
