@@ -59,6 +59,9 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
       }
     }
 
+/*if(generationID%10000 == 0){
+  println()
+}*/
     val newCodeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb, initAA.length)
     livingAARSs.foreach(aaRS => {
       aaRS.translations.foreach(translation => {

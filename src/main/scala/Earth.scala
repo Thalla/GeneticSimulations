@@ -1,8 +1,15 @@
 import org.ddahl.rscala._
 import java.io.{BufferedWriter, File, FileWriter}
 
-import PrintElem.PrintElem
+import EncodedAaTracker.Update
 
+import scala.concurrent.duration._
+import akka.pattern.ask
+import PrintElem.PrintElem
+import akka.actor.{ActorRef, ActorSystem, PoisonPill}
+import akka.util.Timeout
+
+import scala.concurrent.Await
 import scala.swing._
 import scala.swing.event.ButtonClicked
 //import org.biojava3.core.sequence.DNASequence
@@ -27,12 +34,60 @@ object Earth{
     * @param args
     */
   def main(args: Array[String]): Unit ={
-
+    val data = new Data()
+    val z = data.randomTable()
+  simulate(init())
     //val auth = new InputParamsDialog().auth.getOrElse(throw new IllegalStateException("You should login!!!"))
     //println(auth.toString())
-    val cells:List[Cell] = simulate(init()).toList
+    /*val cells:List[Cell] = simulate(init()).toList
     val data = new Data(cells.toArray)
+    val codeTableCountAARS:Array[Array[Int]] = Array.ofDim[Int](cells(0).codonNumb, cells(0).initAA.length)
 
+   val hasTranslationOverTime= for(
+      c <- 0 until cells.length
+    )yield{
+     val codeTableHasTranslation:Array[Array[Int]] = Array.ofDim[Int](cells(0).codonNumb, cells(0).initAA.length)
+     for(
+       i <- 0 until 64;
+       j <- 0 until 20
+     ){
+       val elem = cells(c).codeTable(i)(j)
+       /*val elem2 = cells(c+1).codeTable(i)(j)
+       def getLength (e:List[AARS]):Int = {
+         if(e == null){
+           0
+         }else{
+           e.length
+         }
+       }*/
+       if(elem != null){
+         codeTableHasTranslation(i)(j) = 1
+       }else{
+         codeTableHasTranslation(i)(j) = 0
+       }
+       codeTableHasTranslation
+     }
+
+codeTableHasTranslation
+    }
+
+    val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\booleanData.txt")
+    val bw = new BufferedWriter(new FileWriter(file))
+    for(
+      i <- 0 until 64;
+      j <- 0 until 20
+    ){
+      bw.write("\n")
+      for(
+        k <- 0 until cells.length
+      ){
+        bw.write(hasTranslationOverTime(k)(i)(j) + ", ")
+      }
+
+    }
+
+    bw.close()
+    var x = 6+6*/
   }
 
 
@@ -103,38 +158,132 @@ object Earth{
 
 
   // simulation; holds global parameters; cares for cell reproduction
-  def simulate(cell:Cell): Vector[Cell] = {
+  def simulate(cell:Cell):Unit = {//: Vector[Cell] = {
     //Each cell represents one generation and Earth holds all.
-    var cells: Vector[Cell] = Vector()
-    cells = cells :+ cell
+    //var cells: Vector[Cell] = Vector()
+    //cells = cells :+ cell
 
-    //print cell
-    //print(cell.toString())
-    var content = cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
-    //writeToFile("generation0", content)
+
+
+   /* implicit val timeout: Timeout = Timeout(500 seconds)
+    val _system: ActorSystem = ActorSystem.create("ColCal")
+    val actor: ActorRef = _system.actorOf(EncodedAaTracker.props(Array()))
+    actor ! EncodedAaTracker.Update(1,true)
+    actor ! 1
+    val x= (actor ? Array()).mapTo[Array[Array[Int]]]
+    val xx= Await.result(x, 500 seconds)
+    _system.terminate()
+*/
+
+    var comparisons:Array[Array[Boolean]] = Array.ofDim[Boolean](3,20) //TODO
+    var encodedAaChanges:Array[Array[Int]] = Array.ofDim[Int](1000000,20) //TODO
+    comparisons(0) = Array.fill(20){true}
+    comparisons(0)(19) = false
+    var oldGen = 0
+    var newGen = 1
+
+    var newCell = cell
+    def time[R](block: => R): R = {
+      val t0 = System.nanoTime()
+      val result = block    // call-by-name
+      val t1 = System.nanoTime()
+      println("Elapsed time: " + (t1 - t0) + "ns")
+      result
+    }
+    time(while(newCell.generationID < 500000){
+      /*for(
+        i <- 0 until 19
+      ) {
+        val gettf = ()=> {
+          for (
+            j <- 0 until 64
+          ) {
+            if (newCell.codeTable(j)(i)(0).isInstanceOf[AARS]) {
+              return true
+            }
+          }
+          return false
+        }
+        comparisons(oldGen)(i) = gettf()
+
+      }*/
+
+      newCell = newCell.translate()
+/*
+      for(
+        i <- 0 until 19
+      ) {
+        val gettf = ()=> {
+          for (
+            j <- 0 until 64
+          ) {
+            if (newCell.codeTable(j)(i)(0).isInstanceOf[AARS]) {
+              return true
+            }
+          }
+          return false
+        }
+        comparisons(newGen)(i) = gettf()
+
+      }
+
+
+      for(
+        i <- 0 until 19
+      ){
+        (comparisons(oldGen)(i), comparisons(newGen)(i)) match {
+          case (false, false) => encodedAaChanges(newCell.generationID - 1)(i) = 0
+          case (false, true) => encodedAaChanges(newCell.generationID - 1)(i) = 1
+          case (true, false) => encodedAaChanges(newCell.generationID - 1)(i) = -1
+          case (true, true) => encodedAaChanges(newCell.generationID - 1)(i) = 0
+        }
+      }
+*/
+
+      //println(newCell.generationID)
+    })
+    val content = newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
     val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\simulationOutput.html")
     val bw = new BufferedWriter(new FileWriter(file))
     bw.write(content)
+    bw.close()
 
 
-    def go(cell:Cell):Unit = {
-      val newCell:Cell = cell.translate()
-      cells = cells :+ newCell
-      if(newCell.generationID <=31){
-        //print("GENERATION" + cell.generationID + cell.toString())
+
+
+    //finally bw.close()
+
+
+    //print cell
+    //print(cell.toString())
+    /*var content = cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
+    //writeToFile("generation0", content)
+    val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\simulationOutput.html")
+    val bw = new BufferedWriter(new FileWriter(file))
+    bw.write(content)*/
+
+
+    /*def go(cell:Cell):Unit = {*/
+
+      //val newCell:Cell = cell.translate()
+      //cells = cells :+ newCell
+      //writeToFile("generation"+cell.generationID, content)
+      /*if(!(newCell.livingAARSs.length != 0)) {
         content = newCell.toHtmlString(List(PrintElem.livingAARSs, PrintElem.codeTable))
         bw.write(content)
-      }
+      }else{
+        if(newCell.generationID%100000 == 0){
+          //print("GENERATION" + cell.generationID + cell.toString())
+          /*content = newCell.toHtmlString(List(PrintElem.livingAARSs, PrintElem.codeTable))
+          bw.write(content)*/
+        }*/
+        //go(newCell)
 
-      //writeToFile("generation"+cell.generationID, content)
-      if(!(cell.livingAARSs.length != 0 && cell.generationID <=15)){
+      //}
+   /* }
+    go(cell)*/
 
-      }else go(newCell)
-
-    }
-    go(cell)
-
-    bw.close()
+    //bw.close()
 
 
     /*val R = RClient() // initialise an R interpreter
@@ -147,7 +296,7 @@ object Earth{
     val beta = DenseVector[Double](R.evalD1("mod$coefficients"))
 */
 
-    cells
+    //cells
   }
 
   def writeToFile(filename:String, content:String): Unit ={
