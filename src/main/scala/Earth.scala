@@ -1,95 +1,35 @@
-import org.ddahl.rscala._
+
+import AA._
+
+import scala.util.Random
 import java.io.{BufferedWriter, File, FileWriter}
 
-import EncodedAaTracker.Update
-
-import scala.concurrent.duration._
-import akka.pattern.ask
-import PrintElem.PrintElem
-import akka.actor.{ActorRef, ActorSystem, PoisonPill}
-import akka.util.Timeout
-
-import scala.concurrent.Await
-import scala.swing._
-import scala.swing.event.ButtonClicked
-//import org.biojava3.core.sequence.DNASequence
-import AA._
-import Base.Base
-import scala.util.Random
 
 
 /** Third draft
   * tRNAs have a less important role
   * Uses 64 codons and 20 amino acids.
   * The code table holds multiple translations.
-  * @nextSteps: similarity, probabilities, NN?, DM?, evo. Alg.?, analyse, parameters, Empirie
+  * @nextSteps: similarity, probabilities, NN?, DM?, evo. Alg.?, analyse, parameters, Empirie, Fitness, Metrik
   * @author Hanna Schumacher
-  * @version 0.6 -> + code table - circle relationship
+  * @version 3.4 -> dead code deleted
   */
 object Earth{
   //TODO: check if start parameters are valid
   //TODO: tests, exceptions, logging, class diagram, cases, directly connect code/model decisions to research
-
   /** initiates and starts simulation
     * @param args
     */
-  def main(args: Array[String]): Unit ={
-    val data = new Data()
-    val z = data.randomTable()
-  simulate(init())
-    //val auth = new InputParamsDialog().auth.getOrElse(throw new IllegalStateException("You should login!!!"))
-    //println(auth.toString())
-    /*val cells:List[Cell] = simulate(init()).toList
-    val data = new Data(cells.toArray)
-    val codeTableCountAARS:Array[Array[Int]] = Array.ofDim[Int](cells(0).codonNumb, cells(0).initAA.length)
+  def main(args: Array[String]):Unit ={
 
-   val hasTranslationOverTime= for(
-      c <- 0 until cells.length
-    )yield{
-     val codeTableHasTranslation:Array[Array[Int]] = Array.ofDim[Int](cells(0).codonNumb, cells(0).initAA.length)
-     for(
-       i <- 0 until 64;
-       j <- 0 until 20
-     ){
-       val elem = cells(c).codeTable(i)(j)
-       /*val elem2 = cells(c+1).codeTable(i)(j)
-       def getLength (e:List[AARS]):Int = {
-         if(e == null){
-           0
-         }else{
-           e.length
-         }
-       }*/
-       if(elem != null){
-         codeTableHasTranslation(i)(j) = 1
-       }else{
-         codeTableHasTranslation(i)(j) = 0
-       }
-       codeTableHasTranslation
-     }
+    simulate(init())
 
-codeTableHasTranslation
-    }
-
-    val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\booleanData.txt")
-    val bw = new BufferedWriter(new FileWriter(file))
-    for(
-      i <- 0 until 64;
-      j <- 0 until 20
-    ){
-      bw.write("\n")
-      for(
-        k <- 0 until cells.length
-      ){
-        bw.write(hasTranslationOverTime(k)(i)(j) + ", ")
-      }
-
-    }
-
-    bw.close()
-    var x = 6+6*/
   }
+def getX():Array[Array[Int]]={
 
+  val x:Array[Array[Int]] = simulate(init())
+  x
+}
 
   /** creates a start cell, each cell is one generation
     * @param aaRSnumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
@@ -157,30 +97,34 @@ codeTableHasTranslation
 
 
 
-  // simulation; holds global parameters; cares for cell reproduction
-  def simulate(cell:Cell):Unit = {//: Vector[Cell] = {
-    //Each cell represents one generation and Earth holds all.
-    //var cells: Vector[Cell] = Vector()
-    //cells = cells :+ cell
+  /*
+   * simulation; holds global parameters; cares for cell reproduction
+   */
+  def simulate(cell:Cell):Array[Array[Int]] = {//: Vector[Cell] = {
+    val steps = 500
+    var newComparison:Array[Boolean] = Array.fill(20)(false)  // true if aa has translation
+    var oldComparison:Array[Boolean] = Array.fill(20)(false)
+    for(
+      i <- 0 until 20
+    ){ var goOn = true
+      for(
+        j <- 0 until 64 if goOn != false
+      ){
+        if(cell.codeTable(i)(j) != null){
+          goOn = false
+          oldComparison(i) = true
+        }
 
+      }}
 
+    val tableFieldOverTime:Array[Array[Int]] = Array.fill(steps)(Array.fill(6)(0))  //assumption: max numb of aaRS per field is 6 TODO
+    var value = 0
+    if(cell.codeTable(0)(0)(0) != null){
+      value = (cell.codeTable(0)(0)(0)).aaSeq(0).id + (cell.codeTable(0)(0)(0)).aaSeq(1).id*20 + (cell.codeTable(0)(0)(0)).aaSeq(2).id*40
+    }
+    tableFieldOverTime(cell.generationID)(0)= value
 
-   /* implicit val timeout: Timeout = Timeout(500 seconds)
-    val _system: ActorSystem = ActorSystem.create("ColCal")
-    val actor: ActorRef = _system.actorOf(EncodedAaTracker.props(Array()))
-    actor ! EncodedAaTracker.Update(1,true)
-    actor ! 1
-    val x= (actor ? Array()).mapTo[Array[Array[Int]]]
-    val xx= Await.result(x, 500 seconds)
-    _system.terminate()
-*/
-
-    var comparisons:Array[Array[Boolean]] = Array.ofDim[Boolean](3,20) //TODO
-    var encodedAaChanges:Array[Array[Int]] = Array.ofDim[Int](1000000,20) //TODO
-    comparisons(0) = Array.fill(20){true}
-    comparisons(0)(19) = false
-    var oldGen = 0
-    var newGen = 1
+    val aaChanges:Array[Array[Int]] = Array.fill(steps)(Array.fill(2)(0)) //genIds, added amino acids, removed amino acids
 
     var newCell = cell
     def time[R](block: => R): R = {
@@ -190,55 +134,59 @@ codeTableHasTranslation
       println("Elapsed time: " + (t1 - t0) + "ns")
       result
     }
-    time(while(newCell.generationID < 500000){
-      /*for(
-        i <- 0 until 19
-      ) {
-        val gettf = ()=> {
-          for (
-            j <- 0 until 64
-          ) {
-            if (newCell.codeTable(j)(i)(0).isInstanceOf[AARS]) {
-              return true
-            }
-          }
-          return false
-        }
-        comparisons(oldGen)(i) = gettf()
-
-      }*/
+    time(while(newCell.generationID < steps){
 
       newCell = newCell.translate()
-/*
-      for(
-        i <- 0 until 19
-      ) {
-        val gettf = ()=> {
-          for (
-            j <- 0 until 64
-          ) {
-            if (newCell.codeTable(j)(i)(0).isInstanceOf[AARS]) {
-              return true
-            }
+
+
+      if(newCell.codeTable(0)(0) != null){
+        for(
+          i <- 0 until newCell.codeTable(0)(0).length
+        ){
+          if(newCell.codeTable(0)(0)(i) != null){
+            value = (newCell.codeTable(0)(0)(i)).aaSeq(0).id + (newCell.codeTable(0)(0)(i)).aaSeq(1).id*20 + (newCell.codeTable(0)(0)(i)).aaSeq(2).id*40
+            tableFieldOverTime(newCell.generationID)(i)= value
           }
-          return false
         }
-        comparisons(newGen)(i) = gettf()
-
       }
 
 
+
+
+
+
+
+      //update newComparison
       for(
-        i <- 0 until 19
+        i <- 0 until 20  // go through amino acids TODO
       ){
-        (comparisons(oldGen)(i), comparisons(newGen)(i)) match {
-          case (false, false) => encodedAaChanges(newCell.generationID - 1)(i) = 0
-          case (false, true) => encodedAaChanges(newCell.generationID - 1)(i) = 1
-          case (true, false) => encodedAaChanges(newCell.generationID - 1)(i) = -1
-          case (true, true) => encodedAaChanges(newCell.generationID - 1)(i) = 0
+          var goOn = true
+          for(
+          j <- 0 until 64 if goOn != false  //TODO
+        ){
+          if(newCell.codeTable(j)(i) != null){
+            goOn = false
+            newComparison(i) = true
+          }
         }
       }
-*/
+      // add line to aaChanges
+      for(
+        i <- 0 until 20
+      ){
+        (oldComparison(i), newComparison(i)) match {
+          case (false, true) => aaChanges(newCell.generationID - 1)(0) += 1
+          case (true, false) => aaChanges(newCell.generationID - 1)(1) += 1
+          case _ =>
+        }
+      }
+      oldComparison = newComparison
+      newComparison = Array.fill(20)(false)
+
+
+
+
+
 
       //println(newCell.generationID)
     })
@@ -249,55 +197,63 @@ codeTableHasTranslation
     bw.close()
 
 
+    //aaChanges to file
+    var content1 =""
+    var content2 =""
+    for(
+      i <- 0 until steps
+    ){
+      content1 += i + " "
+      content2 += i + " "
+    }
+    content1 += "\n"
+    content2 += "\n"
+    for(
+      i <- 0 until steps
+    ){
+      content1 += aaChanges(i)(0).toString() + " "
+      content2 += tableFieldOverTime(i)(0).toString() + " "
+    }
+    content1 += "\n"
+    content2 += "\n"
+    for(
+      i <- 0 until steps
+    ){
+      content2 += tableFieldOverTime(i)(1).toString() + " "
+    }
+    content2 += "\n"
+    for(
+      i <- 0 until steps
+    ){
+      content2 += tableFieldOverTime(i)(2).toString() + " "
+    }
+    content2 += "\n"
+    for(
+      i <- 0 until steps
+    ){
+      content2 += tableFieldOverTime(i)(3).toString() + " "
+    }
+    content2 += "\n"
+    for(
+      i <- 0 until steps
+    ){
+      content2 += tableFieldOverTime(i)(4).toString() + " "
+    }
+    val file1 = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\testdata.txt")
+    val bw1 = new BufferedWriter(new FileWriter(file1))
+    bw1.write(content1)
+    bw1.close()
+    val file2 = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\testdataFirstCell.txt")
+    val bw2 = new BufferedWriter(new FileWriter(file2))
+    bw2.write(content2)
+    bw2.close()
 
-
-    //finally bw.close()
-
-
-    //print cell
-    //print(cell.toString())
-    /*var content = cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
-    //writeToFile("generation0", content)
-    val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\simulationOutput.html")
-    val bw = new BufferedWriter(new FileWriter(file))
-    bw.write(content)*/
-
-
-    /*def go(cell:Cell):Unit = {*/
-
-      //val newCell:Cell = cell.translate()
-      //cells = cells :+ newCell
-      //writeToFile("generation"+cell.generationID, content)
-      /*if(!(newCell.livingAARSs.length != 0)) {
-        content = newCell.toHtmlString(List(PrintElem.livingAARSs, PrintElem.codeTable))
-        bw.write(content)
-      }else{
-        if(newCell.generationID%100000 == 0){
-          //print("GENERATION" + cell.generationID + cell.toString())
-          /*content = newCell.toHtmlString(List(PrintElem.livingAARSs, PrintElem.codeTable))
-          bw.write(content)*/
-        }*/
-        //go(newCell)
-
-      //}
-   /* }
-    go(cell)*/
-
-    //bw.close()
-
-
-    /*val R = RClient() // initialise an R interpreter
-    R.evalD2("as.matrix(eurodist)")
-    R.x = 3
-    R.matrix(3,2)=cell.codeTable // send x to R
-
-    R.eval("mod <- glm(y~x,family=poisson())") // fit the model in R
-    // pull the fitted coefficents back into scala
-    val beta = DenseVector[Double](R.evalD1("mod$coefficients"))
-*/
-
-    //cells
+    aaChanges
   }
+
+
+
+
 
   def writeToFile(filename:String, content:String): Unit ={
     val file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\Thesis\\$filename.html")
@@ -449,74 +405,4 @@ codeTableHasTranslation
       toPrint
     }
 
-
-
-}
-
-
-
-/*object Earth extends SimpleSwingApplication {
-  val ui = new BorderPanel {
-    //content
-  }
-
-  def top = new MainFrame {
-    title = "title"
-    contents = ui
-  }
-
-  val auth = new InputParamsDialog().auth.getOrElse(throw new IllegalStateException("You should login!!!"))
-}*/
-
-import scala.swing.BorderPanel.Position._
-
-case class Auth(parameters:List[Any])
-
-class InputParamsDialog extends Dialog {
-  var auth: Option[Auth] = None
-
-  title = "Parameters"
-  modal = true
-  var aaRSnumb =  new TextField(3)
-  var aaRSlength = new TextField(3)
-  var aminoAcidNumb = new CheckBox(){text = "all"}
-  aminoAcidNumb.selected = true
-  var codonNumb = new ComboBox(List("16 codons with length 2", "64 codons with length three", "48 strong commafree codons"))
-
-
-
-  contents = new BorderPanel {
-
-    layout(new FlowPanel(FlowPanel.Alignment.Center)(
-
-
-      new Label("Number of aaRS genes:"),
-      aaRSnumb,
-      new Label("Length of an aaRS gene:"),
-      aaRSlength,
-
-      new Label("Number of amino acids:"),
-      aminoAcidNumb,
-      new Label("Codon set:"),
-      codonNumb,
-
-      Button("start simulation") {
-        if (makeLogin()) {
-
-          auth = Some(Auth(List(aaRSnumb.text.toInt, aaRSlength.text.toInt, aminoAcidNumb.selected, codonNumb.selection.toString)))
-          close()
-        } else {
-          Dialog.showMessage(this, "Wrong username or password!", "Login Error", Dialog.Message.Error)
-        }
-      }
-
-    ))= South
-
-
-  }
-
-  def makeLogin() = true // here comes you login logic
-
-  centerOnScreen()
-  open()
 }
