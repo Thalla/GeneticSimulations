@@ -1,10 +1,10 @@
 import AA._
 import Earth.{getCodons}
 
-class AARS(val aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, Int)]]) {
+class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, Int)]]) {
 
-  val lifeticksStartValue = 7
-  var lifeticks = lifeticksStartValue
+  val lifeticksStartValue = 2
+  var lifeticks = 0
 
   def reduceLifeTicks():AARS ={
     lifeticks -= 1
