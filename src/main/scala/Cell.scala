@@ -18,6 +18,10 @@ import scala.util.Random
   * @param generationID nextCell has generationID+1
   */
 class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], var livingAARSs:Vector[AARS], val allAARS:Array[Array[Array[AARS]]], val initAA:Vector[AA], val codonNumb:Int, val generationID:Int) {
+
+  var unambiguousness:Array[Double] = Array.fill(codonNumb)(0.0)  //Eindeutigkeit
+  var mRNAdata:List[String] = List()
+
   /**
     *
     * @return
@@ -37,18 +41,54 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
       for (
         codon <- gene if !isStopped
       ) {
-        val usableAARS = codeTable(codon).filter(_ != null) //find all aaRS that can translate this codon
+        var aaRSCounter = 0
+        var translationCounter = 0
+        val usableAARS= codeTable(codon).filter(_ != null) //find all aaRS that can translate this codon
         if (!usableAARS.isEmpty) {
-          val aarsList: List[AARS] = usableAARS(Random.nextInt(usableAARS.length))
-          val aaRS: AARS = aarsList(Random.nextInt(aarsList.length))
-          val translationKeys = aaRS.translations.keySet
-          val toCodonFittingTranslationKeys = translationKeys.filter(_._2 == codon)
-          val aa: AA = toCodonFittingTranslationKeys.toList(Random.nextInt(toCodonFittingTranslationKeys.size))._1
-          sequence = sequence :+ aa
+          var bestAARS:AARS = usableAARS.toList(0)(0) //TODO strange option to list conversion ://
+          var max:Double = 0.0
+          var bestTranslation:Tuple2[AA, Int] = (null, 0)
+          //find aaRS with best translation considering the translation fitness
+          for(
+            aaRSs:List[AARS] <- usableAARS
+          ) {
+            translationCounter += 1
+            for (
+              aaRS <- aaRSs
+            ) {
+              aaRSCounter += 1
+              val translationKeys = aaRS.translations.keySet
+              val toCodonFittingTranslationKeys: Vector[Tuple2[AA, Int]] = translationKeys.filter(_._2 == codon).toVector
+              //find translation with best fitness of all possible translations
+              for (
+                tk <- toCodonFittingTranslationKeys
+              ) {
+                val prob: Tuple2[Double, Int] = (aaRS.translations.get(tk).toList) (0)(0) //TODO strange option to list conversion :// what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
+                if (max < prob._1) { // what if == ? -> make list and choose randomly from it TODO
+                  bestTranslation = tk
+                  max = prob._1
+                  bestAARS = aaRS
+                }
+              }
+            }
+          }
+          sequence = sequence :+ bestTranslation._1
+          mRNAdata = mRNAdata :+ (bestTranslation._1.id).toString()
         }
         else {
           isStopped = true
+          var l = sequence.length
+          while(l < 3){
+            mRNAdata = mRNAdata :+ "NA"
+            l += 1
+          }
+
         }
+        if(aaRSCounter > 0) {
+          unambiguousness (codon)= 1.0/translationCounter.toDouble  //aaRSCounter.toDouble
+        }
+        aaRSCounter = 0
+
       }
       if(!isStopped){
         val newAARS = getAARS(sequence)
@@ -155,7 +195,7 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
     */
   def toHtmlString(toHTML:List[PrintElem]):String = {
     val codons = getCodons(codonNumb)
-    var content = "<!DOCTYPE html >\n<html>\n\t<head>\n\t\t<style>\n\t\t\ttable {\n\t\t\t\tfont-family: arial, sans-serif;\n\t\t\t\tborder-collapse: collapse;\n\t\t\t\twidth: 100%;\n\t\t\t}\n\n\t\t\ttd, th {\n\t\t\t\tborder: 1px solid #dddddd;\n\t\t\t\ttext-align: left;\n\t\t\t\tpadding: 8px;\n\t\t\t}\n\n\t\t\ttr:nth-child(even) {\n\t\t\t\tbackground-color: #dddddd;\n\t\t\t}\n\t\t</style>\n\t</head>\n\t<body>"
+    var content = "<!DOCTYPE html >\n<html>\n\t<head>\n\t\t<style>\n\t\t\ttable {\n\t\t\t\tfont-family: arial, sans-serif;\n\t\t\t\tborder-collapse: collapse;\n\t\t\t\twidth: 100%;\n\t\t\t}\n\n\t\t\ttd, th {\n\t\t\t\tborder: 1px solid #dddddd;\n\t\t\t\ttext-align: left;\n\t\t\t\tpadding: 4px; margin: 0px;\n\t\t\t}\n\n\t\t\ttr:nth-child(even) {\n\t\t\t\tbackground-color: #dddddd;\n\t\t\t}\n\t\t</style>\n\t</head>\n\t<body>"
     content += "</br><h1>Generation " + generationID + "</h1>"
     toHTML.foreach(elem => {
       elem match {
@@ -204,7 +244,7 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
                 val rback = 255 - aaRS.aaSeq(0).id * initAA.length
                 val gback = 255 - aaRS.aaSeq(1).id * initAA.length
                 val bback = 255 - aaRS.aaSeq(2).id * initAA.length
-                content += s"<p style='color: rgb($r, $g, $b); background-color: rgb($rback, $gback, $bback);'>" + aaRS.aaSeq.mkString(", ") + "</p></br>\n"
+                content += s"<span style='color: rgb($r, $g, $b); background-color: rgb($rback, $gback, $bback);'>" + aaRS.aaSeq.mkString(", ") + "</span></br>\n"
               }
               content += "</td>"
               }else{

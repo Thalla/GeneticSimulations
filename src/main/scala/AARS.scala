@@ -3,7 +3,7 @@ import Earth.{getCodons}
 
 class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, Int)]]) {
 
-  val lifeticksStartValue = 2
+  val lifeticksStartValue = 10
   var lifeticks = 0
 
   def reduceLifeTicks():AARS ={
@@ -29,7 +29,7 @@ class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, I
       for (
         t <- 0 until translation._2.length
       ) {
-        content += "<tr>" + codons(translation._2(t)._2) + "</tr>"
+        content += "<tr><td>" + translation._2(t)._1 + "</td><td>" +codons(translation._2(t)._2) + "</td></tr>"
       }
       content += "</table>\n</td></tr>\n"
     }
