@@ -25,30 +25,31 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
     * @return
     */
   def translate(): Cell = {
+
+    //update lifeticks
     livingAARSs.foreach(aaRS => {
       aaRS.reduceLifeTicks()
-      if(aaRS.lifeticks <= 0) livingAARSs = livingAARSs.filter(_ != aaRS)
+      if (aaRS.lifeticks <= 0) livingAARSs = livingAARSs.filter(_ != aaRS)
     })
 
     for (
       gene <- mRNA
     ) {
       var sequence: Vector[AA.Value] = Vector()
-      var isStopped:Boolean = false
+      var isStopped: Boolean = false
       for (
         codon <- gene if !isStopped
       ) {
         //var aaRSCounter = 0
         var translationCounter = 0
-        val usableAARS= codeTable(codon).filter(_ != null) //find all aaRS that can translate this codon
-        if (!usableAARS.isEmpty) {
-          var bestAARS:AARS = usableAARS.toList(0)(0) //TODO strange option to list conversion ://
-          var max:Double = 0.0
-          var bestTranslation:Tuple2[AA, Int] = (null, 0)
-          //find aaRS with best translation considering the translation fitness
-          for(
-            aaRSs:List[AARS] <- usableAARS
-          ) {
+        var bestAARS: AARS = null
+        var max: Double = 0.0
+        var bestTranslation: Tuple2[AA, Int] = (null, 0)
+        //find aaRS with best translation considering the translation fitness
+        for (
+          aaRSs: List[AARS] <- codeTable(codon) //find all aaRS that can translate this codon
+        ) {
+          if (!aaRSs.isEmpty) {
             translationCounter += 1
             for (
               aaRS <- aaRSs
@@ -69,29 +70,29 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
               }
             }
           }
-          sequence = sequence :+ bestTranslation._1
-          //mRNAdata = mRNAdata :+ (bestTranslation._1.id).toString()
         }
-        else {
+        if(translationCounter != 0){
+
+        sequence = sequence :+ bestTranslation._1
+        //mRNAdata = mRNAdata :+ (bestTranslation._1.id).toString()
+          if (codon < codonNumb) {
+            //unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
+          }
+        }else{
           isStopped = true
           /*var l = sequence.length
-          while(l < 3){
-            mRNAdata = mRNAdata :+ "NA"
-            l += 1
-          }*/
-
-        }
-        if(translationCounter > 0 && codon < codonNumb) {
-          //unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
+            while(l < 3){
+              mRNAdata = mRNAdata :+ "NA"
+              l += 1
+            }*/
         }
         //aaRSCounter = 0
-
       }
-      if(!isStopped){
+      if (!isStopped) {
         val newAARS = getAARS(sequence)
         if (!livingAARSs.contains(newAARS)) {
           livingAARSs = livingAARSs :+ newAARS
-      }
+        }
         sequence = Vector()
       }
     }
