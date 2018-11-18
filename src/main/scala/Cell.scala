@@ -1,5 +1,3 @@
-import java.io.{BufferedWriter, File, FileWriter}
-
 import AA.AA
 import Base.Base
 import Earth.{mRNAtoHTML, print2DimTRNAmatrix, print3DimAARSmatrix, printMRNA, getCodons}
@@ -19,15 +17,14 @@ import scala.util.Random
   */
 class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], var livingAARSs:Vector[AARS], val allAARS:Array[Array[Array[AARS]]], val initAA:Vector[AA], val codonNumb:Int, val generationID:Int) {
 
-  var unambiguousness:Array[Double] = Array.fill(codonNumb)(0.0)  //Eindeutigkeit
-  var mRNAdata:List[String] = List()
+  var unambiguousness:Double = 0.0        //Array.fill(codonNumb)(0.0)  //Eindeutigkeit
+  //var mRNAdata:List[String] = List()
 
   /**
     *
     * @return
     */
   def translate(): Cell = {
-
     livingAARSs.foreach(aaRS => {
       aaRS.reduceLifeTicks()
       if(aaRS.lifeticks <= 0) livingAARSs = livingAARSs.filter(_ != aaRS)
@@ -41,7 +38,7 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
       for (
         codon <- gene if !isStopped
       ) {
-        var aaRSCounter = 0
+        //var aaRSCounter = 0
         var translationCounter = 0
         val usableAARS= codeTable(codon).filter(_ != null) //find all aaRS that can translate this codon
         if (!usableAARS.isEmpty) {
@@ -56,7 +53,7 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
             for (
               aaRS <- aaRSs
             ) {
-              aaRSCounter += 1
+              //aaRSCounter += 1
               val translationKeys = aaRS.translations.keySet
               val toCodonFittingTranslationKeys: Vector[Tuple2[AA, Int]] = translationKeys.filter(_._2 == codon).toVector
               //find translation with best fitness of all possible translations
@@ -73,21 +70,21 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
             }
           }
           sequence = sequence :+ bestTranslation._1
-          mRNAdata = mRNAdata :+ (bestTranslation._1.id).toString()
+          //mRNAdata = mRNAdata :+ (bestTranslation._1.id).toString()
         }
         else {
           isStopped = true
-          var l = sequence.length
+          /*var l = sequence.length
           while(l < 3){
             mRNAdata = mRNAdata :+ "NA"
             l += 1
-          }
+          }*/
 
         }
-        if(aaRSCounter > 0) {
-          unambiguousness (codon)= 1.0/translationCounter.toDouble  //aaRSCounter.toDouble
+        if(translationCounter > 0 && codon < codonNumb) {
+          //unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
         }
-        aaRSCounter = 0
+        //aaRSCounter = 0
 
       }
       if(!isStopped){

@@ -1,14 +1,18 @@
 import AA._
+
 import scala.util.Random
 import java.io.{BufferedWriter, File, FileWriter}
-import com.github.tototoshi.csv._  //TODO?: replace by own methods (data-> List-> needed type => data-> needed type)
+
+import com.github.tototoshi.csv._
+
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}  //TODO?: replace by own methods (data-> List-> needed type => data-> needed type)
 
 
 /** Fourth draft
   *
   * @nextSteps: similarity, probabilities, NN?, DM?, evo. Alg.?, analyse, parameters, Empirie, Fitness, Metrik
   * @author Hanna Schumacher
-  * @version 4.0 -> write to/read from file for aaRS and mRNA, probabilities for translation, fitness function, plotting data, chooses always the best one, some failure corrections, very very bad performance
+  * @version 4.1   -> 500.000 in 315s ; in 2?? s; in 272s without some stuff, 190s without all
   */
 object Earth{
   //TODO: check if start parameters are valid
@@ -17,13 +21,66 @@ object Earth{
     * @param args
     */
   def main(args: Array[String]):Unit ={
-    simulate(init())
+   /* val steps = 500000
+    val aaNumbPerGen = new Array[Int](steps)
+    val generationFitness= new Array[Double](steps)
+    val aaChanges:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(2)(0)) //genIds, added amino acids, removed amino acids
+    for(
+      i <- 0 until 500000
+    ){
+      aaChanges(i) = new Array[Int](2)
+    }
+    for(
+      i <- 0 until 500000
+    ){
+      aaChanges(i)(0) = 2
+    }
+    for(
+      i <- 0 until 500000
+    ){
+      generationFitness(i) = 1.0
+    }
+    for(
+      i <- 0 until 500000
+    ){
+      aaNumbPerGen(i) = 1
+    }
+    val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](steps)
+    for(
+      i <- 0 until 500000
+    ){
+      tableFieldOverTime(i) = new Array[Int](8)
+    }
+    for(
+      i <- 0 until 500000;
+      j <- 0 until 8
+    ){
+      tableFieldOverTime(i)(j) = 4
+    }
+
+    val unambiguousness:Array[Double] = new Array[Double](steps*64)
+    for(
+      i <- 0 until 500000*64
+    ){
+      unambiguousness(i) = 5.9
+    }
+    var x = 5
+    var z = 0.0
+    for(
+      i <- 0 until 500000*64
+    ){
+      z += (1.0/x.toDouble)/ 63.0 //unambiguousness.foldLeft(0.0)(_+_)
+    }
+
+//println(x)*/
+
+   simulate(init(), 500000)
   }
 
 
 def getX():Array[Array[Int]]={
 
-  val x:Array[Array[Int]] = simulate(init())
+  val x:Array[Array[Int]] = simulate(init(),1000)
   x
 }
 
@@ -144,39 +201,46 @@ def getX():Array[Array[Int]]={
   /*
    * simulation; holds global parameters; cares for cell reproduction
    */
-  def simulate(cell:Cell):Array[Array[Int]] = {//: Vector[Cell] = {
-    val steps = 500
-    var buildUpContent = cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
-    var newComparison:Array[Boolean] = Array.fill(20)(false)  // true if aa has translation
-    var oldComparison:Array[Boolean] = Array.fill(20)(false)
-    var numbTranslatedAA = 19
-    val aaNumb:Array[Int] = Array.fill(steps)(0)
-    val generationFitness:Array[Array[Double]] = Array.fill(steps)(Array.fill(2)(0.0))
-    var mRNAdata:List[List[String]] = List()
+  def simulate(cell:Cell, steps:Int):Array[Array[Int]] = {//: Vector[Cell] = {
+    //var buildUpContent = new StringBuilder
+    //buildUpContent ++= cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
+    /*val newComparison = new Array[Boolean](cell.initAA.length)  // true if aa has translation
+    var oldComparison = new Array[Boolean](cell.initAA.length) //Array.fill(20)(false)
+    var numbTranslatedAA = 19 //TODO
+    val aaNumbPerGen = new Array[Int](steps)
+    val generationFitness= new Array[Double](steps)      //Array.fill(steps)(Array.fill(2)(0.0))
+    val aaNumb = cell.initAA.length
+    val codonNumb = cell.codonNumb
+    //TODOvar mRNAdata:Array[List[String]] = new Array[List[String]](steps*codonNumb)//Array.empty[List[String]]
+
 
     //initiate oldComparison
     for( //foreach aa
-      i <- 0 until 20
+      i <- 0 until aaNumb
     ){ var goOn = true //stop as soon as a translation for the aa is found
       for(
-        j <- 0 until 64 if goOn != false
+        j <- 0 until codonNumb if goOn != false
       ){
          if(cell.codeTable(j)(i) != null){
           goOn = false
           oldComparison(i) = true
         }
 
-      }}
+      }
+    if(goOn == true) oldComparison(i) = false
+    }
 
-    val tableFieldOverTime:Array[Array[Int]] = Array.fill(steps)(Array.fill(8)(0))  //assumption: max numb of aaRS per field is 8 TODO
+    //TODO val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(8)(0))  //assumption: max numb of aaRS per field is 8 TODO
     var value = 0
     if(cell.codeTable(0) != null && cell.codeTable(0)(0) != null){
       value = (cell.codeTable(0)(0)(0)).aaSeq(0).id + (cell.codeTable(0)(0)(0)).aaSeq(1).id*20 + (cell.codeTable(0)(0)(0)).aaSeq(2).id*40 //value is calculated aaRS id
     }
-    tableFieldOverTime(cell.generationID)(0)= value
+    //TODO tableFieldOverTime(cell.generationID) = new Array[Int](8) //TODO
+    //TODO tableFieldOverTime(cell.generationID)(0)= value
 
-    val aaChanges:Array[Array[Int]] = Array.fill(steps)(Array.fill(2)(0)) //genIds, added amino acids, removed amino acids
-
+    val aaChanges:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(2)(0)) //genIds, added amino acids, removed amino acids
+    aaChanges(0) = new Array[Int](2)
+    */
     var newCell = cell
     def time[R](block: => R): R = {
       val t0 = System.nanoTime()
@@ -189,26 +253,25 @@ def getX():Array[Array[Int]]={
     time(while(newCell.generationID <= steps-2){
 
       val x = newCell.translate()
-      //fitness(newCell.generationID)(1) = newCell.unambiguousness/66
-      aaNumb(newCell.generationID)= numbTranslatedAA
-      generationFitness(newCell.generationID)(0) = newCell.generationID
-      newCell.unambiguousness = newCell.unambiguousness.dropRight(2)
-      generationFitness(newCell.generationID)(1) = (numbTranslatedAA.toDouble/20.0)*((newCell.unambiguousness.toList.foldLeft(0.0)(_+_)) /64.0)
+      /*    //fitness(newCell.generationID)(1) = newCell.unambiguousness/66
+      aaNumbPerGen(newCell.generationID)= numbTranslatedAA
+          //newCell.unambiguousness = newCell.unambiguousness.dropRight(2)
+      generationFitness(newCell.generationID)= (numbTranslatedAA.toDouble/aaNumb.toDouble)* newCell.unambiguousness   //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
       numbTranslatedAA = 0
       for(
-        i <- 0 until 64
+        i <- 0 until codonNumb
       ){
-        mRNAdata = mRNAdata :+ List(newCell.generationID.toString(), i.toString(), newCell.mRNAdata(i))
+        //TODO mRNAdata(newCell.generationID*codonNumb+codonNumb+i) = List(newCell.generationID.toString(), i.toString(), newCell.mRNAdata(i))
       }
       //val row:List[String] = newCell.mRNAdata
-      //mRNAdata = mRNAdata :+ row
+      //TODO mRNAdata = mRNAdata :+ row*/
       newCell = x
 
-      if(newCell.generationID%10 == 0){
-        buildUpContent += newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
+      if(newCell.generationID%100000 == 0){
+        val x = "hmm"//buildUpContent ++= newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
       }
 
-
+    /*  //TODO tableFieldOverTime(newCell.generationID) = new Array[Int](8) //TODO
       if(newCell.codeTable(0)(0) != null){
         val z = newCell.codeTable(0)(0).length
         for(
@@ -216,7 +279,7 @@ def getX():Array[Array[Int]]={
         ){
           if(newCell.codeTable(0)(0)(i) != null){
             value = (newCell.codeTable(0)(0)(i)).aaSeq(0).id + (newCell.codeTable(0)(0)(i)).aaSeq(1).id*20 + (newCell.codeTable(0)(0)(i)).aaSeq(2).id*40
-            tableFieldOverTime(newCell.generationID)(i)= value
+            //TODO tableFieldOverTime(newCell.generationID)(i) = value
           }
         }
       }
@@ -224,21 +287,23 @@ def getX():Array[Array[Int]]={
 
       //update newComparison
       for(
-        i <- 0 until 20  // go through amino acids TODO
+        i <- 0 until aaNumb  // go through amino acids TODO
       ){
           var goOn = true
           for(
-          j <- 0 until 64 if goOn != false  //TODO
+          j <- 0 until codonNumb if goOn != false  //TODO
         ){
           if(newCell.codeTable(j)(i) != null){
             goOn = false
             newComparison(i) = true
           }
         }
+        if(goOn == true) newComparison(i) = false
       }
       // add line to aaChanges
+      aaChanges(newCell.generationID) = new Array[Int](2)
       for(
-        i <- 0 until 20
+        i <- 0 until aaNumb
       ){
         (oldComparison(i), newComparison(i)) match {
           case (false, true) => {
@@ -251,15 +316,12 @@ def getX():Array[Array[Int]]={
         }
       }
       oldComparison = newComparison
-      newComparison = Array.fill(20)(false)
-
-
-
+      */
       //println(newCell.generationID)
     }
 
     )
-    val content = buildUpContent + newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
+   /* val content = "HMM"//buildUpContent + newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
     var file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\Scala\\simulationOutput.html")
     val bw = new BufferedWriter(new FileWriter(file))
     bw.write(content)
@@ -274,42 +336,37 @@ def getX():Array[Array[Int]]={
     }*/
     file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\aaNumb.csv")
     var writer = CSVWriter.open(file)
-    writer.writeAll(List(aaNumb.toList))
+    writer.writeAll(List(aaNumbPerGen.toList))
     writer.close()
 
-    var generationFitnessCSV:List[List[Double]] = List()
-    for(
-      generation:Array[Double] <- generationFitness
-    ){
-      generationFitnessCSV = generationFitnessCSV :+ generation.toList
-    }
+
     file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\generationFitness.csv")
     writer = CSVWriter.open(file)
-    writer.writeAll(generationFitnessCSV)
+    writer.writeAll(List(generationFitness.toList))
     writer.close()
 
     file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\mRNAdata.csv")
     writer = CSVWriter.open(file)
-    writer.writeAll(mRNAdata)
+    //writer.writeAll(mRNAdata)
     writer.close()
 
 
     //aaChanges to file
     var content1 =""
     var content2 =""
+                            /*for(
+                              i <- 0 until steps
+                            ){
+                              content1 += i + " "
+                              content2 += i + " "
+                            }
+                            content1 += "\n"
+                            content2 += "\n"*/
     /*for(
       i <- 0 until steps
     ){
-      content1 += i + " "
-      content2 += i + " "
-    }
-    content1 += "\n"
-    content2 += "\n"*/
-    for(
-      i <- 0 until steps
-    ){
       content1 += aaChanges(i)(0).toString() + ", "
-      content2 += tableFieldOverTime(i)(0).toString() + ", "
+      //TODO content2 += tableFieldOverTime(i)(0).toString() + ", "
     }
     content1 = content1.dropRight(2)
     content1 += "\n"
@@ -324,28 +381,28 @@ def getX():Array[Array[Int]]={
     for(
       i <- 0 until steps
     ){
-      content2 += tableFieldOverTime(i)(1).toString() + ", "
+      //TODO content2 += tableFieldOverTime(i)(1).toString() + ", "
     }
     content2 = content2.dropRight(2)
     content2 += "\n"
     for(
       i <- 0 until steps
     ){
-      content2 += tableFieldOverTime(i)(2).toString() + ", "
+      //TODO content2 += tableFieldOverTime(i)(2).toString() + ", "
     }
     content2 = content2.dropRight(2)
     content2 += "\n"
     for(
       i <- 0 until steps
     ){
-      content2 += tableFieldOverTime(i)(3).toString() + ", "
+      //TODO content2 += tableFieldOverTime(i)(3).toString() + ", "
     }
     content2 = content2.dropRight(2)
     content2 += "\n"
     for(
       i <- 0 until steps
     ){
-      content2 += tableFieldOverTime(i)(4).toString() + ", "
+      //TODO content2 += tableFieldOverTime(i)(4).toString() + ", "
     }
     content2 = content2.dropRight(2)
     val file1 = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\testdata.csv")
@@ -355,9 +412,10 @@ def getX():Array[Array[Int]]={
     val file2 = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\testdataFirstCell.csv")
     val bw2 = new BufferedWriter(new FileWriter(file2))
     bw2.write(content2)
-    bw2.close()
-
-    aaChanges
+    bw2.close()*/
+*/
+    //aaChanges
+    Array()
   }
 
 
