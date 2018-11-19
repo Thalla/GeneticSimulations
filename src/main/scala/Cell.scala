@@ -56,16 +56,17 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
             ) {
               //aaRSCounter += 1
               val translationKeys = aaRS.translations.keySet
-              val toCodonFittingTranslationKeys: Vector[Tuple2[AA, Int]] = translationKeys.filter(_._2 == codon).toVector
               //find translation with best fitness of all possible translations
               for (
-                tk <- toCodonFittingTranslationKeys
+                tk <- translationKeys
               ) {
-                val prob: Tuple2[Double, Int] = (aaRS.translations.get(tk).toList) (0)(0) //TODO strange option to list conversion :// what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
-                if (max < prob._1) { // what if == ? -> make list and choose randomly from it TODO
-                  bestTranslation = tk
-                  max = prob._1
-                  bestAARS = aaRS
+                if(tk._2 == codon){
+                  val prob: Tuple2[Double, Int] = (aaRS.translations(tk)(0)) //TODO strange option to list conversion :// what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
+                  if (max < prob._1) { // what if == ? -> make list and choose randomly from it TODO
+                    bestTranslation = tk
+                    max = prob._1
+                    bestAARS = aaRS
+                 }
                 }
               }
             }
