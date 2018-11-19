@@ -61,7 +61,7 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
                 tk <- translationKeys
               ) {
                 if(tk._2 == codon){
-                  val prob: Tuple2[Double, Int] = (aaRS.translations(tk)(0)) //TODO strange option to list conversion :// what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
+                  val prob: Tuple2[Double, Int] = (aaRS.translations(tk)(0)) //TODO what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
                   if (max < prob._1) { // what if == ? -> make list and choose randomly from it TODO
                     bestTranslation = tk
                     max = prob._1
@@ -73,7 +73,6 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
           }
         }
         if(translationCounter != 0){
-
         sequence = sequence :+ bestTranslation._1
         //mRNAdata = mRNAdata :+ (bestTranslation._1.id).toString()
           if (codon < codonNumb) {
@@ -121,6 +120,7 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
     * @return
     */
   def getAARS(sequence:Vector[AA.Value]):AARS={
+    val r = new scala.util.Random(22)
     var newAARS: AARS = allAARS(sequence(0).id)(sequence(1).id)(sequence(2).id)
     if (newAARS != null) {
       newAARS.resetLifeticks()
@@ -128,11 +128,11 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
     else {
       var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
       val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6) //TODO remove copy paste
-      val numbAnticodons= numbOfAnticodonsForOneAARS(Random.nextInt(numbOfAnticodonsForOneAARS.length))
+      val numbAnticodons= numbOfAnticodonsForOneAARS(r.nextInt(numbOfAnticodonsForOneAARS.length))
       for(
         _ <- 0 until numbAnticodons
       ){
-        translations += (initAA(Random.nextInt(initAA.length)), Random.nextInt(codonNumb))-> List((1.0,Random.nextInt(codonNumb))) //TODO choose similar codons (first random, rest +x)
+        translations += (initAA(r.nextInt(initAA.length)), r.nextInt(codonNumb))-> List((1.0,r.nextInt(codonNumb))) //TODO choose similar codons (first random, rest +x)
       }
       newAARS = new AARS(sequence, translations)
       allAARS(sequence(0).id)(sequence(1).id)(sequence(2).id) = newAARS

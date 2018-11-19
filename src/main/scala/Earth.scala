@@ -107,11 +107,12 @@ def getX():Array[Array[Int]]={
 
     // create living aaRS file (create random aaSeqences that will come to life)
     /*
+    val r = new scala.util.Random(22)
     val writer = CSVWriter.open(new File(path+"livingAARS.csv"), append = true)
     for(
       _ <- 0 until aaRSnumb
     ){
-      writer.writeRow(Seq(Random.nextInt(aaNumb), Random.nextInt(aaNumb), Random.nextInt(aaNumb)))
+      writer.writeRow(Seq(r.nextInt(aaNumb), r.nextInt(aaNumb), r.nextInt(aaNumb)))
     }
     writer.close()
     */
@@ -469,12 +470,13 @@ def getX():Array[Array[Int]]={
     * @return a random element either chosen from nReduced or else from n
     */
   def getUniqueRandElem(n:Seq[Any], nReduced:Seq[Any]):Any ={
+    val r = new scala.util.Random(22)
     if (nReduced.length >= 1) {
       //get random Tuple
-      nReduced(Random.nextInt(nReduced.length))
+      nReduced(r.nextInt(nReduced.length))
     }
     else { //all elements have been used once, so they can now be used more often
-      n(Random.nextInt(n.length))
+      n(r.nextInt(n.length))
     }
   }
 
@@ -488,12 +490,12 @@ def getX():Array[Array[Int]]={
     */
   def getRandomMRNA(codons:List[Any], geneLength:Int, geneNumb:Int):List[List[Int]] = {
     var mRNA:List[List[Int]] = List()
-
+    val r = new scala.util.Random(22)
     val getRandomGene = () => {
       var gene:List[Int] = List()
       for {
         _ <- 0 to (geneLength-1)
-      } gene = gene :+ Random.nextInt(codons.length)
+      } gene = gene :+ r.nextInt(codons.length)
       gene
     }
     // get a gene that isn't already existing
@@ -522,6 +524,7 @@ def getX():Array[Array[Int]]={
   def writeMRNAtoFile(codons:List[Any], geneLength:Int, geneNumb:Int, file:File):Unit = {
     var mRNA:List[List[String]] = List()
     val writer = CSVWriter.open(file)
+    val r = new scala.util.Random(22)
     var codonCounter = 0
     for(
       _ <- 0 until geneNumb
@@ -534,7 +537,7 @@ def getX():Array[Array[Int]]={
           gene = gene :+ codonCounter.toString()
           codonCounter += 1
         }else{ //each codon was used once
-          gene = gene :+ Random.nextInt(codons.length).toString()
+          gene = gene :+ r.nextInt(codons.length).toString()
         }
       }
       mRNA = mRNA :+ gene
@@ -553,7 +556,7 @@ def getX():Array[Array[Int]]={
     */
   def writeAARStoFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int, initAA:Vector[AA], file:File):Unit = {
     val writer = CSVWriter.open(file, append= true)
-
+    val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
     val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)
 
@@ -565,13 +568,13 @@ def getX():Array[Array[Int]]={
     ){
       val aaRSline:String = ""
       //var translations:Map[(AA, Int),List[(Double, Int)]] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
-      var antiCodonNumb = numbOfAnticodonsForOneAARS(Random.nextInt(numbOfAnticodonsForOneAARS.length))      //number of anticodons that are recognized by the aaRS is chosen randomly
+      var antiCodonNumb = numbOfAnticodonsForOneAARS(r.nextInt(numbOfAnticodonsForOneAARS.length))      //number of anticodons that are recognized by the aaRS is chosen randomly
 
       for(
         _ <- 0 until antiCodonNumb
       ){
         // aa1 aa2 aa3, aa, anticodon, probability, stem
-        writer.writeRow(Seq(i, j, k, Random.nextInt(initAA.length), Random.nextInt(codons.length), Random.nextDouble().toString(), Random.nextInt(codons.length) ))
+        writer.writeRow(Seq(i, j, k, r.nextInt(initAA.length), r.nextInt(codons.length), r.nextDouble().toString(), r.nextInt(codons.length) ))
       }
     }
     writer.close()
