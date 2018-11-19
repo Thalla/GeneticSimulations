@@ -15,11 +15,11 @@ import scala.util.Random
   * @param allAARS this list holds all valid aaRS that could exist and their randomly predefined behaviour
   * @param generationID nextCell has generationID+1
   */
-class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], var livingAARSs:Vector[AARS], val allAARS:Array[Array[Array[AARS]]], val initAA:Vector[AA], val codonNumb:Int, val generationID:Int) {
+class Cell (val mRNA:List[List[Int]], val livingAARSs:List[AARS], val allAARS:Array[Array[Array[AARS]]], val initAA:Vector[AA], val codonNumb:Int, val generationID:Int) {
 
   var unambiguousness:Double = 0.0        //Array.fill(codonNumb)(0.0)  //Eindeutigkeit
   //var mRNAdata:List[String] = List()
-
+  val codeTable = getCodeTable(livingAARSs)
   /**
     *
     * @return
@@ -27,9 +27,10 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
   def translate(): Cell = {
 
     //update lifeticks
+    var newLivingAARSs:List[AARS] = List()
     livingAARSs.foreach(aaRS => {
       aaRS.reduceLifeTicks()
-      if (aaRS.lifeticks <= 0) livingAARSs = livingAARSs.filter(_ != aaRS)
+      if (aaRS.lifeticks > 0) newLivingAARSs = aaRS :: newLivingAARSs
     })
 
     for (
@@ -90,8 +91,8 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
       }
       if (!isStopped) {
         val newAARS = getAARS(sequence)
-        if (!livingAARSs.contains(newAARS)) {
-          livingAARSs = livingAARSs :+ newAARS
+        if (!newLivingAARSs.contains(newAARS)) {
+          newLivingAARSs = newAARS :: newLivingAARSs
         }
         sequence = Vector()
       }
@@ -100,19 +101,24 @@ class Cell (val mRNA:List[List[Int]], var codeTable:Array[Array[List[AARS]]], va
 /*if(generationID%10000 == 0){
   println()
 }*/
+
+
+
+    new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb, generationID + 1)
+  }
+
+
+  def getCodeTable(livingAARS:List[AARS]):Array[Array[List[AARS]]] ={
     val newCodeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb, initAA.length)
     livingAARSs.foreach(aaRS => {
       aaRS.translations.foreach(translation => {
         if(newCodeTable(translation._1._2)(translation._1._1.id) == null) newCodeTable(translation._1._2)(translation._1._1.id)= List(aaRS)
-        else newCodeTable(translation._1._2)(translation._1._1.id) = newCodeTable(translation._1._2)(translation._1._1.id) :+ aaRS
-        allAARS(aaRS.aaSeq(0).id)(aaRS.aaSeq(1).id)(aaRS.aaSeq(2).id) = aaRS
+        else newCodeTable(translation._1._2)(translation._1._1.id) = aaRS :: newCodeTable(translation._1._2)(translation._1._1.id)
+        //allAARS(aaRS.aaSeq(0).id)(aaRS.aaSeq(1).id)(aaRS.aaSeq(2).id) = aaRS
       })
     })
-
-
-    new Cell(mRNA, newCodeTable, livingAARSs, allAARS, initAA, codonNumb, generationID + 1)
+    newCodeTable
   }
-
 
   /**
     *

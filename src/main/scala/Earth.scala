@@ -178,22 +178,7 @@ def getX():Array[Array[Int]]={
     }
     reader.close()
 
-
-    //create code Table: Array[Codon][AA] = List[AARS]
-    val codeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codons.length, aaNumb)
-    livingAARSs.foreach(aaRS => {
-      aaRS.translations.foreach(translation => {
-        var pos = codeTable(translation._1._2)(translation._1._1.id)
-          if(pos == null){
-            codeTable(translation._1._2)(translation._1._1.id) = List(aaRS)
-          } else{
-            codeTable(translation._1._2)(translation._1._1.id) = codeTable(translation._1._2)(translation._1._1.id) :+ aaRS
-          }
-      })
-    })
-
-    new Cell(mRNA, codeTable, livingAARSs.toVector, allAARS, initAA, codonNumb,0)
-
+    new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
   }
 
 
