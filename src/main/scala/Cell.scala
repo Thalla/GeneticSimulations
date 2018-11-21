@@ -18,8 +18,9 @@ import scala.util.Random
 class Cell (val mRNA:List[List[Int]], val livingAARSs:List[AARS], val allAARS:Array[Array[Array[AARS]]], val initAA:Vector[AA], val codonNumb:Int, val generationID:Int) {
 
   var unambiguousness:Double = 0.0        //Array.fill(codonNumb)(0.0)  //Eindeutigkeit
-  //var mRNAdata:List[String] = List()
-  val codeTable = getCodeTable(livingAARSs)
+  var mRNAdata:List[Int] = List()
+  val (codeTable, numbAaWithTransl, aaHasTransl):(Array[Array[List[AARS]]], Int, Array[Boolean]) = getCodeTable(livingAARSs)
+  val maxAnticodonNumb:Int = 6
   /**
     *
     * @return
@@ -75,15 +76,16 @@ class Cell (val mRNA:List[List[Int]], val livingAARSs:List[AARS], val allAARS:Ar
         }
         if(translationCounter != 0){
         sequence = sequence :+ bestTranslation._1
-        //mRNAdata = mRNAdata :+ (bestTranslation._1.id).toString()
+        mRNAdata = (bestTranslation._1.id) :: mRNAdata
+
           if (codon < codonNumb) {
-            //unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
+            unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
           }
         }else{
           isStopped = true
           /*var l = sequence.length
             while(l < 3){
-              mRNAdata = mRNAdata :+ "NA"
+              mRNAdata = "NA" :: mRNAdata
               l += 1
             }*/
         }
@@ -104,20 +106,27 @@ class Cell (val mRNA:List[List[Int]], val livingAARSs:List[AARS], val allAARS:Ar
 
 
 
-    new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb, generationID + 1)
+    new Cell(mRNA, newLivingAARSs, allAARS, initAA, codonNumb, generationID + 1)
   }
 
 
-  def getCodeTable(livingAARS:List[AARS]):Array[Array[List[AARS]]] ={
+  def getCodeTable(livingAARS:List[AARS]):(Array[Array[List[AARS]]], Int, Array[Boolean]) ={
+    val newAaHasTransl = Array.fill[Boolean](20)(false)
+    var translatedAaCounter = 0
     val newCodeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb, initAA.length)
     livingAARSs.foreach(aaRS => {
       aaRS.translations.foreach(translation => {
+        if(newAaHasTransl(translation._1._1.id) == false){
+          newAaHasTransl(translation._1._1.id) = true
+          translatedAaCounter += 1
+        }
+
         if(newCodeTable(translation._1._2)(translation._1._1.id) == null) newCodeTable(translation._1._2)(translation._1._1.id)= List(aaRS)
         else newCodeTable(translation._1._2)(translation._1._1.id) = aaRS :: newCodeTable(translation._1._2)(translation._1._1.id)
         //allAARS(aaRS.aaSeq(0).id)(aaRS.aaSeq(1).id)(aaRS.aaSeq(2).id) = aaRS
       })
     })
-    newCodeTable
+    (newCodeTable, translatedAaCounter, newAaHasTransl)
   }
 
   /**
@@ -133,8 +142,8 @@ class Cell (val mRNA:List[List[Int]], val livingAARSs:List[AARS], val allAARS:Ar
     }
     else {
       var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
-      val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6) //TODO remove copy paste
-      val numbAnticodons= numbOfAnticodonsForOneAARS(r.nextInt(numbOfAnticodonsForOneAARS.length))
+      val possibleAnticodonNumbs = List.range(1,maxAnticodonNumb)
+      val numbAnticodons= possibleAnticodonNumbs(r.nextInt(maxAnticodonNumb))
       for(
         _ <- 0 until numbAnticodons
       ){

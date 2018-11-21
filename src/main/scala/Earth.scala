@@ -13,6 +13,7 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}  //TODO?: replace by o
   * @nextSteps: similarity, probabilities, NN?, DM?, evo. Alg.?, analyse, parameters, Empirie, Fitness, Metrik
   * @author Hanna Schumacher
   * @version 4.1   -> 500.000 in 315s ; in 2?? s; in 272s without some stuff, 190s without all
+  * TODO choose by translation fitness, not always the best one, use pathvariable
   */
 object Earth{
   //TODO: check if start parameters are valid
@@ -74,7 +75,7 @@ object Earth{
 
 //println(x)*/
 
-   simulate(init(), 500000)
+   simulate(init(), 1000000)
   }
 
 
@@ -187,35 +188,19 @@ def getX():Array[Array[Int]]={
   /*
    * simulation; holds global parameters; cares for cell reproduction
    */
-  def simulate(cell:Cell, steps:Int):Array[Array[Int]] = {//: Vector[Cell] = {
-    //var buildUpContent = new StringBuilder
-    //buildUpContent ++= cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
-    /*val newComparison = new Array[Boolean](cell.initAA.length)  // true if aa has translation
-    var oldComparison = new Array[Boolean](cell.initAA.length) //Array.fill(20)(false)
-    var numbTranslatedAA = 19 //TODO
-    val aaNumbPerGen = new Array[Int](steps)
-    val generationFitness= new Array[Double](steps)      //Array.fill(steps)(Array.fill(2)(0.0))
+  def simulate(cell:Cell, steps:Int):Array[Array[Int]] = {
+    var mRNAdata:List[List[Int]] = List()
     val aaNumb = cell.initAA.length
     val codonNumb = cell.codonNumb
-    //TODOvar mRNAdata:Array[List[String]] = new Array[List[String]](steps*codonNumb)//Array.empty[List[String]]
-
-
-    //initiate oldComparison
-    for( //foreach aa
-      i <- 0 until aaNumb
-    ){ var goOn = true //stop as soon as a translation for the aa is found
-      for(
-        j <- 0 until codonNumb if goOn != false
-      ){
-         if(cell.codeTable(j)(i) != null){
-          goOn = false
-          oldComparison(i) = true
-        }
-
-      }
-    if(goOn == true) oldComparison(i) = false
-    }
-
+    val generationFitness= new Array[Double](steps)
+    var simulationOutput:List[String] = List()
+    simulationOutput = cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)) :: simulationOutput
+    var oldComparison = new Array[Boolean](20)
+    oldComparison = cell.aaHasTransl
+    var newComparison = new Array[Boolean](20)
+    val aaChanges:Array[Array[Int]] = new Array[Array[Int]](steps)   //genIds, added amino acids, removed amino acids
+    aaChanges(0) = new Array[Int](2)
+/*
     //TODO val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(8)(0))  //assumption: max numb of aaRS per field is 8 TODO
     var value = 0
     if(cell.codeTable(0) != null && cell.codeTable(0)(0) != null){
@@ -223,10 +208,9 @@ def getX():Array[Array[Int]]={
     }
     //TODO tableFieldOverTime(cell.generationID) = new Array[Int](8) //TODO
     //TODO tableFieldOverTime(cell.generationID)(0)= value
-
-    val aaChanges:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(2)(0)) //genIds, added amino acids, removed amino acids
-    aaChanges(0) = new Array[Int](2)
     */
+
+
     var newCell = cell
     def time[R](block: => R): R = {
       val t0 = System.nanoTime()
@@ -238,23 +222,32 @@ def getX():Array[Array[Int]]={
 
     time(while(newCell.generationID <= steps-2){
 
-      val x = newCell.translate()
-      /*    //fitness(newCell.generationID)(1) = newCell.unambiguousness/66
-      aaNumbPerGen(newCell.generationID)= numbTranslatedAA
-          //newCell.unambiguousness = newCell.unambiguousness.dropRight(2)
-      generationFitness(newCell.generationID)= (numbTranslatedAA.toDouble/aaNumb.toDouble)* newCell.unambiguousness   //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
-      numbTranslatedAA = 0
+      val nextCell = newCell.translate()
+
+      generationFitness(newCell.generationID)= (newCell.numbAaWithTransl.toDouble/aaNumb.toDouble)* newCell.unambiguousness   ///TODO tell cell its fitness or calculate fitness not while translation but while codeTable creation /((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
+      //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
+
+    newComparison = nextCell.aaHasTransl
+      // add line to aaChanges
+      aaChanges(nextCell.generationID) = new Array[Int](2)
       for(
-        i <- 0 until codonNumb
+        i <- 0 until aaNumb
       ){
-        //TODO mRNAdata(newCell.generationID*codonNumb+codonNumb+i) = List(newCell.generationID.toString(), i.toString(), newCell.mRNAdata(i))
+        (oldComparison(i), newComparison(i)) match {
+          case (false, true) => {
+            aaChanges(nextCell.generationID - 1)(0) += 1
+          }
+          case (true, false) => aaChanges(nextCell.generationID - 1)(1) += 1
+          case _ =>
+        }
       }
-      //val row:List[String] = newCell.mRNAdata
-      //TODO mRNAdata = mRNAdata :+ row*/
-      newCell = x
+      oldComparison = newComparison
+
+
+      newCell = nextCell
 
       if(newCell.generationID%100000 == 0){
-        val x = "hmm"//buildUpContent ++= newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
+        simulationOutput = newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)) :: simulationOutput
       }
 
     /*  //TODO tableFieldOverTime(newCell.generationID) = new Array[Int](8) //TODO
@@ -270,49 +263,35 @@ def getX():Array[Array[Int]]={
         }
       }
 
-
-      //update newComparison
-      for(
-        i <- 0 until aaNumb  // go through amino acids TODO
-      ){
-          var goOn = true
-          for(
-          j <- 0 until codonNumb if goOn != false  //TODO
-        ){
-          if(newCell.codeTable(j)(i) != null){
-            goOn = false
-            newComparison(i) = true
-          }
-        }
-        if(goOn == true) newComparison(i) = false
-      }
-      // add line to aaChanges
-      aaChanges(newCell.generationID) = new Array[Int](2)
-      for(
-        i <- 0 until aaNumb
-      ){
-        (oldComparison(i), newComparison(i)) match {
-          case (false, true) => {
-            aaChanges(newCell.generationID - 1)(0) += 1
-            numbTranslatedAA += 1
-          }
-          case (true, false) => aaChanges(newCell.generationID - 1)(1) += 1
-          case (true, true) => numbTranslatedAA += 1
-          case _ =>
-        }
-      }
-      oldComparison = newComparison
       */
-      //println(newCell.generationID)
     }
 
     )
-   /* val content = "HMM"//buildUpContent + newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable))
+    simulationOutput =  newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)) :: simulationOutput
     var file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\Scala\\simulationOutput.html")
-    val bw = new BufferedWriter(new FileWriter(file))
-    bw.write(content)
+    var bw = new BufferedWriter(new FileWriter(file))
+    bw.write(simulationOutput.mkString("\n"))
     bw.close()
 
+
+    file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\generationFitness.csv")
+    var writer = CSVWriter.open(file)
+    writer.writeAll(List(generationFitness))
+    writer.close()
+
+    file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\mRNAdata.csv")
+    writer = CSVWriter.open(file)
+    writer.writeAll(mRNAdata)
+    writer.close()
+
+    file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\testdata.csv")
+    bw = new BufferedWriter(new FileWriter(file))
+    bw.write(aaChanges.map(_.mkString(", ")).mkString("\n"))
+    bw.close()
+
+
+
+/*
     //var fitnessCSV:List[List[Double]] = List()
 
     /*for(
@@ -326,15 +305,9 @@ def getX():Array[Array[Int]]={
     writer.close()
 
 
-    file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\generationFitness.csv")
-    writer = CSVWriter.open(file)
-    writer.writeAll(List(generationFitness.toList))
-    writer.close()
 
-    file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\mRNAdata.csv")
-    writer = CSVWriter.open(file)
-    //writer.writeAll(mRNAdata)
-    writer.close()
+
+
 
 
     //aaChanges to file
@@ -543,7 +516,7 @@ def getX():Array[Array[Int]]={
     val writer = CSVWriter.open(file, append= true)
     val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
-    val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)
+    val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)  //TODO remove redundancy: this is the same as maxAnticodonNumb in Cell
 
     //create 20^3 aaRS
     for(
