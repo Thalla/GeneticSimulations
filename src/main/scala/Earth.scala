@@ -21,69 +21,15 @@ object Earth{
   /** initiates and starts simulation
     * @param args
     */
-  def main(args: Array[String]):Unit ={
-   /* val steps = 500000
-    val aaNumbPerGen = new Array[Int](steps)
-    val generationFitness= new Array[Double](steps)
-    val aaChanges:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(2)(0)) //genIds, added amino acids, removed amino acids
-    for(
-      i <- 0 until 500000
-    ){
-      aaChanges(i) = new Array[Int](2)
-    }
-    for(
-      i <- 0 until 500000
-    ){
-      aaChanges(i)(0) = 2
-    }
-    for(
-      i <- 0 until 500000
-    ){
-      generationFitness(i) = 1.0
-    }
-    for(
-      i <- 0 until 500000
-    ){
-      aaNumbPerGen(i) = 1
-    }
-    val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](steps)
-    for(
-      i <- 0 until 500000
-    ){
-      tableFieldOverTime(i) = new Array[Int](8)
-    }
-    for(
-      i <- 0 until 500000;
-      j <- 0 until 8
-    ){
-      tableFieldOverTime(i)(j) = 4
-    }
+  var mRNA:List[List[Int]] = List()
+  var allAARS:Array[Array[Array[AARS]]] = Array()
+  var initAA:Vector[AA] = Vector()
+  var codonNumb = 0
+  var path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
+  val r = new scala.util.Random(22)
+  var aaNumb = 0
+    var aaRSnumb = 0
 
-    val unambiguousness:Array[Double] = new Array[Double](steps*64)
-    for(
-      i <- 0 until 500000*64
-    ){
-      unambiguousness(i) = 5.9
-    }
-    var x = 5
-    var z = 0.0
-    for(
-      i <- 0 until 500000*64
-    ){
-      z += (1.0/x.toDouble)/ 63.0 //unambiguousness.foldLeft(0.0)(_+_)
-    }
-
-//println(x)*/
-
-   simulate(init(), 1000000)
-  }
-
-
-def getX():Array[Array[Int]]={
-
-  val x:Array[Array[Int]] = simulate(init(),1000)
-  x
-}
 
   /** creates a start cell, each cell is one generation
     * @param aaRSnumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
@@ -92,10 +38,14 @@ def getX():Array[Array[Int]]={
     * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
     * @return start cell
   */
-  def init (aaRSnumb:Int = 22, aarsLength:Int = 3, initAA:Vector[AA] = AA.values.toVector, codonNumb:Int = 64):Cell= {
+  def init (aaRSnumb:Int = 22, aarsLength:Int = 3, initAA:Vector[AA] = AA.values.toVector, codonNumb:Int = 64):ListBuffer[AARS]= {
+    this.codonNumb = codonNumb
+    this.initAA = initAA
+    this.aaNumb = initAA.length
+    this.aaRSnumb = aaRSnumb
     // create codons
     val codons = getCodons(codonNumb)
-    val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
+
     val aaNumb = initAA.length
 
     // two mRNA creation versions, first random with no gene twice, second saved in file
@@ -106,23 +56,15 @@ def getX():Array[Array[Int]]={
     // create aaRS file
      // writeAARStoFile(codons.toList, aarsLength, aaRSnumb, codonNumb, initAA, new File(path+"aaRS.csv"))
 
-    // create living aaRS file (create random aaSeqences that will come to life)
-    /*
-    val r = new scala.util.Random(22)
-    val writer = CSVWriter.open(new File(path+"livingAARS.csv"), append = true)
-    for(
-      _ <- 0 until aaRSnumb
-    ){
-      writer.writeRow(Seq(r.nextInt(aaNumb), r.nextInt(aaNumb), r.nextInt(aaNumb)))
-    }
-    writer.close()
-    */
+    //create living aaRS
+    //writeLivingAarsToFile()
+
 
 
     // read mRNA
     var reader = CSVReader.open(new File(path+"mRNA.csv"))
     var data = reader.all()
-    var mRNA:List[List[Int]] = List()
+    //var mRNA:List[List[Int]] = List()
     for(
       line <- data
     ){
@@ -140,18 +82,29 @@ def getX():Array[Array[Int]]={
     // read aaRS
     reader = CSVReader.open(new File(path+"aaRS.csv"))
     data = reader.all()
-    var aaSeq:Vector[Int] = Vector()      //position in allAARS
     var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
     // Array with all existing aaRS, initialised with placeholders
-    var allAARS:Array[Array[Array[AARS]]] = Array.fill[Array[Array[AARS]]](aaNumb)(Array.fill[Array[AARS]](aaNumb)(Array.fill[AARS](aaNumb)(new AARS(Vector(), translations))))
+    //var allAARS:Array[Array[Array[AARS]]] = Array.fill[Array[Array[AARS]]](aaNumb)(Array.fill[Array[AARS]](aaNumb)(Array.fill[AARS](aaNumb)(new AARS(Vector(), translations))))
+    allAARS = new Array [Array[Array[AARS]]](aaNumb)
     // give each aaRS in allAARS the correct aaSeq (is dependent from its position in allAARS)
     for(
-      i <- 0 until aaNumb;
-      j <- 0 until aaNumb;
-      k <- 0 until aaNumb
+      i <- 0 until aaNumb
     ){
-      allAARS(i)(j)(k).aaSeq = Vector(initAA(i), initAA(j), initAA(k))
+      allAARS(i) = new Array [Array[AARS]](aaNumb)
+      for(
+        j <- 0 until aaNumb
+      ){
+        allAARS(i)(j) = new Array [AARS](aaNumb)
+        for(
+          k <- 0 until aaNumb
+        ){
+          val aaSeq:Vector[AA]= Vector(initAA(i), initAA(j), initAA(k))
+          allAARS(i)(j)(k) = new AARS(aaSeq, translations)
+
+        }
+      }
     }
+
     // read file data and give each aaRS its translations
     for(
       line <- data
@@ -167,7 +120,7 @@ def getX():Array[Array[Int]]={
 
 
     // read the living aaRS
-    var livingAARSs:List[AARS] = List()
+    var livingAARSs:ListBuffer[AARS] = ListBuffer()
     val lifeticksStartValue = allAARS(0)(0)(0).lifeticksStartValue
     reader = CSVReader.open(new File(path+"livingAARS.csv"))
     data = reader.all()
@@ -179,7 +132,8 @@ def getX():Array[Array[Int]]={
     }
     reader.close()
 
-    new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
+    //new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
+    livingAARSs
   }
 
 
@@ -189,43 +143,12 @@ def getX():Array[Array[Int]]={
    * simulation; holds global parameters; cares for cell reproduction
    */
   def simulate(cell:Cell, steps:Int):Array[Array[Int]] = {
-    var mRNAdata:List[List[Int]] = List()
-    val aaNumb = cell.initAA.length
-    val codonNumb = cell.codonNumb
-    val generationFitness= new Array[Double](steps)
-    var simulationOutput:List[String] = List()
-    simulationOutput = cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)) :: simulationOutput
-    var oldComparison = new Array[Boolean](20)
-    oldComparison = cell.aaHasTransl
-    var newComparison = new Array[Boolean](20)
-    val aaChanges:Array[Array[Int]] = new Array[Array[Int]](steps)   //genIds, added amino acids, removed amino acids
-    aaChanges(0) = new Array[Int](2)
-/*
-    //TODO val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(8)(0))  //assumption: max numb of aaRS per field is 8 TODO
-    var value = 0
-    if(cell.codeTable(0) != null && cell.codeTable(0)(0) != null){
-      value = (cell.codeTable(0)(0)(0)).aaSeq(0).id + (cell.codeTable(0)(0)(0)).aaSeq(1).id*20 + (cell.codeTable(0)(0)(0)).aaSeq(2).id*40 //value is calculated aaRS id
-    }
-    //TODO tableFieldOverTime(cell.generationID) = new Array[Int](8) //TODO
-    //TODO tableFieldOverTime(cell.generationID)(0)= value
-    */
 
 
-    var newCell = cell
-    def time[R](block: => R): R = {
-      val t0 = System.nanoTime()
-      val result = block    // call-by-name
-      val t1 = System.nanoTime()
-      println("Elapsed time: " + (t1 - t0) + "ns")
-      result
-    }
 
-    time(while(newCell.generationID <= steps-2){
+    /*
 
-      val nextCell = newCell.translate()
 
-      generationFitness(newCell.generationID)= (newCell.numbAaWithTransl.toDouble/aaNumb.toDouble)* newCell.unambiguousness   ///TODO tell cell its fitness or calculate fitness not while translation but while codeTable creation /((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
-      //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
 
     newComparison = nextCell.aaHasTransl
       // add line to aaChanges
@@ -244,34 +167,9 @@ def getX():Array[Array[Int]]={
       oldComparison = newComparison
 
 
-      newCell = nextCell
 
-      if(newCell.generationID%100000 == 0){
-        simulationOutput = newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)) :: simulationOutput
-      }
 
-    /*  //TODO tableFieldOverTime(newCell.generationID) = new Array[Int](8) //TODO
-      if(newCell.codeTable(0)(0) != null){
-        val z = newCell.codeTable(0)(0).length
-        for(
-          i <- 0 until newCell.codeTable(0)(0).length
-        ){
-          if(newCell.codeTable(0)(0)(i) != null){
-            value = (newCell.codeTable(0)(0)(i)).aaSeq(0).id + (newCell.codeTable(0)(0)(i)).aaSeq(1).id*20 + (newCell.codeTable(0)(0)(i)).aaSeq(2).id*40
-            //TODO tableFieldOverTime(newCell.generationID)(i) = value
-          }
-        }
-      }
 
-      */
-    }
-
-    )
-    simulationOutput =  newCell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)) :: simulationOutput
-    var file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\Scala\\simulationOutput.html")
-    var bw = new BufferedWriter(new FileWriter(file))
-    bw.write(simulationOutput.mkString("\n"))
-    bw.close()
 
 
     file = new File(s"C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\generationFitness.csv")
@@ -288,7 +186,7 @@ def getX():Array[Array[Int]]={
     bw = new BufferedWriter(new FileWriter(file))
     bw.write(aaChanges.map(_.mkString(", ")).mkString("\n"))
     bw.close()
-
+*/
 
 
 /*
@@ -376,7 +274,6 @@ def getX():Array[Array[Int]]={
     //aaChanges
     Array()
   }
-
 
 
 
@@ -534,6 +431,20 @@ def getX():Array[Array[Int]]={
         // aa1 aa2 aa3, aa, anticodon, probability, stem
         writer.writeRow(Seq(i, j, k, r.nextInt(initAA.length), r.nextInt(codons.length), r.nextDouble().toString(), r.nextInt(codons.length) ))
       }
+    }
+    writer.close()
+  }
+
+  /**
+    * create living aaRS file (create random aaSeqences that will come to life)
+    * @return
+    */
+  def writeLivingAarsToFile():Unit ={
+    val writer = CSVWriter.open(new File(path+"livingAARS.csv"), append = true)
+    for(
+      _ <- 0 until aaRSnumb
+    ){
+      writer.writeRow(Seq(r.nextInt(aaNumb), r.nextInt(aaNumb), r.nextInt(aaNumb)))
     }
     writer.close()
   }

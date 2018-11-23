@@ -1,4 +1,4 @@
-name := "Simple0"
+name := "GeneticSimulation"
 
 version := "0.1"
 
