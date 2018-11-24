@@ -4,7 +4,7 @@ import Earth._
 import scala.collection.mutable.ListBuffer
 
 object Simulator {
-  val steps = 1000000
+  val steps = 5000000
 
   def main(args: Array[String]): Unit = {
 
@@ -21,7 +21,7 @@ object Simulator {
     }
 
     time(while (cell.generationID <= steps - 2) {
-      val data:CellData = cell.translate()
+      cell.translate()
 
       //SimulationData.generationFitness(cell.generationID-1)= (data.numbAaWithTransl.toDouble/aaNumb.toDouble)* data.unambiguousness   ///TODO tell cell its fitness or calculate fitness not while translation but while codeTable creation /((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
       //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)

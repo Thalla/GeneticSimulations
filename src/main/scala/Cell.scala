@@ -27,7 +27,7 @@ class Cell () {
   var generationID:Int = 0
   def maxAnticodonNumb:Int = 6
   def r = new scala.util.Random(22)
-  var codeTable:Array[Array[ListBuffer[AARS]]] = Array()
+  var codeTable:Array[ListBuffer[Tuple3[AARS, AA, Double]]] = Array()
   var mRNA:List[List[Int]] = List()
   var allAARS:Array[Array[Array[AARS]]] = Array()
   var initAA:Vector[AA] = Vector()
@@ -38,31 +38,47 @@ class Cell () {
   //var codeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb,aaNumb)
   //var codeTable2:Array[ListBuffer[AARS]] = Array.fill[ListBuffer[AARS]](codonNumb){new ListBuffer[AARS]()}
   //var codeTable:Array[Array[Int]] = Array.fill[Array[Int]](codonNumb){Array.fill[Int](aaNumb){0}}
+   var time = 0:Long
+
+
+  def time[R](block: => R): R = {
+    val t0 = System.nanoTime()
+    val result = block // call-by-name
+    val t1 = System.nanoTime()
+    //println("Elapsed time: " + (t1 - t0) + "ns")
+    time += (t1 - t0)
+    result
+  }
+
 
   /**
     *
     * @return
     */
-  def translate():CellData = {
-    var codeTable:Array[Array[ListBuffer[AARS]]] = Array.ofDim[ListBuffer[AARS]](codonNumb,aaNumb)
-    this.codeTable = codeTable
+  def translate()= {
+
+
+
     // data init
     var unambiguousness:Double = 0.0        //Array.fill(codonNumb)(0.0)  //Eindeutigkeit
     var mRNAdata:ListBuffer[Int] = new ListBuffer()
 
-    val (numbAaWithTransl, aaHasTransl) = updateCodeTable()
+    //val (numbAaWithTransl, aaHasTransl) =
+      updateCodeTable()
 
     //update lifeticks
-    var newLivingAARSs:ListBuffer[AARS] = ListBuffer()
+   var newLivingAARSs:ListBuffer[AARS] = ListBuffer()
     val livingAARSIt = livingAARSs.iterator
+    //1s
     while (livingAARSIt.hasNext){
       val aaRS = livingAARSIt.next().reduceLifeTicks()
       if (aaRS.lifeticks > 0) newLivingAARSs += aaRS
     }
 
+
     val mrnaIt = mRNA.iterator
     // foreach gene
-    while (mrnaIt.hasNext){
+    time(  while (mrnaIt.hasNext){
       val gene = mrnaIt.next()
       //start new sequence
       var sequence = new ListBuffer[AA.Value]
@@ -75,42 +91,17 @@ class Cell () {
         genePos += 1
         //var aaRSCounter = 0
         var translationCounter = 0
-        var bestAARS: AARS = null
-        var max: Double = 0.0
-        var bestTranslation: Tuple2[AA, Int] = (null, 0)
+        var aa:AA=null
         //find aaRS with best translation considering the translation fitness
-
-          for (
-            aaRSs: ListBuffer[AARS] <- codeTable(codon) //find all aaRS that can translate this codon
-          ) {
-            if (!aaRSs.isEmpty) {
-              translationCounter += 1
-              for (
-                aaRS <- aaRSs
-              ) {
-                //aaRSCounter += 1
-                val translationKeys = aaRS.translations.keySet
-                //find translation with best fitness of all possible translations
-                for (
-                  tk <- translationKeys
-                ) {
-                  if(tk._2 == codon){
-                    val prob: Tuple2[Double, Int] = (aaRS.translations(tk)(0)) //TODO what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
-                    if (max < prob._1) { // what if == ? -> make list and choose randomly from it TODO
-                      bestTranslation = tk
-                      max = prob._1
-                      bestAARS = aaRS
-                    }
-                  }
-                }
-              }
-            }
+          if(codeTable(codon) != null){
+            translationCounter += 1
+              //find translation with best fitness of all possible translations
+              aa = codeTable(codon).maxBy(_._3)._2
           }
 
-
         if(translationCounter != 0){
-          sequence +=  bestTranslation._1
-          mRNAdata += (bestTranslation._1.id)
+          sequence +=  aa
+          mRNAdata += (aa.id)
 
           if (codon < codonNumb) {
             unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
@@ -133,14 +124,14 @@ class Cell () {
         }
         sequence = ListBuffer()
       }
-    }
+    })
     generationID += 1
     this.livingAARSs = newLivingAARSs
-    new CellData(unambiguousness, mRNAdata, numbAaWithTransl, aaHasTransl)
+    //new CellData(unambiguousness, mRNAdata, numbAaWithTransl, aaHasTransl)
   }
 
 
-  def updateCodeTable():(Int, Array[Boolean]) ={
+  def updateCodeTable() ={
     val newAaHasTransl = new Array[Boolean](20)
     var translatedAaCounter = 0
     var i = 0
@@ -150,8 +141,8 @@ class Cell () {
           i += 1
         }
 
-
     //new codeTable
+    codeTable = new Array[ListBuffer[Tuple3[AARS, AA, Double]]](codonNumb)
     val livingAarsIt = livingAARSs.iterator
     while (livingAarsIt.hasNext){
       val aaRS = livingAarsIt.next()
@@ -162,11 +153,14 @@ class Cell () {
           newAaHasTransl(translation._1._1.id) = true
           translatedAaCounter += 1
         }
-        if(codeTable(translation._1._2)(translation._1._1.id) == null) codeTable(translation._1._2)(translation._1._1.id) = ListBuffer(aaRS)
-        else codeTable(translation._1._2)(translation._1._1.id) += aaRS //:: codeTable(translation._1._2)(translation._1._1.id)
+        if (codeTable(translation._1._2) != null){
+          codeTable(translation._1._2) += Tuple3(aaRS,translation._1._1, translation._2(0)._1)
+        } else {
+          codeTable(translation._1._2) = ListBuffer(Tuple3(aaRS,translation._1._1, translation._2(0)._1))
+        }
       }
     }
-    (translatedAaCounter, newAaHasTransl)
+    //(translatedAaCounter, newAaHasTransl)
   }
 
   /**
@@ -286,7 +280,7 @@ class Cell () {
             for(
               aa <- 0 until initAA.length
             ){
-              val aaRSList:ListBuffer[AARS] = codeTable(codonPos)(aa)
+              val aaRSList:ListBuffer[AARS] = for(x <- codeTable(codonPos))yield(x._1)
               if(aaRSList != null){
               content += "<td>"
               for(
@@ -335,6 +329,7 @@ class Cell () {
     // create codons
     val codons = getCodons(codonNumb)
     allAARS = new Array[Array[Array[AARS]]](aaNumb)
+    codeTable = new Array[ListBuffer[Tuple3[AARS, AA, Double]]](codonNumb)
 
 
     // two mRNA creation versions, first random with no gene twice, second saved in file
