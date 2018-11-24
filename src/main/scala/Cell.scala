@@ -1,8 +1,10 @@
+import java.io.File
+
 import AA.AA
 import Base.Base
 import SimulationData.protocol
-import Earth._
 import PrintElem.PrintElem
+import com.github.tototoshi.csv.CSVReader
 
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.specialized
@@ -20,26 +22,35 @@ case class CellData(unambiguousness:Double, mRNAdata:ListBuffer[Int], numbAaWith
   * @param allAARS this list holds all valid aaRS that could exist and their randomly predefined behaviour
   * @param generationID nextCell has generationID+1
   */
-class Cell (var livingAARSs:ListBuffer[AARS]) {
-
+class Cell () {
+  var livingAARSs:ListBuffer[AARS] = ListBuffer()
   var generationID:Int = 0
   def maxAnticodonNumb:Int = 6
   def r = new scala.util.Random(22)
-  var codeTable:Array[Array[ListBuffer[AARS]]] = Array.ofDim[ListBuffer[AARS]](codonNumb,aaNumb)
-  //var codeTable2:Array[ListBuffer[AARS]] = new Array[ListBuffer[AARS]](codonNumb*aaNumb)
+  var codeTable:Array[Array[ListBuffer[AARS]]] = Array()
+  var mRNA:List[List[Int]] = List()
+  var allAARS:Array[Array[Array[AARS]]] = Array()
+  var initAA:Vector[AA] = Vector()
+  var codonNumb = 0
+  var path = ""
+  var aaNumb = 0
+  var aaRSnumb = 0
+  //var codeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb,aaNumb)
+  //var codeTable2:Array[ListBuffer[AARS]] = Array.fill[ListBuffer[AARS]](codonNumb){new ListBuffer[AARS]()}
+  //var codeTable:Array[Array[Int]] = Array.fill[Array[Int]](codonNumb){Array.fill[Int](aaNumb){0}}
 
   /**
     *
     * @return
     */
   def translate():CellData = {
-
+    var codeTable:Array[Array[ListBuffer[AARS]]] = Array.ofDim[ListBuffer[AARS]](codonNumb,aaNumb)
+    this.codeTable = codeTable
     // data init
     var unambiguousness:Double = 0.0        //Array.fill(codonNumb)(0.0)  //Eindeutigkeit
     var mRNAdata:ListBuffer[Int] = new ListBuffer()
 
     val (numbAaWithTransl, aaHasTransl) = updateCodeTable()
-    this.codeTable = codeTable
 
     //update lifeticks
     var newLivingAARSs:ListBuffer[AARS] = ListBuffer()
@@ -50,45 +61,53 @@ class Cell (var livingAARSs:ListBuffer[AARS]) {
     }
 
     val mrnaIt = mRNA.iterator
+    // foreach gene
     while (mrnaIt.hasNext){
       val gene = mrnaIt.next()
+      //start new sequence
       var sequence = new ListBuffer[AA.Value]
       var isStopped: Boolean = false
       val geneIt = gene.iterator
+      var genePos = 0 //counts genes
+      //foreach codon in gene
       while(geneIt.hasNext && !isStopped){
         val codon = geneIt.next()
+        genePos += 1
         //var aaRSCounter = 0
         var translationCounter = 0
         var bestAARS: AARS = null
         var max: Double = 0.0
         var bestTranslation: Tuple2[AA, Int] = (null, 0)
         //find aaRS with best translation considering the translation fitness
-        for (
-          aaRSs: ListBuffer[AARS] <- codeTable(codon) //find all aaRS that can translate this codon
-        ) {
-          if (!aaRSs.isEmpty) {
-            translationCounter += 1
-            for (
-              aaRS <- aaRSs
-            ) {
-              //aaRSCounter += 1
-              val translationKeys = aaRS.translations.keySet
-              //find translation with best fitness of all possible translations
+
+          for (
+            aaRSs: ListBuffer[AARS] <- codeTable(codon) //find all aaRS that can translate this codon
+          ) {
+            if (!aaRSs.isEmpty) {
+              translationCounter += 1
               for (
-                tk <- translationKeys
+                aaRS <- aaRSs
               ) {
-                if(tk._2 == codon){
-                  val prob: Tuple2[Double, Int] = (aaRS.translations(tk)(0)) //TODO what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
-                  if (max < prob._1) { // what if == ? -> make list and choose randomly from it TODO
-                    bestTranslation = tk
-                    max = prob._1
-                    bestAARS = aaRS
+                //aaRSCounter += 1
+                val translationKeys = aaRS.translations.keySet
+                //find translation with best fitness of all possible translations
+                for (
+                  tk <- translationKeys
+                ) {
+                  if(tk._2 == codon){
+                    val prob: Tuple2[Double, Int] = (aaRS.translations(tk)(0)) //TODO what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
+                    if (max < prob._1) { // what if == ? -> make list and choose randomly from it TODO
+                      bestTranslation = tk
+                      max = prob._1
+                      bestAARS = aaRS
+                    }
                   }
                 }
               }
             }
           }
-        }
+
+
         if(translationCounter != 0){
           sequence +=  bestTranslation._1
           mRNAdata += (bestTranslation._1.id)
@@ -144,7 +163,7 @@ class Cell (var livingAARSs:ListBuffer[AARS]) {
           translatedAaCounter += 1
         }
         if(codeTable(translation._1._2)(translation._1._1.id) == null) codeTable(translation._1._2)(translation._1._1.id) = ListBuffer(aaRS)
-        else codeTable(translation._1._2)(translation._1._1.id) += aaRS
+        else codeTable(translation._1._2)(translation._1._1.id) += aaRS //:: codeTable(translation._1._2)(translation._1._1.id)
       }
     }
     (translatedAaCounter, newAaHasTransl)
@@ -177,7 +196,7 @@ class Cell (var livingAARSs:ListBuffer[AARS]) {
     newAARS
   }*/
 
-
+ /*
   /**
     *
     * @return
@@ -193,7 +212,7 @@ class Cell (var livingAARSs:ListBuffer[AARS]) {
     }
     go(livingAARSs)
 
-  }
+  }*/
 
 /*
   /**
@@ -300,7 +319,162 @@ class Cell (var livingAARSs:ListBuffer[AARS]) {
 
 
 
+  /** creates a start cell, each cell is one generation
+    * @param aaRSnumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
+    * @param aarsLength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
+    * @param initAA initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
+    * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
+    * @return start cell
+    */
+  def init (path:String, aaRSnumb:Int = 22, aarsLength:Int = 3, initAA:Vector[AA] = AA.values.toVector, codonNumb:Int = 64):Unit= {
+    this.codonNumb = codonNumb
+    this.initAA = initAA
+    this.aaNumb = initAA.length
+    this.aaRSnumb = aaRSnumb
+    this.path = path
+    // create codons
+    val codons = getCodons(codonNumb)
+    allAARS = new Array[Array[Array[AARS]]](aaNumb)
 
+
+    // two mRNA creation versions, first random with no gene twice, second saved in file
+    // create mRNA (List of genes. Each gene is a List of codon IDs as long as aarsLength)
+    // val mRNA:List[List[Int]] = getRandomMRNA(codons.toList, aarsLength, aaRSnumb)
+    // writeMRNAtoFile(codons.toList, aarsLength, aaRSnumb, new File(path+"mRNA.csv"))
+
+    // create aaRS file
+    // writeAARStoFile(codons.toList, aarsLength, aaRSnumb, codonNumb, initAA, new File(path+"aaRS.csv"))
+
+    //create living aaRS
+    //writeLivingAarsToFile()
+
+
+
+    // read mRNA
+    var reader = CSVReader.open(new File(path+"mRNA.csv"))
+    var data = reader.all()
+    //var mRNA:List[List[Int]] = List()
+    for(
+      line <- data
+    ){
+      var gene:List[Int] = List()
+      for(
+        elem <- line
+      ){
+        gene = gene :+ elem.toInt
+      }
+      mRNA = mRNA :+ gene
+    }
+    reader.close()
+
+
+    // read aaRS
+    reader = CSVReader.open(new File(path+"aaRS.csv"))
+    data = reader.all()
+    var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
+    // Array with all existing aaRS, initialised with placeholders
+    //var allAARS:Array[Array[Array[AARS]]] = Array.fill[Array[Array[AARS]]](aaNumb)(Array.fill[Array[AARS]](aaNumb)(Array.fill[AARS](aaNumb)(new AARS(Vector(), translations))))
+    // give each aaRS in allAARS the correct aaSeq (is dependent from its position in allAARS)
+    for(
+      i <- 0 until aaNumb
+    ){
+      allAARS(i) = new Array [Array[AARS]](aaNumb)
+      for(
+        j <- 0 until aaNumb
+      ){
+        allAARS(i)(j) = new Array [AARS](aaNumb)
+        for(
+          k <- 0 until aaNumb
+        ){
+          val aaSeq:Vector[AA]= Vector(initAA(i), initAA(j), initAA(k))
+          allAARS(i)(j)(k) = new AARS(aaSeq, translations)
+
+        }
+      }
+    }
+
+    // read file data and give each aaRS its translations
+    for(
+      line <- data
+    ){
+      //get Array Index of aaRS
+      val i1 = line(0).toInt
+      val i2 = line(1).toInt
+      val i3 = line(2).toInt
+      // add translation to aaRS
+      allAARS(i1)(i2)(i3).translations += ((initAA(line(3).toInt), line(4).toInt)->List((line(5).toDouble, line(6).toInt)))
+    }
+    reader.close()
+
+
+    // read the living aaRS
+    val lifeticksStartValue = allAARS(0)(0)(0).lifeticksStartValue
+    reader = CSVReader.open(new File(path+"livingAARS.csv"))
+    data = reader.all()
+    for(
+      line <- data
+    ){
+      allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = lifeticksStartValue
+      livingAARSs = livingAARSs :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
+    }
+    reader.close()
+
+    //new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
+
+  }
+
+  /** generate from nucleobases
+    * @param codonNumb 16 -> twoTuples, 64 -> codons, 48 -> strong comma free codons
+    * @return either list of twoTuples or codons or strong comma free codons
+    */
+  def getCodons(codonNumb:Int):IndexedSeq[(Any)] = {
+    //range for adding third base
+    val range:Range = codonNumb  match{
+      case 16 => 0 to 0       //-> no third base
+      case 64 | 48 => 0 to 3
+    }
+    // if strong comma free code shall be generated this filter is used
+    val filterScf = (k:Int, i:Int) => {
+      if(codonNumb == 48) k!=i
+      else true
+    }
+
+    var codons = (for {
+      i <- 0 to 3 // -> four nucleobases
+      j <- 0 to 3
+      k <- range
+      if filterScf(k, i)  // if scf option 48 then filter codons
+    } yield {
+      codonNumb match{
+        case 16 => (Base(i),Base(j))
+        case 64 | 48=> (Base(i),Base(j), Base(k))
+      }})
+    codons
+  }
+
+  //print aaRS-Matrix
+  def print3DimAARSmatrix (matrix:Array[Array[Array[AARS]]]):Unit = {
+    for (
+      i <- 0 until matrix.length;
+      j <- 0 until matrix(0).length;
+      k <- 0 until matrix(0)(0).length
+    ) {
+      val elem = matrix(i)(j)(k)
+      if (elem == null) {}//println(i + ", " + j + ", " + k + " ")
+      else println(i + " , " + j + " , " + k + ": " + matrix(i)(j)(k).toString())
+    }
+  }
+
+  def mRNAtoHTML(mRNA:List[List[Int]], codons:IndexedSeq[(Any)]):String = {
+    var content = "<ul>\n"
+    mRNA.foreach(gene => {
+      content += "<li>\n"
+      gene.foreach(codonID => content += codons(codonID).toString() )
+      content += "</li>\n"
+    })
+    content += "</ul>\n"
+    content
+  }
 
 
 }

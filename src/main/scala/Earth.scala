@@ -15,126 +15,15 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}  //TODO?: replace by o
   * @version 4.1   -> 500.000 in 315s ; in 2?? s; in 272s without some stuff, 190s without all
   * TODO choose by translation fitness, not always the best one, use pathvariable
   */
-object Earth{
+object Earth extends Cell{
   //TODO: check if start parameters are valid
   //TODO: tests, exceptions, logging, class diagram, cases, directly connect code/model decisions to research
   /** initiates and starts simulation
     * @param args
     */
-  var mRNA:List[List[Int]] = List()
-  var allAARS:Array[Array[Array[AARS]]] = Array()
-  var initAA:Vector[AA] = Vector()
-  var codonNumb = 0
-  var path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
-  val r = new scala.util.Random(22)
-  var aaNumb = 0
-    var aaRSnumb = 0
-
-
-  /** creates a start cell, each cell is one generation
-    * @param aaRSnumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
-    * @param aarsLength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
-    * @param initAA initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
-    * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
-    * @return start cell
-  */
-  def init (aaRSnumb:Int = 22, aarsLength:Int = 3, initAA:Vector[AA] = AA.values.toVector, codonNumb:Int = 64):ListBuffer[AARS]= {
-    this.codonNumb = codonNumb
-    this.initAA = initAA
-    this.aaNumb = initAA.length
-    this.aaRSnumb = aaRSnumb
-    // create codons
-    val codons = getCodons(codonNumb)
-
-    val aaNumb = initAA.length
-
-    // two mRNA creation versions, first random with no gene twice, second saved in file
-     // create mRNA (List of genes. Each gene is a List of codon IDs as long as aarsLength)
-     // val mRNA:List[List[Int]] = getRandomMRNA(codons.toList, aarsLength, aaRSnumb)
-     // writeMRNAtoFile(codons.toList, aarsLength, aaRSnumb, new File(path+"mRNA.csv"))
-
-    // create aaRS file
-     // writeAARStoFile(codons.toList, aarsLength, aaRSnumb, codonNumb, initAA, new File(path+"aaRS.csv"))
-
-    //create living aaRS
-    //writeLivingAarsToFile()
 
 
 
-    // read mRNA
-    var reader = CSVReader.open(new File(path+"mRNA.csv"))
-    var data = reader.all()
-    //var mRNA:List[List[Int]] = List()
-    for(
-      line <- data
-    ){
-      var gene:List[Int] = List()
-      for(
-        elem <- line
-      ){
-        gene = gene :+ elem.toInt
-      }
-      mRNA = mRNA :+ gene
-    }
-    reader.close()
-
-
-    // read aaRS
-    reader = CSVReader.open(new File(path+"aaRS.csv"))
-    data = reader.all()
-    var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
-    // Array with all existing aaRS, initialised with placeholders
-    //var allAARS:Array[Array[Array[AARS]]] = Array.fill[Array[Array[AARS]]](aaNumb)(Array.fill[Array[AARS]](aaNumb)(Array.fill[AARS](aaNumb)(new AARS(Vector(), translations))))
-    allAARS = new Array [Array[Array[AARS]]](aaNumb)
-    // give each aaRS in allAARS the correct aaSeq (is dependent from its position in allAARS)
-    for(
-      i <- 0 until aaNumb
-    ){
-      allAARS(i) = new Array [Array[AARS]](aaNumb)
-      for(
-        j <- 0 until aaNumb
-      ){
-        allAARS(i)(j) = new Array [AARS](aaNumb)
-        for(
-          k <- 0 until aaNumb
-        ){
-          val aaSeq:Vector[AA]= Vector(initAA(i), initAA(j), initAA(k))
-          allAARS(i)(j)(k) = new AARS(aaSeq, translations)
-
-        }
-      }
-    }
-
-    // read file data and give each aaRS its translations
-    for(
-      line <- data
-    ){
-      //get Array Index of aaRS
-      val i1 = line(0).toInt
-      val i2 = line(1).toInt
-      val i3 = line(2).toInt
-      // add translation to aaRS
-      allAARS(i1)(i2)(i3).translations += ((initAA(line(3).toInt), line(4).toInt)->List((line(5).toDouble, line(6).toInt)))
-    }
-    reader.close()
-
-
-    // read the living aaRS
-    var livingAARSs:ListBuffer[AARS] = ListBuffer()
-    val lifeticksStartValue = allAARS(0)(0)(0).lifeticksStartValue
-    reader = CSVReader.open(new File(path+"livingAARS.csv"))
-    data = reader.all()
-    for(
-      line <- data
-    ){
-      allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = lifeticksStartValue
-      livingAARSs = livingAARSs :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
-    }
-    reader.close()
-
-    //new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
-    livingAARSs
-  }
 
 
 
@@ -286,34 +175,7 @@ object Earth{
   }
 
 
-  /** generate from nucleobases
-    * @param codonNumb 16 -> twoTuples, 64 -> codons, 48 -> strong comma free codons
-    * @return either list of twoTuples or codons or strong comma free codons
-    */
-  def getCodons(codonNumb:Int):IndexedSeq[(Any)] = {
-    //range for adding third base
-    val range:Range = codonNumb  match{
-      case 16 => 0 to 0       //-> no third base
-      case 64 | 48 => 0 to 3
-    }
-    // if strong comma free code shall be generated this filter is used
-    val filterScf = (k:Int, i:Int) => {
-      if(codonNumb == 48) k!=i
-      else true
-    }
 
-    var codons = (for {
-      i <- 0 to 3 // -> four nucleobases
-      j <- 0 to 3
-      k <- range
-      if filterScf(k, i)  // if scf option 48 then filter codons
-    } yield {
-      codonNumb match{
-        case 16 => (Base(i),Base(j))
-        case 64 | 48=> (Base(i),Base(j), Base(k))
-      }})
-    codons
-  }
 
 
 
@@ -460,16 +322,7 @@ object Earth{
     println()
   }
 
-  def mRNAtoHTML(mRNA:List[List[Int]], codons:IndexedSeq[(Any)]):String = {
-    var content = "<ul>\n"
-    mRNA.foreach(gene => {
-      content += "<li>\n"
-      gene.foreach(codonID => content += codons(codonID).toString() )
-      content += "</li>\n"
-    })
-    content += "</ul>\n"
-   content
-  }
+
 
   def print2DimTRNAmatrix (matrix:Array[Array[Any]]):Unit = {
     for (
@@ -482,18 +335,7 @@ object Earth{
     }
   }
 
-  //print aaRS-Matrix
-  def print3DimAARSmatrix (matrix:Array[Array[Array[AARS]]]):Unit = {
-    for (
-      i <- 0 until matrix.length;
-      j <- 0 until matrix(0).length;
-      k <- 0 until matrix(0)(0).length
-    ) {
-      val elem = matrix(i)(j)(k)
-      if (elem == null) {}//println(i + ", " + j + ", " + k + " ")
-      else println(i + " , " + j + " , " + k + ": " + matrix(i)(j)(k).toString())
-    }
-  }
+
 
 
   def listToString(list:List[Any]):String ={
