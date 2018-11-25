@@ -43,6 +43,16 @@ object Simulator {
       celly.yTranslate()
       i += 1
     })
+    i = 0
+    time(while(i <= 5000000){
+      celly.yTranslate()
+      i += 1
+    })
+    i = 0
+    time(while(i <= 5000000){
+      cell.translate()
+      i += 1
+    })
 
     //SimulationData.writeToFile(List())
   }
