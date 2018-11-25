@@ -2,6 +2,8 @@ import java.io.{BufferedWriter, File, FileWriter}
 import PrintElem._
 
 object SimulationData {
+  val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\Scala\\"
+
   var mRNAdata:List[List[Int]] = List()
   val generationFitness= new Array[Double](Simulator.steps)
   var protocol:List[String] = List()
@@ -11,7 +13,11 @@ object SimulationData {
   val aaChanges:Array[Array[Int]] = new Array[Array[Int]](Simulator.steps)   //genIds, added amino acids, removed amino acids
   aaChanges(0) = new Array[Int](2)
   val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](Simulator.steps)//Array.fill(steps)(Array.fill(8)(0))  //assumption: max numb of aaRS per field is 8 TODO
-  val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\Scala\\"
+  private[this] var _aaTranslData: (Int, Array[Boolean]) = (0, Array())
+
+  def aaTranslData_=(value: (Int, Array[Boolean])): Unit = {
+    _aaTranslData = value
+  }
 
   /**
     *
