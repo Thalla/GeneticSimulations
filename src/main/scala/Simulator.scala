@@ -1,10 +1,15 @@
 import Earth._
-
+import PrintElem.PrintElem
 
 import scala.collection.mutable.ListBuffer
 
+/**
+  * main method
+  * controls biological simulation using class Cell
+  * receives simulation data from Cell and transfers it to SimulationData
+  */
 object Simulator {
-  val steps = 500000
+  val steps = 1000000         // 1.000000 52s maxSize 100.000, 53s maxSize 50.000, 50s maxSize 500.000, 48s maxSize 1000000, 49s maxSize 2000000, 48s maxSize 1500000
 
   def main(args: Array[String]): Unit = {
 
@@ -18,42 +23,32 @@ object Simulator {
       result
     }
     val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
+    val toPrint = List(PrintElem.generationFitness, PrintElem.aaNumb)
+    val numbPrintElem = toPrint.length
+    var cellData:scala.collection.mutable.Map[PrintElem, Any] = scala.collection.mutable.Map[PrintElem, Any]()
     val cell = new Cell()
-    time(cell.init(path))
-    val celly = new Cell()
-    time(celly.init(path))
-    /*time(while (cell.generationID <= steps - 2) {
-      cell.translate()
-      //SimulationData.aaTranslData_=(cell.aaTranslData)
-      //SimulationData.generationFitness(cell.generationID-1)= (data.numbAaWithTransl.toDouble/aaNumb.toDouble)* data.unambiguousness   ///TODO tell cell its fitness or calculate fitness not while translation but while codeTable creation /((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
+    cellData += (PrintElem.generationFitness -> cell.generationFitness)
+    cellData += (PrintElem.aaNumb -> cell.aaNumb)
+    time(cell.init(path)) // generation -1
+
+    time(do{
+      cell.translate() // results in a new generation
+      //SimulationData.updateAaHasTransl(cell.aaTranslData._2, cell.generationID)
+
+
+      SimulationData.update(cell.generationFitness, cell.aaTranslData._1, cell.generationID)        ///TODO calculate fitness not while translation but while codeTable creation /((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
+
       //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
 
-      if (cell.generationID % 10000 == 0) {
-        //SimulationData.addToProtocol(cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)))
-      }
-    })*/
+    }while (cell.generationID <= steps - 2))
 
-    var i = 0
-    time(while(i <= 5000000){
-      cell.translate()
-      i += 1
-    })
-    i = 0
-    time(while(i <= 5000000){
-      celly.yTranslate()
-      i += 1
-    })
-    i = 0
-    time(while(i <= 5000000){
-      celly.yTranslate()
-      i += 1
-    })
-    i = 0
-    time(while(i <= 5000000){
-      cell.translate()
-      i += 1
-    })
+    SimulationData.finishOutput(List(PrintElem.generationFitness, PrintElem.aaNumb), cell.generationID)
 
-    //SimulationData.writeToFile(List())
   }
 }
+/*
+if (cell.generationID % 10000 == 0) {
+  //SimulationData.writeArrayToFile(SimulationData.generationFitness.mkString("\n"), path+"generationFitness.csv", true)
+
+  //SimulationData.updateProtocol(cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)))
+}*/

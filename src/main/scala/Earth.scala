@@ -39,21 +39,7 @@ object Earth extends Cell{
 
 
 
-    newComparison = nextCell.aaHasTransl
-      // add line to aaChanges
-      aaChanges(nextCell.generationID) = new Array[Int](2)
-      for(
-        i <- 0 until aaNumb
-      ){
-        (oldComparison(i), newComparison(i)) match {
-          case (false, true) => {
-            aaChanges(nextCell.generationID - 1)(0) += 1
-          }
-          case (true, false) => aaChanges(nextCell.generationID - 1)(1) += 1
-          case _ =>
-        }
-      }
-      oldComparison = newComparison
+
 
 
 
@@ -186,7 +172,7 @@ object Earth extends Cell{
     * @param nReduced same type as n but having less elements
     * @return a random element either chosen from nReduced or else from n
     */
-  def getUniqueRandElem(n:Seq[Any], nReduced:Seq[Any]):Any ={
+  def getUniqueRandElem(n:Array[Any], nReduced:Seq[Any]):Any ={
     val r = new scala.util.Random(22)
     if (nReduced.length >= 1) {
       //get random Tuple

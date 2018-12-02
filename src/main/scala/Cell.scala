@@ -1,8 +1,6 @@
 import java.io.File
 
 import AA.AA
-import Base.Base
-import SimulationData.protocol
 import PrintElem.PrintElem
 import com.github.tototoshi.csv.CSVReader
 
@@ -10,11 +8,10 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.specialized
 import scala.util.Random
 
-
-case class CellData(unambiguousness:Double, mRNAdata:ListBuffer[Int], numbAaWithTransl:Int, aaHasTransl:Array[Boolean])
 /** Cell holds the state of the simulation.
-  * Each cell is a new state with no connection to the old state.
-  * Cell is responsible for computing the next simulation state by translating mRNA, getting a new set of aaRS and creating a new cell with it
+  * State: Everything fits to the generation ID except the livingAARS which are the ones of the next generation.
+  *        The generation ID changes with the translation. So each generation is one translated set. Except generation -1 .
+  * Cell is responsible for computing the next simulation state by translating mRNA and getting a new set of living aaRS
   * TODO connect states, reduce constructor parameters
   * @param mRNA to be translated to get the aaRS and therefore the codeTable for the next cell generation
   * @param codeTable either check the code table or the current aaRSs themselves to find out about the translation from codon to amino acid
@@ -24,20 +21,44 @@ case class CellData(unambiguousness:Double, mRNAdata:ListBuffer[Int], numbAaWith
   */
 class Cell () {
   var livingAARSs:ListBuffer[AARS] = ListBuffer()
-  var generationID:Int = 0
-  def maxAnticodonNumb:Int = 6
+  var generationID:Int = -1
+  private[this] var _generationFitness: Double = _
+
+  def generationFitness: Double = _generationFitness
+
+  private[this] def generationFitness_=(value: Double): Unit = {
+    _generationFitness = value
+  }
+  private [this] val maxAnticodonNumb:Int = 6
   def r = new scala.util.Random(22)
   var codeTable:Array[ListBuffer[Tuple3[AARS, AA, Double]]] = Array()
-  var yCodeTable:Array[Array[ListBuffer[AARS]]] = Array.ofDim[ListBuffer[AARS]](64, 20)
   var mRNA:List[List[Int]] = List()
   var allAARS:Array[Array[Array[AARS]]] = Array()
   var initAA:Vector[AA] = Vector()
-  var codonNumb = 0
+  var codonNumb:Int = 0
   var path = ""
-  var aaNumb = 0
-  var aaRSnumb = 0
-  private[this] var _aaTranslData: (Int, Array[Boolean]) = (0, Array())
+  var aaNumb:Int = _
+  private[this] var _aaRSnumb: Int = _
+
+  def aaRSnumb: Int = _aaRSnumb
+
+  def aaRSnumb_=(value: Int): Unit = {
+    _aaRSnumb = value
+  }
+
+  private[this] var _aaTranslData: (Int, Array[Boolean]) = (0,Array.fill[Boolean](20)(false))  //the second variable exists to remember information from the previous generation to calculate aaChanges
+  var aaChanges:Array[Int] = new Array[Int](2)   //genIds, added amino acids, removed amino acids
+
+
   def aaTranslData: (Int, Array[Boolean]) = _aaTranslData
+
+  private[this] var _unambiguousness: Double = _
+
+  private[this] def unambiguousness: Double = _unambiguousness
+
+  private[this] def unambiguousness_=(value: Double): Unit = {
+    _unambiguousness = value
+  }
 
 
   //var codeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb,aaNumb)
@@ -61,12 +82,11 @@ class Cell () {
     * @return
     */
   def translate():Unit= {
-
-
+    generationID += 1
+    unambiguousness = 0.0
 
     // data init
-    //var unambiguousness:Double = 0.0        //Array.fill(codonNumb)(0.0)  //Eindeutigkeit
-   // var mRNAdata:ListBuffer[Int] = new ListBuffer()
+    var mRNAdata:ListBuffer[Int] = new ListBuffer()
 
     /*def timer[R](block: => R): R = {
       val t0 = System.nanoTime()
@@ -109,9 +129,10 @@ class Cell () {
         var aa:AA=null
         //find aaRS with best translation considering the translation fitness
           if(codeTable(codon) != null){
-            translationCounter += 1
+            translationCounter = codeTable(codon).length
               //find translation with best fitness of all possible translations
               aa = codeTable(codon).maxBy(_._3)._2
+              //codeTable(codon).sum(0)()
           }
 
         if(translationCounter != 0){
@@ -119,7 +140,7 @@ class Cell () {
           //mRNAdata += (aa.id)
 
           if (codon < codonNumb) {
-            //unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
+            unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
           }
         }else{
           isStopped = true
@@ -140,91 +161,11 @@ class Cell () {
         sequence = ListBuffer()
       }
     })
-    generationID += 1
+
+    generationFitness = (aaTranslData._1.toDouble/aaNumb.toDouble)* unambiguousness
     this.livingAARSs = newLivingAARSs
-    //new CellData(unambiguousness, mRNAdata, numbAaWithTransl, aaHasTransl)
   }
 
-  def y():Unit ={
-    yCodeTable = Array.ofDim[ListBuffer[AARS]](codonNumb, initAA.length)
-    livingAARSs.foreach(aaRS => {
-      aaRS.translations.foreach(translation => {
-        if(yCodeTable(translation._1._2)(translation._1._1.id) == null) yCodeTable(translation._1._2)(translation._1._1.id)= ListBuffer(aaRS)
-        else yCodeTable(translation._1._2)(translation._1._1.id) += aaRS
-        //allAARS(aaRS.aaSeq(0).id)(aaRS.aaSeq(1).id)(aaRS.aaSeq(2).id) = aaRS
-      })
-    })}
-
-  def yTranslate() = {
-    y()
-    //update lifeticks
-    var newLivingAARSs:List[AARS] = List()
-    livingAARSs.foreach(aaRS => {
-      aaRS.reduceLifeTicks()
-      if (aaRS.lifeticks > 0) newLivingAARSs = aaRS :: newLivingAARSs
-    })
-    for (
-      gene <- mRNA
-    ) {
-      var sequence: Vector[AA.Value] = Vector()
-      var isStopped: Boolean = false
-      for (
-        codon <- gene if !isStopped
-      ) {
-        //var aaRSCounter = 0
-        var translationCounter = 0
-        var bestAARS: AARS = null
-        var max: Double = 0.0
-        var bestTranslation: Tuple2[AA, Int] = (null, 0)
-        //find aaRS with best translation considering the translation fitness
-        for (
-          aaRSs: ListBuffer[AARS] <- yCodeTable(codon) //find all aaRS that can translate this codon
-        ) {
-          if (!aaRSs.isEmpty) {
-            translationCounter += 1
-            for (
-              aaRS <- aaRSs
-            ) {
-              //aaRSCounter += 1
-              val translationKeys = aaRS.translations.keySet
-              //find translation with best fitness of all possible translations
-              for (
-                tk <- translationKeys
-              ) {
-                if(tk._2 == codon){
-                  val prob: Tuple2[Double, Int] = (aaRS.translations(tk)(0)) //TODO what if more than one item in list?? This is the case when the translation from codon to aa is the same but the codon can have different stems and therefore different probabilities
-                  if (max < prob._1) { // what if == ? -> make list and choose randomly from it TODO
-                    bestTranslation = tk
-                    max = prob._1
-                    bestAARS = aaRS
-                  }
-                }
-              }
-            }
-          }
-        }
-        if(translationCounter != 0){
-          sequence = sequence :+ bestTranslation._1
-          //mRNAdata = mRNAdata :+ (bestTranslation._1.id).toString()
-          if (codon < codonNumb) {
-            //unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
-          }
-        }else{
-          isStopped = true
-        }
-        //aaRSCounter = 0
-  }
-  if (!isStopped) {
-    val newAARS = allAARS(sequence(0).id)(sequence(1).id)(sequence(2).id)
-    newAARS.resetLifeticks()
-      if (!newLivingAARSs.contains(newAARS)) {
-        newLivingAARSs = newAARS :: newLivingAARSs
-      }
-      sequence = Vector()
-    }
-  }
-
-}
 
 
   def updateCodeTable() ={
@@ -238,7 +179,7 @@ class Cell () {
         }
 
     //new codeTable
-    codeTable = new Array[ListBuffer[Tuple3[AARS, AA, Double]]](codonNumb)
+    codeTable = new Array[ListBuffer[(AARS, AA, Double)]](codonNumb)
     val livingAarsIt = livingAARSs.iterator
     while (livingAarsIt.hasNext){
       val aaRS = livingAarsIt.next()
@@ -256,7 +197,20 @@ class Cell () {
         }
       }
     }
+
+
+    aaChanges = new Array[Int](2)
+    for(
+      i <- 0 until aaNumb
+    ){
+      (_aaTranslData._2(i), newAaHasTransl(i)) match {
+        case (false, true) => aaChanges(0) += 1
+        case (true, false) => aaChanges(1) += 1
+        case _ =>
+      }
+    }
     _aaTranslData = (translatedAaCounter, newAaHasTransl)
+
   }
 
   /**
