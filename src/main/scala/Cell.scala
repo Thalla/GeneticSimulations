@@ -31,7 +31,7 @@ class Cell () {
   }
   private [this] val maxAnticodonNumb:Int = 6
   def r = new scala.util.Random(22)
-  var codeTable:Array[ListBuffer[Tuple3[AARS, AA, Double]]] = Array()
+  var codeTable = Array.ofDim[Double](codonNumb, aaNumb)
   var mRNA:List[List[Int]] = List()
   var allAARS:Array[Array[Array[AARS]]] = Array()
   var initAA:Vector[AA] = Vector()
@@ -64,15 +64,40 @@ class Cell () {
   //var codeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb,aaNumb)
   //var codeTable2:Array[ListBuffer[AARS]] = Array.fill[ListBuffer[AARS]](codonNumb){new ListBuffer[AARS]()}
   //var codeTable:Array[Array[Int]] = Array.fill[Array[Int]](codonNumb){Array.fill[Int](aaNumb){0}}
-   var time = 0:Long
-
-
-  def time[R](block: => R): R = {
+   var time1 = 0:Long
+  var time2 = 0:Long
+  var time0 = 0:Long
+  var translTime = 0:Long
+  def translTime[R](block: => R): R = {
     val t0 = System.nanoTime()
     val result = block // call-by-name
     val t1 = System.nanoTime()
     //println("Elapsed time: " + (t1 - t0) + "ns")
-    time += (t1 - t0)
+    translTime += (t1 - t0)
+    result
+  }
+  def time0[R](block: => R): R = {
+    val t0 = System.nanoTime()
+    val result = block // call-by-name
+    val t1 = System.nanoTime()
+    //println("Elapsed time: " + (t1 - t0) + "ns")
+    time0 += (t1 - t0)
+    result
+  }
+  def time1[R](block: => R): R = {
+    val t0 = System.nanoTime()
+    val result = block // call-by-name
+    val t1 = System.nanoTime()
+    //println("Elapsed time: " + (t1 - t0) + "ns")
+    time1 += (t1 - t0)
+    result
+  }
+  def time2[R](block: => R): R = {
+    val t0 = System.nanoTime()
+    val result = block // call-by-name
+    val t1 = System.nanoTime()
+    //println("Elapsed time: " + (t1 - t0) + "ns")
+    time2 += (t1 - t0)
     result
   }
 
@@ -88,13 +113,13 @@ class Cell () {
     // data init
     var mRNAdata:ListBuffer[Int] = new ListBuffer()
 
-    /*def timer[R](block: => R): R = {
+    def timer[R](block: => R): R = {
       val t0 = System.nanoTime()
       val result = block // call-by-name
       val t1 = System.nanoTime()
       println("Elapsed time: " + (t1 - t0) + "ns")
       result
-    }*/
+    }
 
 
    updateCodeTable()
@@ -113,7 +138,7 @@ class Cell () {
 
     val mrnaIt = mRNA.iterator
     // foreach gene
-    time(  while (mrnaIt.hasNext){
+    translTime(  while (mrnaIt.hasNext){
       val gene = mrnaIt.next()
       //start new sequence
       var sequence = new ListBuffer[AA.Value]
@@ -128,11 +153,53 @@ class Cell () {
         var translationCounter = 0
         var aa:AA=null
         //find aaRS with best translation considering the translation fitness
-          if(codeTable(codon) != null){
-            translationCounter = codeTable(codon).length
+        val translations = codeTable(codon)
+          if(translations != null){
+            translationCounter = translations.length
               //find translation with best fitness of all possible translations
-              aa = codeTable(codon).maxBy(_._3)._2
-              //codeTable(codon).sum(0)()
+              //aa = codeTable(codon).maxBy(_._3)._2
+              val aa0 = ()=> {
+                val sum = translations.sum
+                val random = r.nextDouble()
+                var counter = 0.0
+                var i = -1
+                while(counter <= random && i < translationCounter-1){
+                  i += 1
+                 counter +=  translations.lift(i).getOrElse(0.0)
+                }
+                initAA(i)
+              }
+            val aa1 = ()=> {
+                val sum = translations.sum
+                val random = r.nextDouble()*sum //random number between 0 and sum
+                var counter = 0.0
+                var i = -1
+                while(counter <= random && i < translationCounter-1){
+                  i += 1
+                  if(translations(i) != null){
+                    counter += translations(i)
+                  }
+                                  //counter +=  translations.lift(i).getOrElse(0.0)
+                }
+                initAA(i)
+              }
+            val aa2 = ()=> {
+              var i = -1
+              var max = 0.0
+              var maxID = 0
+              while(i < translationCounter-1){
+                i +=1
+                if(translations(i) >  max) {
+                  max = translations(i)
+                  maxID = i
+                }
+
+              }
+              initAA(maxID)
+            }
+            aa = time0(aa0())
+            aa = time2(aa2()) //5.448.988|10.145.916     choose translation by maximal affinity
+            aa = time1(aa1())  //134.005.699|273.530.803  choose translation with probability defined by affinity
           }
 
         if(translationCounter != 0){
@@ -179,7 +246,7 @@ class Cell () {
         }
 
     //new codeTable
-    codeTable = new Array[ListBuffer[(AARS, AA, Double)]](codonNumb)
+    codeTable = Array.ofDim[Double](codonNumb, aaNumb)
     val livingAarsIt = livingAARSs.iterator
     while (livingAarsIt.hasNext){
       val aaRS = livingAarsIt.next()
@@ -191,9 +258,9 @@ class Cell () {
           translatedAaCounter += 1
         }
         if (codeTable(translation._1._2) != null){
-          codeTable(translation._1._2) += Tuple3(aaRS,translation._1._1, translation._2(0)._1)
+          codeTable(translation._1._2)(translation._1._1.id) = translation._2(0)._1 + codeTable(translation._1._2)(translation._1._1.id)
         } else {
-          codeTable(translation._1._2) = ListBuffer(Tuple3(aaRS,translation._1._1, translation._2(0)._1))
+          codeTable(translation._1._2)(translation._1._1.id) = translation._2(0)._1
         }
       }
     }
@@ -291,7 +358,7 @@ class Cell () {
     * @param toHTML
     * @return
     */
-  def toHtmlString(toHTML:List[PrintElem]):String = {
+  /*def toHtmlString(toHTML:List[PrintElem]):String = {
     val codons = getCodons(codonNumb)
     var content = "<!DOCTYPE html >\n<html>\n\t<head>\n\t\t<style>\n\t\t\ttable {\n\t\t\t\tfont-family: arial, sans-serif;\n\t\t\t\tborder-collapse: collapse;\n\t\t\t\twidth: 100%;\n\t\t\t}\n\n\t\t\ttd, th {\n\t\t\t\tborder: 1px solid #dddddd;\n\t\t\t\ttext-align: left;\n\t\t\t\tpadding: 4px; margin: 0px;\n\t\t\t}\n\n\t\t\ttr:nth-child(even) {\n\t\t\t\tbackground-color: #dddddd;\n\t\t\t}\n\t\t</style>\n\t</head>\n\t<body>"
     content += "</br><h1>Generation " + generationID + "</h1>"
@@ -357,7 +424,7 @@ class Cell () {
       }
     })
     content
-  }
+  }*/
 
 
 
@@ -379,7 +446,7 @@ class Cell () {
     // create codons
     val codons = getCodons(codonNumb)
     allAARS = new Array[Array[Array[AARS]]](aaNumb)
-    codeTable = new Array[ListBuffer[Tuple3[AARS, AA, Double]]](codonNumb)
+    codeTable = Array.ofDim[Double](codonNumb, aaNumb)
 
 
     // two mRNA creation versions, first random with no gene twice, second saved in file
