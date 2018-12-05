@@ -158,32 +158,22 @@ class Cell () {
             translationCounter = translations.length
               //find translation with best fitness of all possible translations
               //aa = codeTable(codon).maxBy(_._3)._2
-              val aa0 = ()=> {
-                val sum = translations.sum
-                val random = r.nextDouble()
-                var counter = 0.0
-                var i = -1
-                while(counter <= random && i < translationCounter-1){
-                  i += 1
-                 counter +=  translations.lift(i).getOrElse(0.0)
-                }
-                initAA(i)
-              }
+
             val aa1 = ()=> {
-                val sum = translations.sum
-                val random = r.nextDouble()*sum //random number between 0 and sum
+                val sum = time0(translations.sum)
+                val random = time1(r.nextDouble()*sum) //random number between 0 and sum
                 var counter = 0.0
                 var i = -1
                 while(counter <= random && i < translationCounter-1){
                   i += 1
                   if(translations(i) != null){
-                    counter += translations(i)
+                    time2(counter += translations(i))
                   }
                                   //counter +=  translations.lift(i).getOrElse(0.0)
                 }
                 initAA(i)
               }
-            val aa2 = ()=> {
+            /*val aa2 = ()=> {
               var i = -1
               var max = 0.0
               var maxID = 0
@@ -196,10 +186,8 @@ class Cell () {
 
               }
               initAA(maxID)
-            }
-            aa = time0(aa0())
-            aa = time2(aa2()) //5.448.988|10.145.916     choose translation by maximal affinity
-            aa = time1(aa1())  //134.005.699|273.530.803  choose translation with probability defined by affinity
+            }*/
+            aa = aa1()
           }
 
         if(translationCounter != 0){

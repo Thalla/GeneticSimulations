@@ -13,7 +13,39 @@ object Simulator {
 
   def main(args: Array[String]): Unit = {
 
+    val l:List[Double] = List.fill(20)(3.31413542346243625475251535426443765475687735623454365768)
+    time(sum0)
+    time(sum1())
+    time(sum3())
 
+    def sum0 ():Unit={      // 10.000000 1.829.193.554ns
+      var i = 0
+      while(i <= 10000000){
+        l.sum
+        i += 1
+      }
+    }
+
+
+    def sum1 ():Unit={      // 10.000000 34.258.754ns
+      var i = 0
+      while(i <= 10000000) {
+        var sum = 0.0
+        val lit = l.iterator
+        while (lit.hasNext) {
+          sum += lit.next()
+          i += 1
+        }
+      }
+    }
+
+    def sum3 ():Unit={      // 10.000000 10.640.276.912ns
+      var i = 0
+      while(i <= 10000000) {
+        l.par.foldLeft(0.0){_+_}
+        i += 1
+      }
+    }
 
     def time[R](block: => R): R = {
       val t0 = System.nanoTime()
