@@ -27,15 +27,15 @@ object Simulator {
     }
 
 
-    def sum1 ():Unit={      // 10.000000 34.258.754ns
+    def sum1 ():Unit={      // 10.000000 510.270.584ns
       var i = 0
       while(i <= 10000000) {
         var sum = 0.0
         val lit = l.iterator
         while (lit.hasNext) {
           sum += lit.next()
-          i += 1
         }
+        i += 1
       }
     }
 
