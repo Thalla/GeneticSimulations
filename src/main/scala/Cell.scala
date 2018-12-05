@@ -157,37 +157,55 @@ class Cell () {
           if(translations != null){
             translationCounter = translations.length
               //find translation with best fitness of all possible translations
-              //aa = codeTable(codon).maxBy(_._3)._2
+            /*var sum = 0.0
+            var counter = 0.0
+            val lit = translations.iterator
+            var maxID = 0
+            var maxValue = 0.0
+            var i = 0
+            while (lit.hasNext) {
+              val value = lit.next()
+              sum += value
+              if(value > maxValue){
+                maxID = i
+                maxValue = value
+              }
+              if(translations(i) != null){
+                counter += translations(i)
+              }
+              i+=1
+            }
+            while (lit.hasNext) {
+              val value = lit.next()
+              sum += value
+              if(value > maxValue){
+                maxID = i
+                maxValue = value
+              }
+              if(translations(i) != null){
+                counter += translations(i)
+              }
+              i+=1
+            }
+            aa = initAA(maxID)
+            val random = r.nextDouble()*13*/
 
-            val aa1 = ()=> {
-                val sum = time0(translations.sum)
-                val random = time1(r.nextDouble()*sum) //random number between 0 and sum
+                var sum = 0.0
+                val lit = translations.iterator
+                while (lit.hasNext) {
+                  sum += lit.next()
+                }
+                val random = r.nextDouble()*sum //random number between 0 and sum
                 var counter = 0.0
                 var i = -1
                 while(counter <= random && i < translationCounter-1){
                   i += 1
                   if(translations(i) != null){
-                    time2(counter += translations(i))
+                    counter += translations(i)
                   }
                                   //counter +=  translations.lift(i).getOrElse(0.0)
                 }
-                initAA(i)
-              }
-            /*val aa2 = ()=> {
-              var i = -1
-              var max = 0.0
-              var maxID = 0
-              while(i < translationCounter-1){
-                i +=1
-                if(translations(i) >  max) {
-                  max = translations(i)
-                  maxID = i
-                }
-
-              }
-              initAA(maxID)
-            }*/
-            aa = aa1()
+            aa = initAA(i)
           }
 
         if(translationCounter != 0){
