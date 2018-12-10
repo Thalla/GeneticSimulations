@@ -22,11 +22,11 @@ object Simulator {
       result
     }
     val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
-    val toPrint = List(PrintElem.generationFitness, PrintElem.aaNumb)
+    val toPrint = List(PrintElem.codeTableFitness, PrintElem.aaNumb)
     val numbPrintElem = toPrint.length
     var cellData:scala.collection.mutable.Map[PrintElem, Any] = scala.collection.mutable.Map[PrintElem, Any]()
     val cell = new Cell()
-    cellData += (PrintElem.generationFitness -> cell.generationFitness)
+    cellData += (PrintElem.codeTableFitness -> cell.codeTableFitness)
     cellData += (PrintElem.aaNumb -> cell.aaNumb)
     time(cell.init(path)) // generation -1
 
@@ -35,19 +35,19 @@ object Simulator {
       //SimulationData.updateAaHasTransl(cell.aaTranslData._2, cell.generationID)
 
 
-      SimulationData.update(cell.generationFitness, cell.aaTranslData._1, cell.generationID)        ///TODO calculate fitness not while translation but while codeTable creation /((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
+      SimulationData.update(cell.codeTableFitness, cell.aaTranslData._1, cell.generationID)        ///TODO calculate fitness not while translation but while codeTable creation /((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
 
       //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
 
     }while (cell.generationID <= steps - 2))
 
-    SimulationData.finishOutput(List(PrintElem.generationFitness, PrintElem.aaNumb), cell.generationID)
+    SimulationData.finishOutput(List(PrintElem.codeTableFitness, PrintElem.aaNumb), cell.generationID)
 
   }
 }
 /*
 if (cell.generationID % 10000 == 0) {
-  //SimulationData.writeArrayToFile(SimulationData.generationFitness.mkString("\n"), path+"generationFitness.csv", true)
+  //SimulationData.writeArrayToFile(SimulationData.codeTableFitness.mkString("\n"), path+"codeTableFitness.csv", true)
 
   //SimulationData.updateProtocol(cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)))
 }*/

@@ -9,7 +9,7 @@ import PrintElem._
 object SimulationData {
   val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
   val maxSize = 1500000
-  private[this] var _generationFitness: Array[Double] = new Array[Double](maxSize)
+  private[this] var _codeTableFitness: Array[Double] = new Array[Double](maxSize)
   private[this] var protocol:List[String] = List()
   private[this] var oldComparison = new Array[Array[Boolean]](20)   //TODO
   val aaChanges:Array[Array[Int]] = new Array[Array[Int]](Simulator.steps)   //genIds, added amino acids, removed amino acids
@@ -19,13 +19,13 @@ object SimulationData {
   private [this] val _aaNumb = new Array[Integer](maxSize)
 
 
-  def update(generationFitnessValue:Double, aaNumbValue:Int, genID:Int):Unit = {
+  def update(codeTableFitnessValue:Double, aaNumbValue:Int, genID:Int):Unit = {
     if(genID%maxSize == 0 && genID != 0){
       var append = true
       if(genID == maxSize) append = false
-      writeToFile(_generationFitness.mkString("\n"), path+"generationFitness.csv", append)
+      writeToFile(_codeTableFitness.mkString("\n"), path+"codeTableFitness.csv", append)
     }
-    _generationFitness(genID%maxSize) = generationFitnessValue
+    _codeTableFitness(genID%maxSize) = codeTableFitnessValue
   }
 
 
@@ -106,7 +106,7 @@ object SimulationData {
       elem <- toPrint
     ){
       elem match {
-        case PrintElem.generationFitness => toFile(_generationFitness.take(genID).mkString("\n"), elem.toString())
+        case PrintElem.codeTableFitness => toFile(_codeTableFitness.take(genID).mkString("\n"), elem.toString())
         case PrintElem.aaNumb => toFile(_aaNumb.take(genID).mkString("\n"), elem.toString())
       }
     }

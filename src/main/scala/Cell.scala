@@ -22,12 +22,12 @@ import scala.util.Random
 class Cell () {
   var livingAARSs:ListBuffer[AARS] = ListBuffer()
   var generationID:Int = -1
-  private[this] var _generationFitness: Double = _
+  private[this] var _codeTableFitness: Double = _
 
-  def generationFitness: Double = _generationFitness
+  def codeTableFitness: Double = _codeTableFitness
 
-  private[this] def generationFitness_=(value: Double): Unit = {
-    _generationFitness = value
+  private[this] def codeTableFitness_=(value: Double): Unit = {
+    _codeTableFitness = value
   }
   private [this] val maxAnticodonNumb:Int = 6
   def r = new scala.util.Random(22)
@@ -155,7 +155,6 @@ class Cell () {
         //find aaRS with best translation considering the translation fitness
         val translations = codeTable(codon)
           if(translations != null){
-            translationCounter = translations.length
               //find translation with best fitness of all possible translations
             /*var sum = 0.0
             var counter = 0.0
@@ -198,10 +197,12 @@ class Cell () {
                 val random = r.nextDouble()*sum //random number between 0 and sum
                 var counter = 0.0
                 var i = -1
-                while(counter <= random && i < translationCounter-1){
+                while(counter <= random && i < aaNumb-1){
                   i += 1
-                  if(translations(i) != null){
+                 val n :Double = 0.0
+                  if(translations(i) != n){
                     counter += translations(i)
+                    translationCounter += 1
                   }
                                   //counter +=  translations.lift(i).getOrElse(0.0)
                 }
@@ -235,7 +236,7 @@ class Cell () {
       }
     })
 
-    generationFitness = (aaTranslData._1.toDouble/aaNumb.toDouble)* unambiguousness
+    codeTableFitness = (aaTranslData._1.toDouble/aaNumb.toDouble)* unambiguousness
     this.livingAARSs = newLivingAARSs
   }
 
