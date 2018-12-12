@@ -28,7 +28,7 @@ object Simulator {
     val cell = new Cell()
     cellData += (PrintElem.codeTableFitness -> cell.codeTableFitness)
     cellData += (PrintElem.aaNumb -> cell.aaNumb)
-    time(cell.init(path)) // generation -1
+    time(cell.init(path, newAARS = false, similarAARS = false)) // generation -1
 
     time(do{
       cell.translate() // results in a new generation
