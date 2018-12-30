@@ -6,8 +6,8 @@ import PrintElem._
   *
   * produces file output
   */
-object SimulationData {
-  val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
+class SimulationData(path:String) {
+  //val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
   val maxSize = 1500000
   private[this] var _codeTableFitness: Array[Double] = new Array[Double](maxSize)
   private[this] var protocol:List[String] = List()
@@ -18,6 +18,10 @@ object SimulationData {
   private[this] var _aaHasTranslation: Array[Array[Boolean]] = new Array[Array[Boolean]](maxSize)
   private [this] val _aaNumb = new Array[Integer](maxSize)
 
+  def init(): Unit ={
+    writeToFile("", path+"codeTableFitness.csv", false)
+    writeToFile("", path+"aaNumb.csv", false)
+  }
 
   def update(codeTableFitnessValue:Double, aaNumbValue:Int, genID:Int):Unit = {
     if(genID%maxSize == 0 && genID != 0){
@@ -97,7 +101,7 @@ object SimulationData {
     val toFile = (data:String, filename:String) => {
       val file = new File(path + filename + ".csv")
       val bw = new BufferedWriter(new FileWriter(file, true))
-      bw.newLine()
+      //bw.newLine()
       bw.write(data)
       bw.close()
     }

@@ -30,7 +30,7 @@ class Cell () {
     _codeTableFitness = value
   }
   private [this] val maxAnticodonNumb:Int = 6
-  def r = new scala.util.Random(22)
+  val r = new scala.util.Random(22)
   var codeTable = Array.ofDim[Double](codonNumb, aaNumb)
   var mRNA:List[List[Int]] = List()
   var allAARS:Array[Array[Array[AARS]]] = Array()
@@ -177,9 +177,9 @@ class Cell () {
         if(translationCounter != 0){
           sequence +=  aa
 
-          if (codon < codonNumb) {
+          /*if (codon < codonNumb) {
             unambiguousness += (1.0/translationCounter.toDouble)/codonNumb.toDouble  //aaRSCounter.toDouble
-          }
+          }*/
         }else{
           isStopped = true
         }
@@ -193,7 +193,7 @@ class Cell () {
         sequence = ListBuffer()
       }
     })
-    codeTableFitness = (aaTranslData._1.toDouble/aaNumb.toDouble)* unambiguousness
+    /*codeTableFitness = (aaTranslData._1.toDouble/aaNumb.toDouble)* unambiguousness*/
     this.livingAARSs = newLivingAARSs
   }
 
@@ -202,14 +202,10 @@ class Cell () {
     *
     */
   def updateCodeTable() ={
-    val newAaHasTransl = new Array[Boolean](20)
+    val newAaHasTransl = Array.fill[Boolean](20)(false)
     var translatedAaCounter = 0
-    var i = 0
-    //initialize
-        while (i < aaNumb){
-          newAaHasTransl(i) = false
-          i += 1
-        }
+    val codonTransl = Array.fill[Boolean](codonNumb*aaNumb)(false)
+    val codonTranslCounter = Array.fill[Int](codonNumb)(0)
 
     //new codeTable
     codeTable = Array.ofDim[Double](codonNumb, aaNumb)
@@ -222,6 +218,11 @@ class Cell () {
         if (newAaHasTransl(translation._1._1.id) == false){
           newAaHasTransl(translation._1._1.id) = true
           translatedAaCounter += 1
+        }
+        val fieldPos = translation._1._2*(aaNumb)+translation._1._1.id
+        if(codonTransl(fieldPos) == false){
+          codonTransl(fieldPos) = true
+          codonTranslCounter(translation._1._2) += 1
         }
         if (codeTable(translation._1._2) != null){
           codeTable(translation._1._2)(translation._1._1.id) = translation._2(0)._1 + codeTable(translation._1._2)(translation._1._1.id)
@@ -241,7 +242,24 @@ class Cell () {
         case _ =>
       }
     }
+
     _aaTranslData = (translatedAaCounter, newAaHasTransl)
+
+    var sum = 0.0
+    val cNumb = codonNumb.toDouble
+    val lit = codonTranslCounter.iterator
+    while (lit.hasNext) {
+      val elem = lit.next().toDouble
+      val n:Double = 0.0
+      if(elem != n){
+        sum +=  (1.0/elem)/cNumb
+      }
+
+    }
+    unambiguousness = sum
+
+    codeTableFitness = (translatedAaCounter.toDouble/aaNumb.toDouble)* unambiguousness
+
 
   }
 
@@ -485,7 +503,7 @@ class Cell () {
   def writeAARStoFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int, initAA:Vector[AA], file:File):Unit = {
     CSVWriter.open(file).close()
     val writer = CSVWriter.open(file, append= true)
-    val r = new scala.util.Random(22)
+    //val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
     val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)  //TODO remove redundancy: this is the same as maxAnticodonNumb in Cell
 
@@ -495,7 +513,6 @@ class Cell () {
       j <- 0 until initAA.length;
       k <- 0 until initAA.length
     ){
-      val aaRSline:String = ""
       //var translations:Map[(AA, Int),List[(Double, Int)]] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
       var antiCodonNumb = numbOfAnticodonsForOneAARS(r.nextInt(numbOfAnticodonsForOneAARS.length))      //number of anticodons that are recognized by the aaRS is chosen randomly
 
@@ -519,7 +536,7 @@ class Cell () {
   def writeAARSwithSimilarityToFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int, initAA:Vector[AA], file:File):Unit = {
     CSVWriter.open(file).close()
     val writer = CSVWriter.open(file, append= true)
-    val r = new scala.util.Random(22)
+    //val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
     val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)  //TODO remove redundancy: this is the same as maxAnticodonNumb in Cell
 
@@ -527,30 +544,31 @@ class Cell () {
     for(
       i <- 0 until initAA.length
     ){
-      val aa = r.nextInt(initAA.length) // every aaRS amino acid sequence that starts with the same amino acid translates to the same amino acid. TODO the same aa as it starts with??
+      val aa = i//r.nextInt(initAA.length) // every aaRS amino acid sequence that starts with the same amino acid translates to the same amino acid. TODO the same aa as it starts with??
       for (
         j <- 0 until initAA.length
-
       ){
-        val codon = r.nextInt(codonNumb)
         for (
           k <- 0 until initAA.length
         ){
-          val aaRSline: String = ""
+          val codon = r.nextInt(codonNumb)
           //var translations:Map[(AA, Int),List[(Double, Int)]] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
-          var antiCodonNumb = numbOfAnticodonsForOneAARS(r.nextInt(numbOfAnticodonsForOneAARS.length)) //number of anticodons that are recognized by the aaRS is chosen randomly
+          val antiCodonNumb = numbOfAnticodonsForOneAARS(r.nextInt(numbOfAnticodonsForOneAARS.length)) //number of anticodons that are recognized by the aaRS is chosen randomly
 
           for (
             _ <- 0 until antiCodonNumb
           ){
             // aa1 aa2 aa3, aa, anticodon, probability, stem
             val rand = r.nextInt()
-            if(rand >= 0.5){
+            if(rand >= 0.8){
               writer.writeRow(Seq(i, j, k, aa, codon, r.nextDouble().toString(), r.nextInt(codons.length)))
-            } else if (rand >= 0.25){
+            } else if (rand >= 0.5){
               writer.writeRow(Seq(i, j, k, r.nextInt(initAA.length), codon, r.nextDouble().toString(), r.nextInt(codons.length)))
-            } else {
+            } else if (rand >= 0.2) {
               writer.writeRow(Seq(i, j, k, aa, r.nextInt(codonNumb), r.nextDouble().toString(), r.nextInt(codons.length)))
+            }
+            else {
+              writer.writeRow(Seq(i, j, k, r.nextInt(initAA.length), r.nextInt(codonNumb), r.nextDouble().toString(), r.nextInt(codons.length)))
             }
           }
         }
