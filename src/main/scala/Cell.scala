@@ -19,7 +19,7 @@ import scala.util.Random
   * @param allAARS this list holds all valid aaRS that could exist and their randomly predefined behaviour
   * @param generationID nextCell has generationID+1
   */
-class Cell () {
+class Cell (val r:Random) {
   var livingAARSs:ListBuffer[AARS] = ListBuffer()
   var generationID:Int = -1
   private[this] var _codeTableFitness: Double = _
@@ -30,7 +30,7 @@ class Cell () {
     _codeTableFitness = value
   }
   private [this] val maxAnticodonNumb:Int = 6
-  val r = new scala.util.Random(22)
+
   var codeTable = Array.ofDim[Double](codonNumb, aaNumb)
   var mRNA:List[List[Int]] = List()
   var allAARS:Array[Array[Array[AARS]]] = Array()
@@ -271,9 +271,9 @@ class Cell () {
     * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
     * @return start cell
     */
-  def init (path:String, aaRSnumb:Int = 22, aarsLength:Int = 3, initAA:Vector[AA] = AA.values.toVector, codonNumb:Int = 64, newLivingAARS:Boolean = false, newAARS:Boolean = false, similarAARS:Boolean = true, newMRNA:Boolean = false):Unit= {
+  def init (path:String, aaRSnumb:Int = 22, aarsLength:Int = 3, aarsLifeticksStartValue:Int = 10, initAaNumb:Int = 20, codonNumb:Int = 64, newLivingAARS:Boolean = false, newAARS:Boolean = false, similarAARS:Boolean = true, newMRNA:Boolean = false):Unit= {
     this.codonNumb = codonNumb
-    this.initAA = initAA
+    initAA = AA.values.toVector.take(initAaNumb)
     this.aaNumb = initAA.length
     this.path = path
     // create codons
@@ -337,7 +337,7 @@ class Cell () {
           k <- 0 until aaNumb
         ){
           val aaSeq:Vector[AA]= Vector(initAA(i), initAA(j), initAA(k))
-          allAARS(i)(j)(k) = new AARS(aaSeq, translations)
+          allAARS(i)(j)(k) = new AARS(aaSeq, translations, aarsLifeticksStartValue)
 
         }
       }
@@ -358,17 +358,16 @@ class Cell () {
 
 
     // read the living aaRS
-    val lifeticksStartValue = allAARS(0)(0)(0).lifeticksStartValue
     reader = CSVReader.open(new File(path+"livingAARS.csv"))
     data = reader.all()
     for(
       line <- data
     ){
-      allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = lifeticksStartValue
+      allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = aarsLifeticksStartValue
       livingAARSs = livingAARSs :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
     }
     reader.close()
-
+    livingAARSs = livingAARSs.distinct
     //new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
 
   }

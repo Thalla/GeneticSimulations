@@ -1,9 +1,7 @@
 import AA._
-import Earth.{getCodons}
 
-class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, Int)]]) {
+class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, Int)]], val lifeticksStartValue:Int) {
 
-  val lifeticksStartValue = 10
   var lifeticks = 0
 
   def reduceLifeTicks():AARS ={
@@ -19,8 +17,7 @@ class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, I
     "\n" + "aaRS: " + aaSeq.mkString(", ") + "\nlifeticks: " + lifeticks + "\nTranslations: " + translations.mkString(", ")
   }
 
-  def translationsToHtmlString():String= {
-    val codons = getCodons(64)
+  def translationsToHtmlString(codons:Array[Int]):String= {
     var content = "<table>"
     for (
       translation <- translations

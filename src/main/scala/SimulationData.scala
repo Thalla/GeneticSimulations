@@ -23,20 +23,25 @@ class SimulationData(path:String) {
     writeToFile("", path+"aaNumb.csv", false)
   }
 
-  def update(codeTableFitnessValue:Double, aaNumbValue:Int, genID:Int):Unit = {
+  /**
+    *
+    * @param value new fitness value to be added
+    * @param genID update position
+    */
+  def updateCodeTableFitness(value:Double, genID:Int):Unit = {
     if(genID%maxSize == 0 && genID != 0){
       var append = true
       if(genID == maxSize) append = false
       writeToFile(_codeTableFitness.mkString("\n"), path+"codeTableFitness.csv", append)
     }
-    _codeTableFitness(genID%maxSize) = codeTableFitnessValue
+    _codeTableFitness(genID%maxSize) = value
   }
 
 
   /**
     *
-    * @param value
-    * @param genID
+    * @param value new aaNumb value to be added
+    * @param genID update position
     */
   def updateAaNumb(value: Int, genID:Int): Unit = {
     if(genID%maxSize == 0 && genID != 0) {
@@ -49,15 +54,16 @@ class SimulationData(path:String) {
 
   /**
     *
-    * @param value
-    * @param genID
+    * @param value new aaNumb value to be added
+    * @param genID update position
     */
   def updateAaHasTransl(value: Array[Boolean], genID:Int):Unit = {
-    if(genID%maxSize == 0) {
+    if(genID%maxSize == 0 && genID != 0) {
       var append = true
-      if(genID == 0) append = false
-      writeToFile(_aaNumb.mkString("\n"), path+"aaNumb.csv", append)
+      if(genID == maxSize) append = false
+      writeToFile(_aaHasTranslation.mkString("\n"), path+"aaHasTranslation.csv", append)
     }
+    _aaHasTranslation(genID%maxSize) = value
   }
 
   /**
