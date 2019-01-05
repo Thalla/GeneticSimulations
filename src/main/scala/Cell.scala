@@ -264,47 +264,70 @@ class Cell (val r:Random) {
   }
 
 
-  /** creates a start cell, each cell is one generation
-    * @param aaRSnumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
-    * @param aarsLength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
+  /** initializes the cell and the file structure
+    * @param geneNumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
+    * @param geneLength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
     * @param initAA initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
     * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
-    * @return start cell
     */
-  def init (path:String, aaRSnumb:Int = 22, aarsLength:Int = 3, aarsLifeticksStartValue:Int = 10, initAaNumb:Int = 20, codonNumb:Int = 64, newLivingAARS:Boolean = false, newAARS:Boolean = false, similarAARS:Boolean = true, newMRNA:Boolean = false):Unit= {
-    this.codonNumb = codonNumb
-    initAA = AA.values.toVector.take(initAaNumb)
-    this.aaNumb = initAA.length
-    this.path = path
-    // create codons
+  def init (basePath:String, mrnaSeed:Int, mrnaId:Int, geneNumb:Int = 22, geneLength:Int = 3, aarsLifeticksStartValue:Int = 10, initAaNumb:Int = 20, aarsSeed:Int, codonNumb:Int = 64, livingAarsId:Int, similarAars:Boolean = true, outputSeed:Int):Unit= {
+
     val codons = getCodons(codonNumb)
-    allAARS = new Array[Array[Array[AARS]]](aaNumb)
+    this.aaNumb = initAaNumb
+
+    //init codeTable
     codeTable = Array.ofDim[Double](codonNumb, aaNumb)
 
-    // create mRNA (List of genes. Each gene is a List of codon IDs as long as aarsLength)
-    if(newMRNA){
-      val mRNA:List[List[Int]] = getRandomMRNA(codons.toList, aarsLength, aaRSnumb)
-      writeMRNAtoFile(codons.toList, aarsLength, aaRSnumb, new File(path+"mRNA.csv"))
-    }
+    //init mRNA
+    this.codonNumb = codonNumb
+    path = basePath
+    val mrnaName = writeNewMrna(path, mrnaSeed, codons, geneLength, geneNumb, mrnaId)
+    path += s"$mrnaName\\"
+    mRNA = readMrna(path + s"$mrnaName.csv")
 
-    // create aaRS file
-    if(newAARS == true){
-      if(similarAARS == true){
-        writeAARSwithSimilarityToFile(codons.toList, aarsLength, aaRSnumb, codonNumb, initAA, new File(path+"aaRS.csv"))
-      } else {
-        writeAARStoFile(codons.toList, aarsLength, aaRSnumb, codonNumb, initAA, new File(path+"aaRS.csv"))
-      }
-    }
+    //init initAA
+    initAA = AA.values.toVector.take(initAaNumb)
+    path += s"initAaNumb_$initAaNumb\\"
 
-    if(newLivingAARS == true){
-      //create living aaRS
-      writeLivingAarsToFile(aaRSnumb)
-    }
+    //init aaRS
+    path += s"similar_$similarAars\\"
+    val aarsName = writeNewAars(path, similarAars, aarsSeed, codons, geneLength, geneNumb)
+    path += s"$aarsName\\"
+    allAARS = readAars(path + s"$aarsName.csv", initAaNumb, aarsLifeticksStartValue)
 
-    // read mRNA
-    var reader = CSVReader.open(new File(path+"mRNA.csv"))
-    var data = reader.all()
-    //var mRNA:List[List[Int]] = List()
+    //init livingAARS
+    val livingAarsName = writeNewLivingAars(path, livingAarsId, geneNumb)
+    path += s"$livingAarsName\\"
+    livingAARSs = readLivingAars(path + s"$livingAarsName.csv", allAARS, aarsLifeticksStartValue)
+
+    //init outputFolder
+    path += s"output_s$outputSeed\\"
+    new File(path).mkdirs()
+  }
+
+  /**
+    * Creates new mRNA if a mRNA with the given parameters doesn't exist yet.
+    * @param basePath
+    * @param mrnaSeed
+    * @param codonNumb
+    * @param initAaNumb
+    * @param id
+    * @return fileName: name of the mRNA file that fits to the given parameters
+    */
+  def writeNewMrna(path:String, mrnaSeed:Int, codons:IndexedSeq[(Any)], geneLength:Int, geneNumb:Int, id:Int): String = {
+    val mrnaName = s"mRNA_s$mrnaSeed" + s"_c$codonNumb" + s"_gl$geneLength" + s"_gn$geneNumb" + s"_#$id"
+    val mrnaPath = path + mrnaName + "\\"
+    if (!new File(mrnaPath).exists()) {
+      new File(mrnaPath).mkdirs()
+      val mRNA: List[List[Int]] = getRandomMRNA(codons.toList, geneLength, geneNumb)
+      writeMRNAtoFile(codons.toList, geneLength, geneNumb, new File(mrnaPath + mrnaName + ".csv"))
+    }
+    mrnaName
+  }
+
+  def readMrna(path:String): List[List[Int]] ={
+    var reader = CSVReader.open(new File(path))
+    val data = reader.all()
     for(
       line <- data
     ){
@@ -317,28 +340,58 @@ class Cell (val r:Random) {
       mRNA = mRNA :+ gene
     }
     reader.close()
+    mRNA
+  }
 
-    // read aaRS
-    reader = CSVReader.open(new File(path+"aaRS.csv"))
-    data = reader.all()
+  /**
+    *
+    * @param path
+    * @param similarAars
+    * @param aarsSeed
+    * @param codons
+    * @param geneLength
+    * @param geneNumb
+    * @return
+    */
+  def writeNewAars(path:String, similarAars:Boolean, aarsSeed:Int, codons:IndexedSeq[Any], geneLength:Int, geneNumb:Int):String ={
+    val aarsName = s"aaRS_s$aarsSeed"
+    val filePath = path + s"$aarsName\\"
+    if( ! new File(filePath).exists) {
+      new File(filePath).mkdirs()
+      if(similarAars) writeAARSwithSimilarityToFile(codons.toList, geneLength, geneNumb, codonNumb, initAA, new File(filePath+ s"$aarsName.csv"), aarsSeed)
+      else writeAARStoFile(codons.toList, geneLength, geneNumb, codonNumb, initAA, new File(filePath+ s"$aarsName.csv"), aarsSeed)
+    }
+    aarsName
+  }
+
+  /**
+    *
+    * @param path
+    * @param initAaNumb
+    * @param aarsLifeticksStartValue
+    * @return
+    */
+  def readAars(path:String, initAaNumb:Int, aarsLifeticksStartValue:Int): Array[Array[Array[AARS]]] ={
+    allAARS = new Array[Array[Array[AARS]]](initAaNumb)
+    val reader = CSVReader.open(new File(path))
+    val data = reader.all()
     var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
     // Array with all existing aaRS, initialised with placeholders
     //var allAARS:Array[Array[Array[AARS]]] = Array.fill[Array[Array[AARS]]](aaNumb)(Array.fill[Array[AARS]](aaNumb)(Array.fill[AARS](aaNumb)(new AARS(Vector(), translations))))
     // give each aaRS in allAARS the correct aaSeq (is dependent from its position in allAARS)
     for(
-      i <- 0 until aaNumb
+      i <- 0 until initAaNumb
     ){
-      allAARS(i) = new Array [Array[AARS]](aaNumb)
+      allAARS(i) = new Array [Array[AARS]](initAaNumb)
       for(
-        j <- 0 until aaNumb
+        j <- 0 until initAaNumb
       ){
-        allAARS(i)(j) = new Array [AARS](aaNumb)
+        allAARS(i)(j) = new Array [AARS](initAaNumb)
         for(
-          k <- 0 until aaNumb
+          k <- 0 until initAaNumb
         ){
           val aaSeq:Vector[AA]= Vector(initAA(i), initAA(j), initAA(k))
           allAARS(i)(j)(k) = new AARS(aaSeq, translations, aarsLifeticksStartValue)
-
         }
       }
     }
@@ -356,10 +409,30 @@ class Cell (val r:Random) {
     }
     reader.close()
 
+    allAARS
+  }
 
+  /**
+    *
+    * @param path
+    * @param livingAarsId
+    * @param geneNumb
+    * @return fileName
+    */
+  def writeNewLivingAars(path: String, livingAarsId: Int, geneNumb: Int): String ={
+    val livingAarsName = s"livingAars_#$livingAarsId"
+    val filePath = path + s"$livingAarsName\\"
+    if( ! new File(filePath).exists) {
+      new File(filePath).mkdirs()
+      writeLivingAarsToFile(filePath + s"$livingAarsName.csv", livingAarsId, geneNumb)
+    }
+    livingAarsName
+  }
+
+  def readLivingAars(path: String, allAARS: Array[Array[Array[AARS]]], aarsLifeticksStartValue: Int): ListBuffer[AARS] ={
     // read the living aaRS
-    reader = CSVReader.open(new File(path+"livingAARS.csv"))
-    data = reader.all()
+    val reader = CSVReader.open(new File(path))
+    val data = reader.all()
     for(
       line <- data
     ){
@@ -368,11 +441,11 @@ class Cell (val r:Random) {
     }
     reader.close()
     livingAARSs = livingAARSs.distinct
-    //new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
-
+    livingAARSs
   }
 
-  /** generate from nucleobases
+
+    /** generate from nucleobases
     * @param codonNumb 16 -> twoTuples, 64 -> codons, 48 -> strong comma free codons
     * @return either list of twoTuples or codons or strong comma free codons
     */
@@ -499,13 +572,13 @@ class Cell (val r:Random) {
     * @param geneNumb
     * @param file
     */
-  def writeAARStoFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int, initAA:Vector[AA], file:File):Unit = {
+  def writeAARStoFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int, initAA:Vector[AA], file:File, seed:Int):Unit = {
     CSVWriter.open(file).close()
     val writer = CSVWriter.open(file, append= true)
     //val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
     val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)  //TODO remove redundancy: this is the same as maxAnticodonNumb in Cell
-
+    val r = new scala.util.Random(seed)
     //create 20^3 aaRS
     for(
       i <- 0 until initAA.length;
@@ -532,13 +605,13 @@ class Cell (val r:Random) {
     * @param geneNumb
     * @param file
     */
-  def writeAARSwithSimilarityToFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int, initAA:Vector[AA], file:File):Unit = {
+  def writeAARSwithSimilarityToFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int, initAA:Vector[AA], file:File, seed:Int):Unit = {
     CSVWriter.open(file).close()
     val writer = CSVWriter.open(file, append= true)
     //val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
     val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)  //TODO remove redundancy: this is the same as maxAnticodonNumb in Cell
-
+    val r = new scala.util.Random(seed)
     //create 20^3 aaRS
     for(
       i <- 0 until initAA.length
@@ -580,8 +653,8 @@ class Cell (val r:Random) {
     * create living aaRS file (create random aaSeqences that will come to life)
     * @return
     */
-  def writeLivingAarsToFile(aaRSnumb:Int):Unit ={
-    val file = new File(path+"livingAARS.csv")
+  def writeLivingAarsToFile(path:String, id:Int, aaRSnumb:Int):Unit ={
+    val file = new File(path)//+s"livingAARS_#$id.csv")
     CSVWriter.open(file).close()
     val writer = CSVWriter.open(file, append = true)
     for(
@@ -593,5 +666,123 @@ class Cell (val r:Random) {
   }
 
 
+
+  /** creates a start cell, each cell is one generation
+    * @param geneNumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
+    * @param geneLength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
+    * @param initAA initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
+    * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
+    * @return start cell
+    */
+  def init0 (startPath:String, geneNumb:Int = 22, geneLength:Int = 3, aarsLifeticksStartValue:Int = 10, initAaNumb:Int = 20, aarsSeed:Int = 0, codonNumb:Int = 64, newLivingAARS:Boolean = false, livingAarsId:Int, newAARS:Boolean = false, similarAARS:Boolean = true, newMRNA:Boolean = false):Unit= {
+    this.codonNumb = codonNumb
+    initAA = AA.values.toVector.take(initAaNumb)
+    this.path = startPath
+    // create codons
+    val codons = getCodons(codonNumb)
+    allAARS = new Array[Array[Array[AARS]]](initAaNumb)
+    codeTable = Array.ofDim[Double](codonNumb, initAaNumb)
+
+
+
+    // create mRNA (List of genes. Each gene is a List of codon IDs as long as aarsLength)
+    if(newMRNA){
+      val mRNA:List[List[Int]] = getRandomMRNA(codons.toList, geneLength, geneNumb)
+      writeMRNAtoFile(codons.toList, geneLength, geneNumb, new File(path+"mRNA.csv"))
+    }
+
+    // read mRNA
+    var reader = CSVReader.open(new File(path+"mRNA.csv"))
+    var data = reader.all()
+    //var mRNA:List[List[Int]] = List()
+    for(
+      line <- data
+    ){
+      var gene:List[Int] = List()
+      for(
+        elem <- line
+      ){
+        gene = gene :+ elem.toInt
+      }
+      mRNA = mRNA :+ gene
+    }
+    reader.close()
+
+    path += s"$codonNumb\\$initAaNumb\\"
+
+    // create aaRS file
+    if(newAARS == true){
+      if(similarAARS == true){
+        path += s"1\\aaRS_$aarsSeed\\"
+        new File(path).mkdirs()
+        writeAARSwithSimilarityToFile(codons.toList, geneLength, geneNumb, codonNumb, initAA, new File(path+s"aaRS_s$aarsSeed.csv"), aarsSeed)
+      } else {
+        path += s"0\\aaRS_s$aarsSeed\\"
+        new File(path).mkdirs()
+        writeAARStoFile(codons.toList, geneLength, geneNumb, codonNumb, initAA, new File(path+s"aaRS_s$aarsSeed.csv"), aarsSeed)
+      }
+    }
+
+    // read aaRS
+    reader = CSVReader.open(new File(path+s"aaRS_s$aarsSeed.csv"))
+    data = reader.all()
+    var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
+    // Array with all existing aaRS, initialised with placeholders
+    //var allAARS:Array[Array[Array[AARS]]] = Array.fill[Array[Array[AARS]]](aaNumb)(Array.fill[Array[AARS]](aaNumb)(Array.fill[AARS](aaNumb)(new AARS(Vector(), translations))))
+    // give each aaRS in allAARS the correct aaSeq (is dependent from its position in allAARS)
+    for(
+      i <- 0 until initAaNumb
+    ){
+      allAARS(i) = new Array [Array[AARS]](initAaNumb)
+      for(
+        j <- 0 until initAaNumb
+      ){
+        allAARS(i)(j) = new Array [AARS](initAaNumb)
+        for(
+          k <- 0 until initAaNumb
+        ){
+          val aaSeq:Vector[AA]= Vector(initAA(i), initAA(j), initAA(k))
+          allAARS(i)(j)(k) = new AARS(aaSeq, translations, aarsLifeticksStartValue)
+        }
+      }
+    }
+
+    // read file data and give each aaRS its translations
+    for(
+      line <- data
+    ){
+      //get Array Index of aaRS
+      val i1 = line(0).toInt
+      val i2 = line(1).toInt
+      val i3 = line(2).toInt
+      // add translation to aaRS
+      allAARS(i1)(i2)(i3).translations += ((initAA(line(3).toInt), line(4).toInt)->List((line(5).toDouble, line(6).toInt)))
+    }
+    reader.close()
+
+
+
+
+    if(newLivingAARS == true){
+      path += s"\\livingAars_#$livingAarsId\\"
+      new File(path).mkdirs()
+      //create living aaRS
+      writeLivingAarsToFile(path, livingAarsId, geneNumb)
+    }
+
+    // read the living aaRS
+    reader = CSVReader.open(new File(s"livingAars_#$livingAarsId.csv"))
+    data = reader.all()
+    for(
+      line <- data
+    ){
+      allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = aarsLifeticksStartValue
+      livingAARSs = livingAARSs :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
+    }
+    reader.close()
+    livingAARSs = livingAARSs.distinct
+    //new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
+
+  }
 
 }

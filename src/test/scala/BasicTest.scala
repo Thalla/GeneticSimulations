@@ -4,10 +4,10 @@ import org.scalatest.junit.AssertionsForJUnit
 class BasicTest extends AssertionsForJUnit {
 
   val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\testCSVs\\"
-
-  val cell = new Cell()
+  val r = new scala.util.Random(0)
+  val cell = new Cell(r)
   @Before def init():Unit={
-    cell.init(path, 5, 3, Vector(AA.Phe, AA.Leu), 16, false, false, false)
+    cell.init(path, 5, 3, 2, 16, 48, 3, 9,48, 0,false, 0)
   // Problem: ich verwende die IDs der Aminosäuren, Ala hat ID 16, aber im allAARS Array hat Ala Position 0, wenn Ala an nullter Stelle im initAA Vektor steht.
   }
   @Test def basics ():Unit = {
