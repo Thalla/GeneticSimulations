@@ -6,15 +6,15 @@ import PrintElem._
   *
   * produces file output
   */
-class SimulationData(path:String) {
+class SimulationData(path:String, steps:Int) {
   //val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
   val maxSize = 1500000
   private[this] var _codeTableFitness: Array[Double] = new Array[Double](maxSize)
   private[this] var protocol:List[String] = List()
   private[this] var oldComparison = new Array[Array[Boolean]](20)   //TODO
-  val aaChanges:Array[Array[Int]] = new Array[Array[Int]](Simulator.steps)   //genIds, added amino acids, removed amino acids
+  val aaChanges:Array[Array[Int]] = new Array[Array[Int]](steps)   //genIds, added amino acids, removed amino acids
   aaChanges(0) = new Array[Int](2)
-  val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](Simulator.steps)//Array.fill(steps)(Array.fill(8)(0))  //assumption: max numb of aaRS per field is 8 TODO
+  val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(8)(0))  //assumption: max numb of aaRS per field is 8 TODO
   private[this] var _aaHasTranslation: Array[Array[Boolean]] = new Array[Array[Boolean]](maxSize)
   private [this] val _aaNumb = new Array[Integer](maxSize)
 

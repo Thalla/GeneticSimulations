@@ -9,20 +9,44 @@ import scala.collection.mutable.ListBuffer
   * main method
   * controls biological simulation using class Cell
   * receives simulation data from Cell and transfers it to SimulationData
-  * @version 4.1 issue: livingAARS aren't distinct in file. -> first collection, make it distinct, then to file
+  * @version 4.2 jar with param, consistent param order, easier mass simulation
   */
-object Simulator {
-  val steps = 100             // 1.000000 52s maxSize 100.000, 53s maxSize 50.000, 50s maxSize 500.000, 48s maxSize 1000000, 49s maxSize 2000000, 48s maxSize 1500000
-
+object Simulator{
   def main(args: Array[String]): Unit = {
+    //var simulator = new Simulator(args(0))
+
+    var basePath =  "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree\\"
+    var simulator = new Simulator(basePath)
+  }
+}
+
+class Simulator(basePath:String) {
+  val steps = 100             // 1.000000 52s maxSize 100.000, 53s maxSize 50.000, 50s maxSize 500.000, 48s maxSize 1000000, 49s maxSize 2000000, 48s maxSize 1500000
 
     System.gc()
 
-    Seq.range(0,1).par.foreach{ outputSeed => runSimulation(outputSeed)}
+    //var basePath =  "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree\\"
+    var mrnaSeed = 2000
+    var codonNumb = 64
+    var geneLength = 3
+    var geneNumb = 22
+    var mrnaId = 0
+    var initAaNumb = 20
+    var similarAars = false
+    var aarsSeed = 200
+    var aarsLifeticksStartValue = 10
+    var livingAarsSeed = 20
+    var outputSeed = 1
+    //var simulator = new Simulator(basePath)
 
-  }
+    runSimulation(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, initAaNumb, similarAars, aarsSeed, aarsLifeticksStartValue, livingAarsSeed, outputSeed)
+    //Seq.range(2,20).par.foreach{changingParam => simulator.runSimulation(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, changingParam, similarAars, aarsSeed, aarsLifeticksStartValue, livingAarsSeed, outputSeed)}
 
-  def runSimulation(outputSeed:Int): Unit ={
+    aarsSeed = 201
+
+
+
+  def runSimulation(basePath:String, mrnaSeed:Int, codonNumb:Int, geneLength:Int, geneNumb:Int, mrnaId:Int, initAaNumb:Int, similarAars:Boolean = true, aarsSeed:Int, aarsLifeticksStartValue:Int, livingAarsSeed:Int,  outputSeed:Int): Unit ={
    def time[R](block: => R): R = {
       val t0 = System.nanoTime()
       val result = block // call-by-name
@@ -31,15 +55,17 @@ object Simulator {
       result
     }
 
+    // init Cell
     val r = new scala.util.Random(outputSeed)
     val cell = new Cell(r)
-    val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree\\"
-    cell.init(basePath, 22, 0, 22, 3, 10, 3, 23, 48, 0, true, outputSeed)
+    cell.init(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, initAaNumb, similarAars, aarsSeed, aarsLifeticksStartValue, livingAarsSeed, outputSeed)
 
-    val simulationData = new SimulationData(cell.path)
+    // init SimulationData
+    val simulationData = new SimulationData(cell.path, steps)
     simulationData.init()
     val toPrint = List(PrintElem.codeTableFitness, PrintElem.aaNumb)
 
+    // simulate
     time(do{
       cell.translate() // results in a new generation
       simulationData.updateCodeTableFitness(cell.codeTableFitness, cell.generationID)        //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
