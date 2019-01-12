@@ -1,5 +1,8 @@
 import java.io.{BufferedWriter, File, FileWriter}
+
 import PrintElem._
+
+import scala.collection.mutable.ListBuffer
 
 /**
   * Receives data from Simulator
@@ -7,7 +10,6 @@ import PrintElem._
   * produces file output
   */
 class SimulationData(path:String, steps:Int) {
-  //val path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\csv\\"
   val maxSize = 1500000
   private[this] var _codeTableFitness: Array[Double] = new Array[Double](maxSize)
   private[this] var protocol:List[String] = List()
@@ -17,10 +19,18 @@ class SimulationData(path:String, steps:Int) {
   val tableFieldOverTime:Array[Array[Int]] = new Array[Array[Int]](steps)//Array.fill(steps)(Array.fill(8)(0))  //assumption: max numb of aaRS per field is 8 TODO
   private[this] var _aaHasTranslation: Array[Array[Boolean]] = new Array[Array[Boolean]](maxSize)
   private [this] val _aaNumb = new Array[Integer](maxSize)
+  var livingAars:ListBuffer[AARS] = ListBuffer()
 
   def init(): Unit ={
-    writeToFile("", path+"codeTableFitness.csv", false)
-    writeToFile("", path+"aaNumb.csv", false)
+
+      if(!new File(path + "codeTableFitness.csv").exists()){
+        writeToFile("", path+"codeTableFitness.csv", false, false)
+        writeToFile("", path+"aaNumb.csv", false, false)
+      }
+      else {
+        writeToFile("", path + "codeTableFitness.csv", true, true)
+        writeToFile("", path + "aaNumb.csv", true, true)
+      }
   }
 
   /**
@@ -32,7 +42,7 @@ class SimulationData(path:String, steps:Int) {
     if(genID%maxSize == 0 && genID != 0){
       var append = true
       if(genID == maxSize) append = false
-      writeToFile(_codeTableFitness.mkString("\n"), path+"codeTableFitness.csv", append)
+      writeToFile(_codeTableFitness.mkString("\n"), path+"codeTableFitness.csv", append, append)
     }
     _codeTableFitness(genID%maxSize) = value
   }
@@ -47,7 +57,7 @@ class SimulationData(path:String, steps:Int) {
     if(genID%maxSize == 0 && genID != 0) {
       var append = true
       if(genID == maxSize) append = false
-      writeToFile(_aaNumb.mkString("\n"), path+"aaNumb.csv", append)
+      writeToFile(_aaNumb.mkString("\n"), path+"aaNumb.csv", append, append)
     }
     _aaNumb(genID%maxSize) = value
   }
@@ -61,7 +71,7 @@ class SimulationData(path:String, steps:Int) {
     if(genID%maxSize == 0 && genID != 0) {
       var append = true
       if(genID == maxSize) append = false
-      writeToFile(_aaHasTranslation.mkString("\n"), path+"aaHasTranslation.csv", append)
+      writeToFile(_aaHasTranslation.mkString("\n"), path+"aaHasTranslation.csv", append, append)
     }
     _aaHasTranslation(genID%maxSize) = value
   }
@@ -103,30 +113,28 @@ class SimulationData(path:String, steps:Int) {
     * @param toPrint List of Tuples with filename and file content
 */
   def finishOutput(toPrint:List[PrintElem], genID:Int):Unit={
-
-    val toFile = (data:String, filename:String) => {
-      val file = new File(path + filename + ".csv")
-      val bw = new BufferedWriter(new FileWriter(file, true))
-      //bw.newLine()
-      bw.write(data)
-      bw.close()
-    }
-
     for(
       elem <- toPrint
     ){
       elem match {
-        case PrintElem.codeTableFitness => toFile(_codeTableFitness.take(genID).mkString("\n"), elem.toString())
-        case PrintElem.aaNumb => toFile(_aaNumb.take(genID).mkString("\n"), elem.toString())
+        case PrintElem.codeTableFitness => writeToFile(_codeTableFitness.take(genID).mkString("\n"), path + elem.toString() + ".csv", true, false)
+        case PrintElem.aaNumb => writeToFile(_aaNumb.take(genID).mkString("\n"), path + elem.toString() + ".csv", true, false)
+        case PrintElem.livingAars => {
+          var i = 0   // exists in any case because there are already files in this path therefore a set of living aaRS as well.
+          while ((new File(path + s"livingAars${i}.csv").exists())) {
+            i += 1
+          }
+          writeToFile(livingAars.mkString("\n"), path + s"${elem.toString}$i.csv", false, false)
+        }
       }
     }
   }
 
-  def writeToFile(data:String, path:String, append:Boolean): Unit ={
+  def writeToFile(data:String, path:String, append:Boolean, newLine:Boolean): Unit ={
     val file = new File(path)
     val bw = new BufferedWriter(new FileWriter(file, append))
-    if(append == true) bw.newLine()
     bw.write(data)
+    if(newLine) bw.newLine()
     bw.close()
   }
 

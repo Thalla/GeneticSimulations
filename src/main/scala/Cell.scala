@@ -1,11 +1,7 @@
 import java.io.File
-
-import AA.AA
-import PrintElem.PrintElem
+import AA._
 import com.github.tototoshi.csv.{CSVReader, CSVWriter}
-
-import scala.collection.mutable.{ArrayBuffer, ListBuffer}
-import scala.specialized
+import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
 /** Cell holds the state of the simulation.
@@ -21,57 +17,43 @@ import scala.util.Random
   */
 class Cell (val r:Random) {
   var path = ""
-  var mRNA:List[List[Int]] = List()
 
-  var livingAARSs:ListBuffer[AARS] = ListBuffer()
-
-  var generationID:Int = -1
-  private[this] var _codeTableFitness: Double = _
-
-  def codeTableFitness: Double = _codeTableFitness
-
-  private[this] def codeTableFitness_=(value: Double): Unit = {
-    _codeTableFitness = value
-  }
-  private [this] val maxAnticodonNumb:Int = 6
-
-  var codeTable = Array.ofDim[Double](codonNumb, aaNumb)
-
-  var allAARS:Array[Array[Array[AARS]]] = Array()
-  var initAA:Vector[AA] = Vector()
   var codonNumb:Int = 0
-
+  var mRNA:List[List[Int]] = List()
   var aaNumb:Int = _
+  var initAA:Vector[AA] = Vector()
   private[this] var _aaRSnumb: Int = _
-
   def aaRSnumb: Int = _aaRSnumb
-
   def aaRSnumb_=(value: Int): Unit = {
     _aaRSnumb = value
+  }
+  private [this] var maxAnticodonNumb:Int = _
+  var allAars:Array[Array[Array[AARS]]] = Array()
+  var livingAars:ListBuffer[AARS] = ListBuffer()
+
+  var generationID:Int = -1
+
+  var codeTable = Array.ofDim[Double](codonNumb, aaNumb)
+  private[this] var _codeTableFitness: Double = _
+  def codeTableFitness: Double = _codeTableFitness
+  private[this] def codeTableFitness_=(value: Double): Unit = {
+    _codeTableFitness = value
   }
 
   private[this] var _aaTranslData: (Int, Array[Boolean]) = (0,Array.fill[Boolean](20)(false))  //the second variable exists to remember information from the previous generation to calculate aaChanges
   var aaChanges:Array[Int] = new Array[Int](2)   //genIds, added amino acids, removed amino acids
-
-
   def aaTranslData: (Int, Array[Boolean]) = _aaTranslData
 
   private[this] var _unambiguousness: Double = _
-
   private[this] def unambiguousness: Double = _unambiguousness
-
   private[this] def unambiguousness_=(value: Double): Unit = {
     _unambiguousness = value
   }
 
-
-  //var codeTable:Array[Array[List[AARS]]] = Array.ofDim[List[AARS]](codonNumb,aaNumb)
-  //var codeTable2:Array[ListBuffer[AARS]] = Array.fill[ListBuffer[AARS]](codonNumb){new ListBuffer[AARS]()}
-  //var codeTable:Array[Array[Int]] = Array.fill[Array[Int]](codonNumb){Array.fill[Int](aaNumb){0}}
-   var time1 = 0:Long
-  var time2 = 0:Long
-  var time0 = 0:Long
-  var translTime = 0:Long
+   var time1:Long = 0
+  var time2:Long = 0
+  var time0:Long = 0
+  var translTime: Long = 0
   def translTime[R](block: => R): R = {
     val t0 = System.nanoTime()
     val result = block // call-by-name
@@ -132,7 +114,7 @@ class Cell (val r:Random) {
 
     //update lifeticks
    var newLivingAARSs:ListBuffer[AARS] = ListBuffer()
-    val livingAARSIt = livingAARSs.iterator
+    val livingAARSIt = livingAars.iterator
     //1s
     while (livingAARSIt.hasNext){
       val aaRS = livingAARSIt.next().reduceLifeTicks()
@@ -189,7 +171,7 @@ class Cell (val r:Random) {
         }
       }
       if (!isStopped) {
-        val newAARS = allAARS(sequence.remove(0).id)(sequence.remove(0).id)(sequence.remove(0).id)
+        val newAARS = allAars(sequence.remove(0).id)(sequence.remove(0).id)(sequence.remove(0).id)
         newAARS.resetLifeticks()
         if (!newLivingAARSs.contains(newAARS)) {
           newLivingAARSs += newAARS
@@ -198,14 +180,14 @@ class Cell (val r:Random) {
       }
     })
     /*codeTableFitness = (aaTranslData._1.toDouble/aaNumb.toDouble)* unambiguousness*/
-    this.livingAARSs = newLivingAARSs
+    this.livingAars = newLivingAARSs
   }
 
 
   /**
     *
     */
-  def updateCodeTable() ={
+  def updateCodeTable():Unit ={
     val newAaHasTransl = Array.fill[Boolean](20)(false)
     var translatedAaCounter = 0
     val codonTransl = Array.fill[Boolean](codonNumb*aaNumb)(false)
@@ -213,18 +195,18 @@ class Cell (val r:Random) {
 
     //new codeTable
     codeTable = Array.ofDim[Double](codonNumb, aaNumb)
-    val livingAarsIt = livingAARSs.iterator
+    val livingAarsIt = livingAars.iterator
     while (livingAarsIt.hasNext){
       val aaRS = livingAarsIt.next()
       val aarsTranslIt = aaRS.translations.iterator
       while (aarsTranslIt.hasNext){
         val translation = aarsTranslIt.next()
-        if (newAaHasTransl(translation._1._1.id) == false){
+        if (!newAaHasTransl(translation._1._1.id)){
           newAaHasTransl(translation._1._1.id) = true
           translatedAaCounter += 1
         }
         val fieldPos = translation._1._2*(aaNumb)+translation._1._1.id
-        if(codonTransl(fieldPos) == false){
+        if(!codonTransl(fieldPos)){
           codonTransl(fieldPos) = true
           codonTranslCounter(translation._1._2) += 1
         }
@@ -274,17 +256,18 @@ class Cell (val r:Random) {
     * @param initAA initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
     * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
     */
-  def init (basePath:String, mrnaSeed:Int, codonNumb:Int, geneLength:Int, geneNumb:Int, mrnaId:Int, initAaNumb:Int, similarAars:Boolean = true, aarsSeed:Int, aarsLifeticksStartValue:Int, livingAarsSeed:Int,  outputSeed:Int):Unit= {
+  def init (basePath:String, mrnaSeed:Int, codonNumb:Int, geneLength:Int, geneNumb:Int, mrnaId:Int, initAaNumb:Int, similarAars:Boolean = true, aarsSeed:Int, maxAnticodonNumb:Int, aarsLifeticksStartValue:Int, livingAarsSeed:Int,  outputSeed:Int, addToOutput:Boolean):Boolean= {
+    path = basePath
 
+    this.codonNumb = codonNumb
     val codons = getCodons(codonNumb)
     this.aaNumb = initAaNumb
+    this.maxAnticodonNumb = maxAnticodonNumb
 
     //init codeTable
     codeTable = Array.ofDim[Double](codonNumb, aaNumb)
 
     //init mRNA
-    this.codonNumb = codonNumb
-    path = basePath
     val mrnaName = writeNewMrna(path, mrnaSeed, codons, geneLength, geneNumb, mrnaId)
     path += s"$mrnaName\\"
     mRNA = readMrna(path + s"$mrnaName.csv")
@@ -295,18 +278,28 @@ class Cell (val r:Random) {
 
     //init aaRS
     path += s"similar_$similarAars\\"
-    val aarsName = writeNewAars(path, similarAars, aarsSeed, codons, geneLength, geneNumb)
+    val aarsName = writeNewAars(path, similarAars, aarsSeed, codons, geneLength, geneNumb, maxAnticodonNumb, aarsLifeticksStartValue)
     path += s"$aarsName\\"
-    allAARS = readAars(path + s"$aarsName.csv", initAaNumb, aarsLifeticksStartValue)
+    allAars = readAars(path + s"$aarsName.csv", initAaNumb, aarsLifeticksStartValue)
 
     //init livingAARS
     val livingAarsName = writeNewLivingAars(path, livingAarsSeed, geneNumb)
     path += s"$livingAarsName\\"
-    livingAARSs = readLivingAars(path + s"$livingAarsName.csv", allAARS, aarsLifeticksStartValue)
+    livingAars = readLivingAars(path + s"$livingAarsName.csv", allAars, aarsLifeticksStartValue)
 
     //init outputFolder
     path += s"output_s$outputSeed\\"
-    new File(path).mkdirs()
+    if(!new File(path).exists()){
+      new File(path).mkdirs()
+      true
+    } else if(addToOutput) {
+      var i = 0   // exists in any case because there are already files in this path therefore a set of living aaRS as well.
+      while ((new File(path + s"livingAars${i+1}.csv").exists())) {
+        i += 1
+      }
+      livingAars = readLivingAars(path + s"livingAars$i.csv", allAars, aarsLifeticksStartValue)
+      true
+    }else false
   }
 
   /**
@@ -357,8 +350,8 @@ class Cell (val r:Random) {
     * @param geneNumb
     * @return
     */
-  def writeNewAars(path:String, similarAars:Boolean, aarsSeed:Int, codons:IndexedSeq[Any], geneLength:Int, geneNumb:Int):String ={
-    val aarsName = s"aaRS_s$aarsSeed"
+  def writeNewAars(path:String, similarAars:Boolean, aarsSeed:Int, codons:IndexedSeq[Any], geneLength:Int, geneNumb:Int, maxAnticodonNumb:Int, lifeticksStartValue:Int):String ={
+    val aarsName = s"aaRS_s${aarsSeed}_ac${maxAnticodonNumb}_lt$lifeticksStartValue"
     val filePath = path + s"$aarsName\\"
     if( ! new File(filePath).exists) {
       new File(filePath).mkdirs()
@@ -376,7 +369,7 @@ class Cell (val r:Random) {
     * @return
     */
   def readAars(path:String, initAaNumb:Int, aarsLifeticksStartValue:Int): Array[Array[Array[AARS]]] ={
-    allAARS = new Array[Array[Array[AARS]]](initAaNumb)
+    allAars = new Array[Array[Array[AARS]]](initAaNumb)
     val reader = CSVReader.open(new File(path))
     val data = reader.all()
     var translations:Map[(AA, Int),List[(Double, Int)]] = Map()
@@ -386,16 +379,16 @@ class Cell (val r:Random) {
     for(
       i <- 0 until initAaNumb
     ){
-      allAARS(i) = new Array [Array[AARS]](initAaNumb)
+      allAars(i) = new Array [Array[AARS]](initAaNumb)
       for(
         j <- 0 until initAaNumb
       ){
-        allAARS(i)(j) = new Array [AARS](initAaNumb)
+        allAars(i)(j) = new Array [AARS](initAaNumb)
         for(
           k <- 0 until initAaNumb
         ){
           val aaSeq:Vector[AA]= Vector(initAA(i), initAA(j), initAA(k))
-          allAARS(i)(j)(k) = new AARS(aaSeq, translations, aarsLifeticksStartValue)
+          allAars(i)(j)(k) = new AARS(aaSeq, translations, aarsLifeticksStartValue)
         }
       }
     }
@@ -405,15 +398,15 @@ class Cell (val r:Random) {
       line <- data
     ){
       //get Array Index of aaRS
-      val i1 = line(0).toInt
+      val i1 = line.head.toInt
       val i2 = line(1).toInt
       val i3 = line(2).toInt
       // add translation to aaRS
-      allAARS(i1)(i2)(i3).translations += ((initAA(line(3).toInt), line(4).toInt)->List((line(5).toDouble, line(6).toInt)))
+      allAars(i1)(i2)(i3).translations += ((initAA(line(3).toInt), line(4).toInt)->List((line(5).toDouble, line(6).toInt)))
     }
     reader.close()
 
-    allAARS
+    allAars
   }
 
   /**
@@ -441,11 +434,11 @@ class Cell (val r:Random) {
       line <- data
     ){
       allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = aarsLifeticksStartValue
-      livingAARSs = livingAARSs :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
+      livingAars = livingAars :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
     }
     reader.close()
-    livingAARSs = livingAARSs.distinct
-    livingAARSs
+    livingAars = livingAars.distinct
+    livingAars
   }
 
 
@@ -688,15 +681,13 @@ class Cell (val r:Random) {
     * @return start cell
     */
   def init0 (startPath:String, geneNumb:Int = 22, geneLength:Int = 3, aarsLifeticksStartValue:Int = 10, initAaNumb:Int = 20, aarsSeed:Int = 0, codonNumb:Int = 64, newLivingAARS:Boolean = false, livingAarsId:Int, newAARS:Boolean = false, similarAARS:Boolean = true, newMRNA:Boolean = false):Unit= {
-    this.codonNumb = codonNumb
-    initAA = AA.values.toVector.take(initAaNumb)
     this.path = startPath
-    // create codons
-    val codons = getCodons(codonNumb)
-    allAARS = new Array[Array[Array[AARS]]](initAaNumb)
+
+    initAA = AA.values.toVector.take(initAaNumb)
+    allAars = new Array[Array[Array[AARS]]](initAaNumb)
+    this.codonNumb = codonNumb
+    val codons = getCodons(codonNumb)   // create codons
     codeTable = Array.ofDim[Double](codonNumb, initAaNumb)
-
-
 
     // create mRNA (List of genes. Each gene is a List of codon IDs as long as aarsLength)
     if(newMRNA){
@@ -746,16 +737,16 @@ class Cell (val r:Random) {
     for(
       i <- 0 until initAaNumb
     ){
-      allAARS(i) = new Array [Array[AARS]](initAaNumb)
+      allAars(i) = new Array [Array[AARS]](initAaNumb)
       for(
         j <- 0 until initAaNumb
       ){
-        allAARS(i)(j) = new Array [AARS](initAaNumb)
+        allAars(i)(j) = new Array [AARS](initAaNumb)
         for(
           k <- 0 until initAaNumb
         ){
           val aaSeq:Vector[AA]= Vector(initAA(i), initAA(j), initAA(k))
-          allAARS(i)(j)(k) = new AARS(aaSeq, translations, aarsLifeticksStartValue)
+          allAars(i)(j)(k) = new AARS(aaSeq, translations, aarsLifeticksStartValue)
         }
       }
     }
@@ -769,7 +760,7 @@ class Cell (val r:Random) {
       val i2 = line(1).toInt
       val i3 = line(2).toInt
       // add translation to aaRS
-      allAARS(i1)(i2)(i3).translations += ((initAA(line(3).toInt), line(4).toInt)->List((line(5).toDouble, line(6).toInt)))
+      allAars(i1)(i2)(i3).translations += ((initAA(line(3).toInt), line(4).toInt)->List((line(5).toDouble, line(6).toInt)))
     }
     reader.close()
 
@@ -789,11 +780,11 @@ class Cell (val r:Random) {
     for(
       line <- data
     ){
-      allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = aarsLifeticksStartValue
-      livingAARSs = livingAARSs :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
+      allAars(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = aarsLifeticksStartValue
+      livingAars = livingAars :+ allAars(line(0).toInt)(line(1).toInt)(line(2).toInt)
     }
     reader.close()
-    livingAARSs = livingAARSs.distinct
+    livingAars = livingAars.distinct
     //new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
 
   }

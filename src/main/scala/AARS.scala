@@ -14,8 +14,18 @@ class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, I
   }
 
   override def toString(): String ={
-    "\n" + "aaRS: " + aaSeq.mkString(", ") + "\nlifeticks: " + lifeticks + "\nTranslations: " + translations.mkString(", ")
+    var aaSeqIt = aaSeq.iterator
+    var aaSeqIds:List[Int] = List()
+      while(aaSeqIt.hasNext){
+        val aa:AA = aaSeqIt.next()
+        aaSeqIds = aa.id +: aaSeqIds
+      }
+    s"${aaSeqIds.reverse.mkString(",")},$lifeticks,${translations.mkString(",")}"
   }
+
+  /*override def toString(): String ={
+    "\n" + "aaRS: " + aaSeq.mkString(", ") + "\nlifeticks: " + lifeticks + "\nTranslations: " + translations.mkString(", ")
+  }*/
 
   def translationsToHtmlString(codons:Array[Int]):String= {
     var content = "<table>"

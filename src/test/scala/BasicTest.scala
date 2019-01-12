@@ -13,12 +13,12 @@ class BasicTest extends AssertionsForJUnit {
   @Test def basics ():Unit = {
     assert(cell.aaNumb == 2)
     cell.translate()
-    assert(cell.allAARS(1)(0)(0).lifeticks == 10)
-    assert(cell.allAARS(0)(1)(0).lifeticks == 9)
+    assert(cell.allAars(1)(0)(0).lifeticks == 10)
+    assert(cell.allAars(0)(1)(0).lifeticks == 9)
     assert(cell.codeTableFitness == 0.6875)
-    cell.allAARS.foreach(x => x.foreach(y => y.foreach(z => println(z.toString()))))
+    cell.allAars.foreach(x => x.foreach(y => y.foreach(z => println(z.toString()))))
     println(cell.mRNA.toString())
-    cell.livingAARSs.foreach(x => println(x.toString()))
+    cell.livingAars.foreach(x => println(x.toString()))
   }
 
 }
