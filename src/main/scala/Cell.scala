@@ -1,6 +1,9 @@
 import java.io.File
+
 import AA._
+import PrintElem.PrintElem
 import com.github.tototoshi.csv.{CSVReader, CSVWriter}
+
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
@@ -17,6 +20,9 @@ import scala.util.Random
   */
 class Cell (val r:Random) {
   var path = ""
+
+  var simulationData:SimulationData = null
+  var toPrint:List[PrintElem] = List()
 
   var codonNumb:Int = 0
   var mRNA:List[List[Int]] = List()
@@ -256,7 +262,7 @@ class Cell (val r:Random) {
     * @param initAA initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
     * @param codonNumb Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
     */
-  def init (basePath:String, mrnaSeed:Int, codonNumb:Int, geneLength:Int, geneNumb:Int, mrnaId:Int, initAaNumb:Int, similarAars:Boolean = true, aarsSeed:Int, maxAnticodonNumb:Int, aarsLifeticksStartValue:Int, livingAarsSeed:Int,  outputSeed:Int, addToOutput:Boolean):Boolean= {
+  def init (basePath:String, mrnaSeed:Int, codonNumb:Int, geneLength:Int, geneNumb:Int, mrnaId:Int, initAaNumb:Int, similarAars:Boolean = true, aarsSeed:Int, maxAnticodonNumb:Int, aarsLifeticksStartValue:Int, livingAarsStartNumb:Int, livingAarsSeed:Int,  outputSeed:Int, addToOutput:Boolean):Boolean= {
     path = basePath
 
     this.codonNumb = codonNumb
@@ -268,9 +274,9 @@ class Cell (val r:Random) {
     codeTable = Array.ofDim[Double](codonNumb, aaNumb)
 
     //init mRNA
-    val mrnaName = writeNewMrna(path, mrnaSeed, codons, geneLength, geneNumb, mrnaId)
-    path += s"$mrnaName\\"
-    mRNA = readMrna(path + s"$mrnaName.csv")
+      val mrnaName = writeNewMrna(path, mrnaSeed, codons, geneLength, geneNumb, mrnaId)
+      path += s"$mrnaName\\"
+      mRNA = readMrna(path + s"$mrnaName.csv")
 
     //init initAA
     initAA = AA.values.toVector.take(initAaNumb)
@@ -283,7 +289,7 @@ class Cell (val r:Random) {
     allAars = readAars(path + s"$aarsName.csv", initAaNumb, aarsLifeticksStartValue)
 
     //init livingAARS
-    val livingAarsName = writeNewLivingAars(path, livingAarsSeed, geneNumb)
+    val livingAarsName = writeNewLivingAars(path, livingAarsSeed, livingAarsStartNumb)
     path += s"$livingAarsName\\"
     livingAars = readLivingAars(path + s"$livingAarsName.csv", allAars, aarsLifeticksStartValue)
 
@@ -298,7 +304,8 @@ class Cell (val r:Random) {
         i += 1
       }
       livingAars = readLivingAars(path + s"livingAars$i.csv", allAars, aarsLifeticksStartValue)
-      true
+      if(livingAars.length != 0) true
+      else false
     }else false
   }
 
@@ -416,29 +423,33 @@ class Cell (val r:Random) {
     * @param geneNumb
     * @return fileName
     */
-  def writeNewLivingAars(path: String, livingAarsSeed: Int, geneNumb: Int): String ={
-    val livingAarsName = s"livingAars_s$livingAarsSeed"
+  def writeNewLivingAars(path: String, livingAarsSeed: Int, livingAarsNumb: Int): String ={
+    val livingAarsName = s"livingAars_n${livingAarsNumb}_s$livingAarsSeed"
     val filePath = path + s"$livingAarsName\\"
     if( ! new File(filePath).exists) {
       new File(filePath).mkdirs()
-      writeLivingAarsToFile(filePath + s"$livingAarsName.csv", livingAarsSeed, geneNumb)
+      writeLivingAarsToFile(filePath + s"$livingAarsName.csv", livingAarsSeed, livingAarsNumb)
     }
     livingAarsName
   }
 
   def readLivingAars(path: String, allAARS: Array[Array[Array[AARS]]], aarsLifeticksStartValue: Int): ListBuffer[AARS] ={
     // read the living aaRS
-    val reader = CSVReader.open(new File(path))
-    val data = reader.all()
-    for(
-      line <- data
-    ){
-      allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = aarsLifeticksStartValue
-      livingAars = livingAars :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
+    val f = new File(path)
+    if(f.length != 0){
+      val reader = CSVReader.open(f)
+      val data = reader.all()
+      for(
+        line <- data
+      ){
+        allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt).lifeticks = aarsLifeticksStartValue
+        livingAars = livingAars :+ allAARS(line(0).toInt)(line(1).toInt)(line(2).toInt)
+      }
+      reader.close()
+      livingAars = livingAars.distinct
+      livingAars
     }
-    reader.close()
-    livingAars = livingAars.distinct
-    livingAars
+    else ListBuffer()
   }
 
 
@@ -451,6 +462,7 @@ class Cell (val r:Random) {
     val range:Range = codonNumb  match{
       case 16 => 0 to 0       //-> no third base
       case 64 | 48 => 0 to 3
+      case _ => 0 to 3
     }
     // if strong comma free code shall be generated this filter is used
     val filterScf = (k:Int, i:Int) => {
@@ -466,9 +478,9 @@ class Cell (val r:Random) {
     } yield {
       codonNumb match{
         case 16 => (Base(i),Base(j))
-        case 64 | 48=> (Base(i),Base(j), Base(k))
+        case 64 | 48 | _ => (Base(i),Base(j), Base(k))
       }})
-    codons
+    codons.take(codonNumb)
   }
 
   //print aaRS-Matrix
@@ -582,7 +594,6 @@ class Cell (val r:Random) {
     val writer = CSVWriter.open(file, append= true)
     //val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
-    val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)  //TODO remove redundancy: this is the same as maxAnticodonNumb in Cell
     val r = new scala.util.Random(seed)
     //create 20^3 aaRS
     for(
@@ -591,7 +602,7 @@ class Cell (val r:Random) {
       k <- 0 until initAA.length
     ){
       //var translations:Map[(AA, Int),List[(Double, Int)]] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
-      var antiCodonNumb = numbOfAnticodonsForOneAARS(r.nextInt(numbOfAnticodonsForOneAARS.length))      //number of anticodons that are recognized by the aaRS is chosen randomly
+      var antiCodonNumb = r.nextInt(maxAnticodonNumb+1)      //number of anticodons that are recognized by the aaRS is chosen randomly
 
       for(
         _ <- 0 until antiCodonNumb
@@ -615,7 +626,6 @@ class Cell (val r:Random) {
     val writer = CSVWriter.open(file, append= true)
     //val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
-    val numbOfAnticodonsForOneAARS = List(1,2,3,4,5,6)  //TODO remove redundancy: this is the same as maxAnticodonNumb in Cell
     val r = new scala.util.Random(seed)
     //create 20^3 aaRS
     for(
@@ -630,7 +640,7 @@ class Cell (val r:Random) {
         ){
           val codon = r.nextInt(codonNumb)
           //var translations:Map[(AA, Int),List[(Double, Int)]] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
-          val antiCodonNumb = numbOfAnticodonsForOneAARS(r.nextInt(numbOfAnticodonsForOneAARS.length)) //number of anticodons that are recognized by the aaRS is chosen randomly
+          val antiCodonNumb = r.nextInt(maxAnticodonNumb+1) //number of anticodons that are recognized by the aaRS is chosen randomly
 
           for (
             _ <- 0 until antiCodonNumb
