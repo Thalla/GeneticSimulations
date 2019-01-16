@@ -14,8 +14,8 @@ class BasicTest extends AssertionsForJUnit {
 
     path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\testCSVs\\mini1\\"
     new File(path).mkdirs
-    val simulator = new Simulator(path, 9)
-    simulator.initCell(path, 0, 3, 3, 2, 1, 3, false, 1, 3, 10, 2, 3, 4, true)
+    /*val simulator = new Simulator(path, 9)
+    simulator.initCell(path, 0, 3, 3, 2, 1, 3, false, 1, 3, 10, 2, 3, 4, true)*/
 
   }
   @Test def basics ():Unit = {

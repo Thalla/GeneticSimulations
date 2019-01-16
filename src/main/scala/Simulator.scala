@@ -1,124 +1,114 @@
+import java.io.{BufferedWriter, File, FileWriter}
+
 /**
   * main method
   * controls biological simulation using class Cell
   * receives simulation data from Cell and transfers it to SimulationData
-  * @version 4.2 jar with param, consistent param order, easier mass simulation
+  *
+  * @version 4.3 first write to file system afterwards only read
   */
-object Simulator{
+object Simulator {
 
   def main(args: Array[String]): Unit = {
-    new Simulator(args(0), args(1).toInt)
+    //new Simulator(args(0), args(1).toInt)
 
-    //val basePath =  "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree1\\"
-    //new Simulator(basePath, 20)
+    val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree2\\selection_false\\translMethod_probability\\"
+    new Simulator(basePath, 64, 20, 11)
   }
 }
 
-class Simulator(basePath:String, livingAarsSeed:Int) {
-  val steps = 100001             // 1.000000 52s maxSize 100.000, 53s maxSize 50.000, 50s maxSize 500.000, 48s maxSize 1000000, 49s maxSize 2000000, 48s maxSize 1500000
+class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: Int) {
 
-    System.gc()
+  var cells: List[Map[String, Any]] = initSimulation()
+  simulate(cells)
 
-      //var basePath =  "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree\\"
-    var mrnaSeed = 2000
-      var codonNumb = 64
-    var geneLength = 3
-      //var geneNumb = 22
-    var mrnaId = 1
-     /*var initAaNumb = 20
-     var similarAars = false*/
-    var aarsSeed = 200
-      /*var maxAnticodonNumb = 6
-      var aarsLifeticksStartValue = 10
-      var livingAarsStartNumb = 22*/
-        //var livingAarsSeed = 20
-    var outputSeed = 1
-    var addToOutput = true
-
-    var cells:Seq[Cell] = Seq()
-
-
-    //initCell(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, initAaNumb, similarAars, aarsSeed, maxAnticodonNumb, aarsLifeticksStartValue, livingAarsStartNumb, livingAarsSeed, outputSeed, addToOutput)
-    //Seq.range(2,20).par.foreach{changingParam => simulator.runSimulation(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, changingParam, similarAars, aarsSeed, maxAnticodonNumb, aarsLifeticksStartValue, livingAarsStartNumb, livingAarsSeed, outputSeed, addToOutput)}
-
-    //Vector(48, 64).foreach(codonNumb => Seq(2, 5, 15, 20, 30).foreach(geneNumb => Seq(3, 4, 8, 10, 16, 20).foreach(initAaNumb => Seq(true, false).foreach(similarAars => Seq(2, 4, 6, 8).foreach(maxAnticodonNumb => Seq(2, 5, 10, 15).foreach(aarsLifeticksStartValue => Seq(2, 5, 15, 20, 30).foreach(livingAarsStartNumb => initCell(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, initAaNumb, similarAars, aarsSeed, maxAnticodonNumb, aarsLifeticksStartValue, livingAarsStartNumb, livingAarsSeed, outputSeed, addToOutput))))))))
-    //Vector(48, 64).foreach(codonNumb => Seq(2, 5, 15, 20, 30).foreach(geneNumb => Seq(3, 4, 8, 10, 16, 20).foreach(initAaNumb => Seq(true, false).foreach(similarAars => Seq(2, 4, 6, 8).foreach(maxAnticodonNumb => Seq(2, 5, 10, 15).foreach(aarsLifeticksStartValue => Seq(2, 5, 15, 20, 30).foreach(livingAarsStartNumb => runSimulation(cells))))))))
-
-  codonNumb = 48
-  //
-  Seq(2, 5, 15, 20, 30).foreach(geneNumb => Seq(3, 4, 8, 10, 16, 20).foreach(initAaNumb => Seq(true, false).par.foreach(similarAars => Seq(2, 4, 6, 8).foreach(maxAnticodonNumb => Seq(2, 5, 10, 15).foreach(aarsLifeticksStartValue => Seq(2, 5, 15, 20, 30).foreach(livingAarsStartNumb => {
-    initCell(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, initAaNumb, similarAars, aarsSeed, maxAnticodonNumb, aarsLifeticksStartValue, livingAarsStartNumb, livingAarsSeed, outputSeed, addToOutput)
-    runSimulation(cells)
-    cells = Seq()
-  }))))))
-
-
-  codonNumb = 64
-  Seq(2, 5, 15, 20, 30).foreach(geneNumb => Seq(3, 4, 8, 10, 16, 20).foreach(initAaNumb => Seq(true, false).foreach(similarAars => Seq(2, 4, 6, 8).foreach(maxAnticodonNumb => Seq(2, 5, 10, 15).foreach(aarsLifeticksStartValue => Seq(2, 5, 15, 20, 30).foreach(livingAarsStartNumb => {
-    initCell(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, initAaNumb, similarAars, aarsSeed, maxAnticodonNumb, aarsLifeticksStartValue, livingAarsStartNumb, livingAarsSeed, outputSeed, addToOutput)
-    runSimulation(cells)
-    cells = Seq()
-  }))))))
-
-  codonNumb = 32
-  Seq(2, 5, 15, 20, 30).foreach(geneNumb => Seq(3, 4, 8, 10, 16, 20).foreach(initAaNumb => Seq(true, false).foreach(similarAars => Seq(2, 4, 6, 8).foreach(maxAnticodonNumb => Seq(2, 5, 10, 15).foreach(aarsLifeticksStartValue => Seq(2, 5, 15, 20, 30).foreach(livingAarsStartNumb => {
-    initCell(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, initAaNumb, similarAars, aarsSeed, maxAnticodonNumb, aarsLifeticksStartValue, livingAarsStartNumb, livingAarsSeed, outputSeed, addToOutput)
-    runSimulation(cells)
-    cells = Seq()
-  }))))))
-
-  def runSimulation(cells:Seq[Cell]): Unit ={
-    // simulate
-    cells.par.foreach(cell => {do {
-      cell.translate() // results in a new generation
-      cell.simulationData.updateCodeTableFitness(cell.codeTableFitness, cell.generationID) //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
-      cell.simulationData.updateAaNumb(cell.aaTranslData._1, cell.generationID)
-      cell.simulationData.updateAaHasTransl(cell.aaTranslData._2, cell.generationID)
-      //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
-    } while (cell.generationID <= steps - 2)
-
-    cell.simulationData.livingAars = cell.livingAars
-    cell.simulationData.finishOutput(List(PrintElem.codeTableFitness, PrintElem.aaNumb, PrintElem.livingAars), cell.generationID)
-      this.cells = cells.filterNot(_.equals(cell))
-  })
-  }
-
-
-  def initCell(basePath:String, mrnaSeed:Int, codonNumb:Int, geneLength:Int, geneNumb:Int, mrnaId:Int, initAaNumb:Int, similarAars:Boolean, aarsSeed:Int, maxAnticodonNumb:Int, aarsLifeticksStartValue:Int, livingAarsStartNumb:Int, livingAarsSeed:Int,  outputSeed:Int, addToOutput:Boolean): Unit = {
-    /*def time[R](block: => R): R = {
-      val t0 = System.nanoTime()
-      val result = block // call-by-name
-      val t1 = System.nanoTime()
-      println("Elapsed time: " + (t1 - t0) + "ns")
-      result
-    }*/
-
-    // init Cell
+  /**
+    * Defines the file structure and initializes the following files: config, mRNA, aaRS, livingAars.
+    *
+    * @param mrnaSeed
+    * @param geneLength
+    * @param mrnaId
+    * @param aarsSeed
+    * @param outputSeed
+    * @param addToOutput
+    */
+  def initSimulation(mrnaSeed: Int = 2000, geneLength: Int = 3, mrnaId: Int = 1, aarsSeed: Int = 200, outputSeed: Int = 1, addToOutput: Boolean = true): List[Map[String, Any]] = {
     val r = new scala.util.Random(outputSeed)
     val cell = new Cell(r)
-    val runFlag: Boolean = cell.init(basePath, mrnaSeed, codonNumb, geneLength, geneNumb, mrnaId, initAaNumb, similarAars, aarsSeed, maxAnticodonNumb:Int, aarsLifeticksStartValue, livingAarsStartNumb, livingAarsSeed, outputSeed, addToOutput)
+    var cells: List[Map[String, Any]] = List()
 
-    if (runFlag) {
+    implicit def bool2int(b: Boolean): Int = if (b) 1 else 0
 
-    // init SimulationData
-    cell.simulationData = new SimulationData(cell.path, steps)
-    cell.simulationData.init()
-    cell.toPrint = List(PrintElem.codeTableFitness, PrintElem.aaNumb)
+    Seq(2, 5, 15, 20, 30).foreach(geneNumb => Seq(3, 4, 8, 10, 16, 20).foreach(initAaNumb => Seq(true, false).foreach(similarAars => Seq(2, 4, 6, 8).foreach(maxAnticodonNumb => Seq(2, 5, 10, 15).foreach(aarsLifeticksStartValue => Seq(2, 5, 15, 20, 30).foreach(livingAarsStartNumb => {
+      var path = basePath
+      var newConfig = false
 
-      cells = cell +: cells
+      val codons = cell.getCodons(codonNumb)
+      val (mrnaName, newCombiM) = cell.writeNewMrna(path, mrnaSeed, codons, geneLength, geneNumb, mrnaId)
+      path += s"$mrnaName\\"
+      val mrnaPath = path + s"$mrnaName.csv"
+      if (newCombiM == true) newConfig = true
 
 
+      path += s"initAaNumb_$initAaNumb\\"
 
-    }
+      path += s"similar_$similarAars\\"
+      val (aarsName, newCombiA) = cell.writeNewAars(path, similarAars, aarsSeed, codons, geneLength, geneNumb, maxAnticodonNumb, aarsLifeticksStartValue)
+      path += s"$aarsName\\"
+      val aarsPath = path + s"$aarsName.csv"
+      if (newCombiA == true) newConfig = true
+
+      //init livingAARS
+      val (livingAarsName, newCombiL) = cell.writeNewLivingAars(path, livingAarsSeed, livingAarsStartNumb, initAaNumb)
+      path += s"$livingAarsName\\"
+      val livingAarsPath = path + s"$livingAarsName.csv"
+      if (newCombiL == true) newConfig = true
+
+
+      val cellInfo = Map("codonNumb" -> codonNumb, "initAaNumb" -> initAaNumb, "mrnaPath" -> mrnaPath, "aarsPath" -> aarsPath, "aarsLifeticksStartValue" -> aarsLifeticksStartValue, "livingAarsPath" -> livingAarsPath, "outputSeed" -> outputSeed, "addToOutput" -> addToOutput)
+      cells = cellInfo +: cells
+
+      if (newConfig) {
+        val configData: List[String] = List(mrnaSeed.toString, codonNumb.toString, geneLength.toString, geneNumb.toString, mrnaId.toString, initAaNumb.toString, (similarAars: Int).toString, maxAnticodonNumb.toString, aarsLifeticksStartValue.toString, livingAarsStartNumb.toString, livingAarsSeed.toString, outputSeed.toString, (addToOutput: Int).toString, mrnaPath, aarsPath, livingAarsPath)
+        val file = new File(basePath + "config.csv")
+        val bw = new BufferedWriter(new FileWriter(file, true))
+        bw.write(configData.mkString(","))
+        bw.newLine()
+        bw.close()
+      }
+
+    }))))))
+    cells
+  }
+
+  def simulate(cells: List[Map[String, Any]]): Unit = {
+    System.gc()
+
+    cells.par.foreach(cellInfo => {
+      val outputSeed = cellInfo("outputSeed").asInstanceOf[Int]
+      val r = new scala.util.Random(outputSeed)
+      val cell = new Cell(r)
+      cell.path = basePath
+
+      val runFlag = cell.initProperties(cellInfo("codonNumb").asInstanceOf[Int], cellInfo("initAaNumb").asInstanceOf[Int], cellInfo("mrnaPath").asInstanceOf[String], cellInfo("aarsPath").asInstanceOf[String], cellInfo("aarsLifeticksStartValue").asInstanceOf[Int], cellInfo("livingAarsPath").asInstanceOf[String], outputSeed, cellInfo("addToOutput").asInstanceOf[Boolean])
+
+      if (runFlag) {
+        // init SimulationData
+        cell.simulationData = new SimulationData(cell.path, steps)
+        cell.simulationData.init()
+        cell.toPrint = List(PrintElem.codeTableFitness, PrintElem.aaNumb)
+
+        {
+          cell.translate() // results in a new generation
+          cell.simulationData.updateCodeTableFitness(cell.codeTableFitness, cell.generationID) //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
+          cell.simulationData.updateAaNumb(cell.aaTranslData._1, cell.generationID)
+          cell.simulationData.updateAaHasTransl(cell.aaTranslData._2, cell.generationID)
+          //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
+        }
+        while (cell.generationID <= steps - 2)
+          cell.simulationData.livingAars = cell.livingAars
+          cell.simulationData.finishOutput(List(PrintElem.codeTableFitness, PrintElem.aaNumb, PrintElem.livingAars), cell.generationID)
+      }
+    })
   }
 }
-
-
-
-
-/*
-if (cell.generationID % 10000 == 0) {
-  //SimulationData.writeArrayToFile(SimulationData.codeTableFitness.mkString("\n"), path+"codeTableFitness.csv", true)
-
-  //SimulationData.updateProtocol(cell.toHtmlString(List(PrintElem.mRNA, PrintElem.livingAARSs, PrintElem.codeTable)))
-}*/
