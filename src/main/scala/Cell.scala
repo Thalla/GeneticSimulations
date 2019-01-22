@@ -457,6 +457,7 @@ class Cell (val r:Random) {
     val filePath = path + s"$livingAarsName\\"
     var newCombi = false
     if( ! new File(filePath).exists) {
+      newCombi = true
       new File(filePath).mkdirs()
       writeLivingAarsToFile(filePath + s"$livingAarsName.csv", livingAarsSeed, livingAarsNumb, initAaNumb)
     }
