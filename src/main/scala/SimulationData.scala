@@ -21,6 +21,9 @@ class SimulationData(path:String, steps:Int) {
   private [this] val _aaNumb = new Array[Integer](maxSize)
   var livingAars:ListBuffer[AARS] = ListBuffer()
 
+  init()
+
+
   def init(): Unit ={
 
       if(!new File(path + "codeTableFitness.csv").exists()){

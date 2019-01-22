@@ -253,7 +253,7 @@ class Cell (val r:Random) {
 
 
   }
-  def initProperties(codonNumb: Int, initAaNumb: Int, mrnaPath: String, aarsPath: String, aarsLifeticksStartValue: Int, livingAarsPath: String, outputSeed: Int, addToOutput:Boolean): Boolean = {
+  def initProperties(codonNumb: Int, initAaNumb: Int, mrnaPath: String, aarsPath: String, aarsLifeticksStartValue: Int, livingAarsPath: String, livingAarsDir:String, outputSeed: Int, addToOutput:Boolean): (Boolean, String) = {
     this.codonNumb = codonNumb
     val codons = getCodons(codonNumb)
     this.aaNumb = initAaNumb
@@ -263,20 +263,21 @@ class Cell (val r:Random) {
     initAA = AA.values.toVector.take(initAaNumb) //init initAA
     allAars = readAars(aarsPath, initAaNumb, aarsLifeticksStartValue) //init aaRS
     livingAars = readLivingAars(livingAarsPath, allAars, aarsLifeticksStartValue) //init livingAARS
+
     //init outputFolder
-    val outputPath = livingAarsPath + s"output_s$outputSeed\\"
-    if (!new File(path).exists()) {
-      new File(path).mkdirs()
-      true
+    val outputPath = livingAarsDir + s"\\output_s$outputSeed\\"
+    if (!new File(outputPath).exists()) {
+      new File(outputPath).mkdirs()
+      (true, outputPath)
     } else if (addToOutput) {
       var i = 0 // exists in any case because there are already files in this path therefore a set of living aaRS as well.
       while ((new File(outputPath + s"livingAars${i + 1}.csv").exists())) {
         i += 1
       }
-      livingAars = readLivingAars(path + s"livingAars$i.csv", allAars, aarsLifeticksStartValue)
-      if (livingAars.length != 0) true
-      else false
-    } else false
+      livingAars = readLivingAars(outputPath + s"livingAars$i.csv", allAars, aarsLifeticksStartValue)
+      if (livingAars.length != 0) (true, outputPath)
+      else (false, outputPath) // The path already exists and addToOutput is true but there is no file with the last living aaRS set from the last simulation so nothing to build upon.
+    } else (false, outputPath) // The path already exists. This means that this param combination has been simulated already. addToOutput is false so no second set of results shall be added to the already existing one.
   }
 
 
@@ -308,7 +309,7 @@ class Cell (val r:Random) {
 
     //init aaRS
     path += s"similar_$similarAars\\"
-    val aarsName = writeNewAars(path, similarAars, aarsSeed, codons, geneLength, geneNumb, maxAnticodonNumb, aarsLifeticksStartValue)
+    val aarsName = writeNewAars(path, similarAars, aarsSeed, codonNumb, initAaNumb, maxAnticodonNumb, aarsLifeticksStartValue)
     path += s"$aarsName\\"
     allAars = readAars(path + s"$aarsName.csv", initAaNumb, aarsLifeticksStartValue)
 
@@ -383,15 +384,15 @@ class Cell (val r:Random) {
     * @param geneNumb
     * @return
     */
-  def writeNewAars(path:String, similarAars:Boolean, aarsSeed:Int, codons:IndexedSeq[Any], geneLength:Int, geneNumb:Int, maxAnticodonNumb:Int, lifeticksStartValue:Int):(String, Boolean) ={
+  def writeNewAars(path:String, similarAars:Boolean, aarsSeed:Int, codonNumb:Int, initAaNumb:Int, maxAnticodonNumb:Int, lifeticksStartValue:Int):(String, Boolean) ={
     val aarsName = s"aaRS_s${aarsSeed}_ac${maxAnticodonNumb}_lt$lifeticksStartValue"
     val filePath = path + s"$aarsName\\"
     var newCombi = false
     if( ! new File(filePath).exists) {
       newCombi = true
       new File(filePath).mkdirs()
-      if(similarAars) writeAARSwithSimilarityToFile(codons.toList, geneLength, geneNumb, codonNumb, initAA, maxAnticodonNumb, new File(filePath+ s"$aarsName.csv"), aarsSeed)
-      else writeAARStoFile(codons.toList, geneLength, geneNumb, codonNumb, initAA, maxAnticodonNumb, new File(filePath+ s"$aarsName.csv"), aarsSeed)
+      if(similarAars) writeAARSwithSimilarityToFile(codonNumb, initAaNumb, maxAnticodonNumb, new File(filePath+ s"$aarsName.csv"), aarsSeed)
+      else writeAARStoFile(codonNumb, initAaNumb, maxAnticodonNumb, new File(filePath+ s"$aarsName.csv"), aarsSeed)
     }
     (aarsName, newCombi)
   }
@@ -638,7 +639,7 @@ class Cell (val r:Random) {
     * @param geneNumb
     * @param file
     */
-  def writeAARStoFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int,  initAA:Vector[AA], maxAnticodonNumb:Int, file:File, seed:Int):Unit = {
+  def writeAARStoFile(codonNumb:Int, initAaNumb:Int, maxAnticodonNumb:Int, file:File, seed:Int):Unit = {
     CSVWriter.open(file).close()
     val writer = CSVWriter.open(file, append= true)
     //val r = new scala.util.Random(22)
@@ -646,9 +647,9 @@ class Cell (val r:Random) {
     val r = new scala.util.Random(seed)
     //create 20^3 aaRS
     for(
-      i <- 0 until initAA.length;
-      j <- 0 until initAA.length;
-      k <- 0 until initAA.length
+      i <- 0 until initAaNumb;
+      j <- 0 until initAaNumb;
+      k <- 0 until initAaNumb
     ){
       //var translations:Map[(AA, Int),List[(Double, Int)]] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
       var antiCodonNumb = r.nextInt(maxAnticodonNumb)+1      //number of anticodons that are recognized by the aaRS is chosen randomly
@@ -657,20 +658,21 @@ class Cell (val r:Random) {
         _ <- 0 until antiCodonNumb
       ){
         // aa1 aa2 aa3, aa, anticodon, probability, stem
-        writer.writeRow(Seq(i, j, k, r.nextInt(initAA.length), r.nextInt(codons.length), r.nextDouble().toString(), r.nextInt(codons.length) ))
+        writer.writeRow(Seq(i, j, k, r.nextInt(initAaNumb), r.nextInt(codonNumb), r.nextDouble().toString(), r.nextInt(codonNumb) ))
       }
     }
     writer.close()
   }
 
   /**
-    *
+    * line from aaRS file:
+    * aaSeq ids, aa id, codon id, affinity, ?
     * @param codons
     * @param geneLength
     * @param geneNumb
     * @param file
     */
-  def writeAARSwithSimilarityToFile(codons:List[Any], aarsLength:Int, aaRSnumb:Int, codonNumb: Int, initAA:Vector[AA], maxAnticodonNumb:Int, file:File, seed:Int):Unit = {
+  def writeAARSwithSimilarityToFile(codonNumb:Int, initAaNumb:Int, maxAnticodonNumb:Int, file:File, seed:Int):Unit = {
     CSVWriter.open(file).close()
     val writer = CSVWriter.open(file, append= true)
     //val r = new scala.util.Random(22)
@@ -678,14 +680,14 @@ class Cell (val r:Random) {
     val r = new scala.util.Random(seed)
     //create 20^3 aaRS
     for(
-      i <- 0 until initAA.length
+      i <- 0 until initAaNumb
     ){
       val aa = i//r.nextInt(initAA.length) // every aaRS amino acid sequence that starts with the same amino acid translates to the same amino acid. TODO the same aa as it starts with??
       for (
-        j <- 0 until initAA.length
+        j <- 0 until initAaNumb
       ){
         for (
-          k <- 0 until initAA.length
+          k <- 0 until initAaNumb
         ){
           val codon = r.nextInt(codonNumb)
           //var translations:Map[(AA, Int),List[(Double, Int)]] = Map() //each aaRS has a translation table that maps amino acids and codons to a probability and tRNA stems. Currently the probability is not used and always 1.0.
@@ -697,14 +699,14 @@ class Cell (val r:Random) {
             // aa1 aa2 aa3, aa, anticodon, probability, stem
             val rand = r.nextInt()
             if(rand >= 0.8){
-              writer.writeRow(Seq(i, j, k, aa, codon, r.nextDouble().toString(), r.nextInt(codons.length)))
+              writer.writeRow(Seq(i, j, k, aa, codon, r.nextDouble().toString(), r.nextInt(codonNumb)))
             } else if (rand >= 0.5){
-              writer.writeRow(Seq(i, j, k, r.nextInt(initAA.length), codon, r.nextDouble().toString(), r.nextInt(codons.length)))
+              writer.writeRow(Seq(i, j, k, r.nextInt(initAaNumb), codon, r.nextDouble().toString(), r.nextInt(codonNumb)))
             } else if (rand >= 0.2) {
-              writer.writeRow(Seq(i, j, k, aa, r.nextInt(codonNumb), r.nextDouble().toString(), r.nextInt(codons.length)))
+              writer.writeRow(Seq(i, j, k, aa, r.nextInt(codonNumb), r.nextDouble().toString(), r.nextInt(codonNumb)))
             }
             else {
-              writer.writeRow(Seq(i, j, k, r.nextInt(initAA.length), r.nextInt(codonNumb), r.nextDouble().toString(), r.nextInt(codons.length)))
+              writer.writeRow(Seq(i, j, k, r.nextInt(initAaNumb), r.nextInt(codonNumb), r.nextDouble().toString(), r.nextInt(codonNumb)))
             }
           }
         }
@@ -732,7 +734,7 @@ class Cell (val r:Random) {
 
 
 
-  /** creates a start cell, each cell is one generation
+ /* /** creates a start cell, each cell is one generation
     * @param geneNumb Number of how many different aaRS proteins exist initially. (see old scaladoc for notes)
     * @param geneLength The number of amino acids an aaRS consists of. TODO: aaRS can have varying lengths
     * @param initAA initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
@@ -847,5 +849,5 @@ class Cell (val r:Random) {
     //new Cell(mRNA, livingAARSs, allAARS, initAA, codonNumb,0)
 
   }
-
+*/
 }
