@@ -120,7 +120,7 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
       // init SimulationData
       cell.simulationData = new SimulationData(outputPath, steps)
       cell.toPrint = List(PrintElem.codeTableFitness, PrintElem.aaNumb)
-      cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.allAars, PrintElem.livingAars)))
+      //cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.allAars, PrintElem.livingAars)))
 
       //translation
       do{
