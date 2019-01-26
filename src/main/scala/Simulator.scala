@@ -130,10 +130,9 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
         cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.livingAars, PrintElem.codeTable)))
         //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
       }while (cell.generationID < (steps - 1))
-
       //finish output
       cell.simulationData.livingAars = cell.livingAars
-      cell.simulationData.finishOutput(List(PrintElem.codeTableFitness, PrintElem.aaNumb, PrintElem.livingAars, PrintElem.protocol), cell.generationID)
+      cell.simulationData.finishOutput(List(PrintElem.codeTableFitness, PrintElem.aaNumb, PrintElem.livingAars), cell.generationID)
     }
   }
 }

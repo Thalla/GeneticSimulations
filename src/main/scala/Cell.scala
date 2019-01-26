@@ -241,7 +241,7 @@ class Cell (val r:Random) {
       while ((new File(outputPath + s"livingAars${i + 1}.csv").exists())) {
         i += 1
       }
-      livingAars = readLivingAars(outputPath + s"livingAars$i.csv", allAars, aarsLifeticksStartValue)
+      livingAars = readLivingAarsWithLt(outputPath + s"livingAars$i.csv", allAars)
       if (livingAars.length != 0) (true, outputPath)
       else (false, outputPath) // The path already exists and addToOutput is true but there is no file with the last living aaRS set from the last simulation so nothing to build upon.
     } else (false, outputPath) // The path already exists. This means that this param combination has been simulated already. addToOutput is false so no second set of results shall be added to the already existing one.

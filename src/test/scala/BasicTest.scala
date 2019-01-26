@@ -58,8 +58,6 @@ class BasicTest extends AssertionsForJUnit {
         case Failure(f) => false
       })
 
-      println("next")
-
       simulator = new Simulator(basePath, 3, 3, 5)
       cells = simulator.initSimulation(1, 3, Seq(2), 1, Seq(false), Seq(3), Seq(3), Seq(10), 1, Seq(2), 4, true)
       simulator.runSimulation(cells)
