@@ -104,7 +104,8 @@ class SimulationData(path:String, steps:Int) {
     * @param html
     */
   def updateProtocol(html:String): Unit ={
-    protocol = html :: protocol
+    //protocol = html :: protocol
+    writeToFile(html, path + "protocol.html", true, true)
   }
 
   def toString(value:Array[Double], length:Int):String ={
@@ -120,8 +121,8 @@ class SimulationData(path:String, steps:Int) {
       elem <- toPrint
     ){
       elem match {
-        case PrintElem.codeTableFitness => writeToFile(_codeTableFitness.take(genID).mkString("\n"), path + elem.toString() + ".csv", true, false)
-        case PrintElem.aaNumb => writeToFile(_aaNumb.take(genID).mkString("\n"), path + elem.toString() + ".csv", true, false)
+        case PrintElem.codeTableFitness => writeToFile(_codeTableFitness.take(genID+1).mkString("\n"), path + elem.toString() + ".csv", true, false)
+        case PrintElem.aaNumb => writeToFile(_aaNumb.take(genID+1).mkString("\n"), path + elem.toString() + ".csv", true, false)
         case PrintElem.livingAars => {
           var i = 0   // exists in any case because there are already files in this path therefore a set of living aaRS as well.
           while ((new File(path + s"livingAars${i}.csv").exists())) {
@@ -129,6 +130,7 @@ class SimulationData(path:String, steps:Int) {
           }
           writeToFile(livingAars.mkString("\n"), path + s"${elem.toString}$i.csv", false, false)
         }
+        case PrintElem.protocol => writeToFile(protocol.mkString("\n"), path + elem.toString + ".html", true, false)
       }
     }
   }

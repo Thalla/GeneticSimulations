@@ -1,19 +1,21 @@
 import java.io.{BufferedWriter, File, FileWriter}
+import scala.math.pow
 
 /**
   * main method
   * controls biological simulation using class Cell
   * receives simulation data from Cell and transfers it to SimulationData
   *
-  * @version 4.3 first write to file system afterwards only read
+  * @version 4.4
+  * @TODO always finish output folder even if program is stopped
   */
 object Simulator {
 
   def main(args: Array[String]): Unit = {
-    val simulator = new Simulator(args(0), args(1).toInt, args(2).toInt, args(3).toInt)
+    //val simulator = new Simulator(args(0), args(1).toInt, args(2).toInt, args(3).toInt)
 
-    //val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree2\\selection_false\\translMethod_probability\\"
-    //val simulator = new Simulator(basePath, 64, 20, 11)
+    val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree2\\selection_false\\translMethod_probability\\"
+    val simulator = new Simulator(basePath, 64, 20, 11)
 
     simulator.simulate()
   }
@@ -45,6 +47,8 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
     implicit def bool2int(b: Boolean): Int = if (b) 1 else 0
 
     geneNumbs.foreach(geneNumb => initAaNumbs.foreach(initAaNumb => similarAarss.foreach(similarAars => maxAnticodonNumbs.foreach(maxAnticodonNumb => aarsLifeticksStartValues.foreach(aarsLifeticksStartValue => livingAarsStartNumbs.foreach(livingAarsStartNumb => {
+      //param validity check
+      if (!(livingAarsStartNumb > pow(geneLength,initAaNumb))) {
       var path = basePath
       var newConfig = false
 
@@ -82,37 +86,54 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
         bw.newLine()
         bw.close()
       }
-
+    }else{
+        println(livingAarsStartNumb + " hasn't been used because it is greater than number of aaRS.")
+      }
     }))))))
     cells
   }
 
+  /**
+    *
+    * @param cells
+    */
   def runSimulation(cells: List[Map[String, Any]]): Unit = {
     System.gc()
 
-    cells.par.foreach(cellInfo => {
-      val outputSeed = cellInfo("outputSeed").asInstanceOf[Int]
-      val r = new scala.util.Random(outputSeed)
-      val cell = new Cell(r)
-      cell.path = basePath
+    cells.par.foreach(cellInfo => simulateCell(cellInfo))
+  }
 
-      val (runFlag, outputPath) = cell.initProperties(cellInfo("codonNumb").asInstanceOf[Int], cellInfo("initAaNumb").asInstanceOf[Int], cellInfo("mrnaPath").asInstanceOf[String], cellInfo("aarsPath").asInstanceOf[String], cellInfo("aarsLifeticksStartValue").asInstanceOf[Int], cellInfo("livingAarsPath").asInstanceOf[String], cellInfo("livingAarsDir").asInstanceOf[String], outputSeed, cellInfo("addToOutput").asInstanceOf[Boolean])
+  /**
+    *
+    * @param cellInfo
+    */
+  def simulateCell(cellInfo:Map[String, Any]): Unit ={
+    //init cell
+    val outputSeed = cellInfo("outputSeed").asInstanceOf[Int]
+    val r = new scala.util.Random(outputSeed)
+    val cell = new Cell(r)
+    cell.path = basePath
+    val (runFlag, outputPath) = cell.initProperties(cellInfo("codonNumb").asInstanceOf[Int], cellInfo("initAaNumb").asInstanceOf[Int], cellInfo("mrnaPath").asInstanceOf[String], cellInfo("aarsPath").asInstanceOf[String], cellInfo("aarsLifeticksStartValue").asInstanceOf[Int], cellInfo("livingAarsPath").asInstanceOf[String], cellInfo("livingAarsDir").asInstanceOf[String], outputSeed, cellInfo("addToOutput").asInstanceOf[Boolean])
 
-      if (runFlag) {
-        // init SimulationData
-        cell.simulationData = new SimulationData(outputPath, steps)
-        cell.toPrint = List(PrintElem.codeTableFitness, PrintElem.aaNumb)
+    if (runFlag) {
+      // init SimulationData
+      cell.simulationData = new SimulationData(outputPath, steps)
+      cell.toPrint = List(PrintElem.codeTableFitness, PrintElem.aaNumb)
+      cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.allAars, PrintElem.livingAars)))
 
-        do{
-          cell.translate() // results in a new generation
-          cell.simulationData.updateCodeTableFitness(cell.codeTableFitness, cell.generationID) //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
-          cell.simulationData.updateAaNumb(cell.aaTranslData._1, cell.generationID)
-          cell.simulationData.updateAaHasTransl(cell.aaTranslData._2, cell.generationID)
-          //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
-        }while (cell.generationID <= steps - 2)
-        cell.simulationData.livingAars = cell.livingAars
-        cell.simulationData.finishOutput(List(PrintElem.codeTableFitness, PrintElem.aaNumb, PrintElem.livingAars), cell.generationID)
-      }
-    })
+      //translation
+      do{
+        cell.translate() // results in a new generation
+        cell.simulationData.updateCodeTableFitness(cell.codeTableFitness, cell.generationID) //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
+        cell.simulationData.updateAaNumb(cell.aaTranslData._1, cell.generationID)
+        cell.simulationData.updateAaHasTransl(cell.aaTranslData._2, cell.generationID)
+        cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.livingAars, PrintElem.codeTable)))
+        //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
+      }while (cell.generationID < (steps - 1))
+
+      //finish output
+      cell.simulationData.livingAars = cell.livingAars
+      cell.simulationData.finishOutput(List(PrintElem.codeTableFitness, PrintElem.aaNumb, PrintElem.livingAars, PrintElem.protocol), cell.generationID)
+    }
   }
 }

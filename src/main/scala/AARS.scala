@@ -1,4 +1,5 @@
 import AA._
+import HtmlConverter._
 
 class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, Int)]], val lifeticksStartValue:Int) {
 
@@ -27,21 +28,20 @@ class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, I
     "\n" + "aaRS: " + aaSeq.mkString(", ") + "\nlifeticks: " + lifeticks + "\nTranslations: " + translations.mkString(", ")
   }*/
 
-  def translationsToHtmlString(codons:Array[Int]):String= {
-    var content = "<table>"
+  def translationsToHtmlString(codons:Array[Any]):String= {
+    val codonNumb = codons.length
+    var tableContent = ""
     for (
       translation <- translations
     ) {
-      content += "<tr>\n<td>" + translation._1._1.toString + "</td><td>" + codons(translation._1._2) + "</td><td><table>"
+      tableContent += tableRow(tableField(translation._1._1.toString) + tableField(divColour(codons(translation._1._2), translation._1._2, codonNumb)) + tableField(translation._2(0)._1) + tableField(codons(translation._2(0)._2)))
       for (
-        t <- 0 until translation._2.length
+        t <- 1 until translation._2.length
       ) {
-        content += "<tr><td>" + translation._2(t)._1 + "</td><td>" +codons(translation._2(t)._2) + "</td></tr>"
+        tableContent += tableRow(tableField("") + tableField("") + tableField(translation._2(t)._1) + tableField(codons(translation._2(t)._2)))
       }
-      content += "</table>\n</td></tr>\n"
     }
-    content += "</table>"
-    content
+     table(tableContent)
   }
 }
 
