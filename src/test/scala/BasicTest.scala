@@ -16,16 +16,24 @@ class BasicTest extends AssertionsForJUnit {
     //cell.init(path, 5, 3, 2, 16, 48, 3, 9,48, 0,false, 0)
   // Problem: ich verwende die IDs der Aminosäuren, Ala hat ID 16, aber im allAARS Array hat Ala Position 0, wenn Ala an nullter Stelle im initAA Vektor steht.
 
-    //path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\testCSVs\\mini1\\"
-    /*new File(path).mkdirs
-    val simulator = new Simulator(path, 9)
-    simulator.initCell(path, 0, 3, 3, 2, 1, 3, false, 1, 3, 10, 2, 3, 4, true)*/
-
     // my minature example
-    //val simulator = new Simulator(path, 3, 3, 15)
-    //val cells = simulator.initSimulation(0, 3, Seq(2), 1, Seq(false), Seq(3), Seq(3), Seq(10), 1, Seq(2), 4, true)
+    var path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\testCSVs\\mini1_0\\"
 
+    if(new File(path).exists()){
+      assert(Try(Path(path).deleteRecursively()) match {
+        case Success(lines) => true
+        case Failure(f) => false
+      })
+    }
+    new File(path).mkdirs
+    var simulator = new Simulator(path, 3, 3, 15)
+    var cells = simulator.initSimulation(0, 3, Seq(2), 1, Seq(false), Seq(3), Seq(3), Seq(10), 1, Seq(2), 4, true)
+    simulator.runSimulation(cells)
 
+    path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\testCSVs\\mini1\\"
+    simulator = new Simulator(path, 3, 3, 15)
+    cells = simulator.initSimulation(0, 3, Seq(2), 1, Seq(false), Seq(3), Seq(3), Seq(10), 1, Seq(2), 4, true)
+    simulator.runSimulation(cells)
 
 
     //29.  12:30   DI, Do, Fr
@@ -42,23 +50,23 @@ class BasicTest extends AssertionsForJUnit {
         case Failure(f) => false
       })
 
-      var simulator = new Simulator(basePath, 3, 3, 15)
-      var cells = simulator.initSimulation(1, 3, Seq(2), 1, Seq(false), Seq(3), Seq(3), Seq(10), 1, Seq(2), 4, true)
+      var simulator = new Simulator(basePath, 64, 3, 10)
+      var cells = simulator.initSimulation(1, 3, Seq(2), 1, Seq(false), Seq(20), Seq(3), Seq(10), 1, Seq(2), 4, true)
       simulator.runSimulation(cells)
 
-      var path: String = basePath + "mRNA_s1_c3_gl3_gn2_#1\\initAaNumb_3\\similar_false\\aaRS_s1_ac3_lt10\\livingAars_n2_s3\\output_s4\\codeTableFitness.csv"
+      /*var path: String = basePath + "mRNA_s1_c3_gl3_gn2_#1\\initAaNumb_3\\similar_false\\aaRS_s1_ac3_lt10\\livingAars_n2_s3\\output_s4\\codeTableFitness.csv"
       var file = new File(path)
       assert(file.exists()== true)
       reader = CSVReader.open(file)
       val data1 = reader.all()
-      reader.close()
+      reader.close()*/
 
-      assert(Try(Path(basePath).deleteRecursively()) match {
+      /*assert(Try(Path(basePath).deleteRecursively()) match {
         case Success(lines) =>       true
         case Failure(f) => false
-      })
+      })*/
 
-      simulator = new Simulator(basePath, 3, 3, 5)
+     /* simulator = new Simulator(basePath, 3, 3, 5)
       cells = simulator.initSimulation(1, 3, Seq(2), 1, Seq(false), Seq(3), Seq(3), Seq(10), 1, Seq(2), 4, true)
       simulator.runSimulation(cells)
       simulator.runSimulation(cells)
@@ -66,14 +74,14 @@ class BasicTest extends AssertionsForJUnit {
       reader = CSVReader.open(file)
       val data2 = reader.all()
 
-      assert(data1.length == data2.length)
-      assert(data1.eq(data2))
+      assert(data1.length == data2.length)*/
+
     }catch{
       case io: IOException => println("IO :(")
       case e: Throwable => println(e)
     }
     finally{
-      reader.close()
+      //reader.close()
     }
 
 

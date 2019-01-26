@@ -6,16 +6,17 @@ import scala.math.pow
   * controls biological simulation using class Cell
   * receives simulation data from Cell and transfers it to SimulationData
   *
-  * @version 4.4
+  * @version 4.4 more main classes, protocol output is back, failure corrections
   * @TODO always finish output folder even if program is stopped
+  * @TODO codonNumb = 3 -> sth. else can'b be higher than ... ???
   */
 object Simulator {
 
   def main(args: Array[String]): Unit = {
-    //val simulator = new Simulator(args(0), args(1).toInt, args(2).toInt, args(3).toInt)
+    val simulator = new Simulator(args(0), args(1).toInt, args(2).toInt, args(3).toInt)
 
-    val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree2\\selection_false\\translMethod_probability\\"
-    val simulator = new Simulator(basePath, 64, 20, 11)
+    //val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree2\\selection_false\\translMethod_probability\\"
+    //val simulator = new Simulator(basePath, 64, 20, 11)
 
     simulator.simulate()
   }
@@ -87,7 +88,7 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
         bw.close()
       }
     }else{
-        println(livingAarsStartNumb + " hasn't been used because it is greater than number of aaRS.")
+        println("Living aaRS start numb" + livingAarsStartNumb + " hasn't been used because it is greater than number of existing aaRS.")
       }
     }))))))
     cells
@@ -127,7 +128,7 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
         cell.simulationData.updateCodeTableFitness(cell.codeTableFitness, cell.generationID) //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
         cell.simulationData.updateAaNumb(cell.aaTranslData._1, cell.generationID)
         cell.simulationData.updateAaHasTransl(cell.aaTranslData._2, cell.generationID)
-        cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.livingAars, PrintElem.codeTable)))
+        //cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.livingAars, PrintElem.codeTable)))
         //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
       }while (cell.generationID < (steps - 1))
       //finish output

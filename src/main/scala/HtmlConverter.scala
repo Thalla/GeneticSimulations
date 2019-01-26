@@ -11,9 +11,9 @@ object HtmlConverter {
   }
 
   val divColour = (text:Any, numb:Int, numbAll:Int)=>{
-    val colour = (255/numbAll)*numb
-    val colourNegative = 255-colour
-    s"<div style='display: inline-block; background-color: rgb($colourNegative, $colourNegative, $colourNegative); color: rgb($colour, $colour, $colour)'>${text.toString}</div>"
+    val colour = (255/4)*numb
+    //val colourNegative = 255-colour
+    s"<div style='font-weight: bold; display: inline-block; background-color: rgb(${colour%255}, ${colour*20%255}, ${colour*300%255}); color: rgb(${255-colour%255}, ${255-colour*20%255}, ${255-colour*300%255})'>${text.toString}</div>"
   }
 
   val listElement = (text:Any)=>{
