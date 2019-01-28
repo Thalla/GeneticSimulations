@@ -26,12 +26,12 @@ class BasicTest extends AssertionsForJUnit {
       })
     }
     new File(path).mkdirs
-    var simulator = new Simulator(path, 3, 3, 15)
+    var simulator = new Simulator(path, 3, 4, 15, "max")
     var cells = simulator.initSimulation(0, 3, Seq(2), 1, Seq(false), Seq(3), Seq(3), Seq(10), 1, Seq(2), 4, true)
     simulator.runSimulation(cells)
 
     path = "C:\\Users\\feroc\\OneDrive\\Dokumente\\HS\\Semester\\4\\Thesis\\Modeling\\testCSVs\\mini1\\"
-    simulator = new Simulator(path, 3, 3, 15)
+    simulator = new Simulator(path, 3, 3, 15, "max")
     cells = simulator.initSimulation(0, 3, Seq(2), 1, Seq(false), Seq(3), Seq(3), Seq(10), 1, Seq(2), 4, true)
     simulator.runSimulation(cells)
 
@@ -50,7 +50,7 @@ class BasicTest extends AssertionsForJUnit {
         case Failure(f) => false
       })
 
-      var simulator = new Simulator(basePath, 64, 3, 10)
+      var simulator = new Simulator(basePath, 64, 3, 10, "max")
       var cells = simulator.initSimulation(1, 3, Seq(2), 1, Seq(false), Seq(20), Seq(3), Seq(10), 1, Seq(2), 4, true)
       simulator.runSimulation(cells)
 
