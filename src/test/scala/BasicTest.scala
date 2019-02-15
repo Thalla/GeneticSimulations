@@ -10,7 +10,7 @@ import scala.util.{Failure, Success, Try}
 class BasicTest extends AssertionsForJUnit {
 
 
-
+/*
 
   @Before def init():Unit={
     //cell.init(path, 5, 3, 2, 16, 48, 3, 9,48, 0,false, 0)
@@ -94,5 +94,5 @@ class BasicTest extends AssertionsForJUnit {
     println(cell.mRNA.toString())
     cell.livingAars.foreach(x => println(x.toString()))*/
   }
-
+*/
 }

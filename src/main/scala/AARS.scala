@@ -15,7 +15,7 @@ class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, I
   }
 
   override def toString(): String ={
-    var aaSeqIt = aaSeq.iterator
+    val aaSeqIt = aaSeq.iterator
     var aaSeqIds:List[Int] = List()
       while(aaSeqIt.hasNext){
         val aa:AA = aaSeqIt.next()
@@ -28,6 +28,11 @@ class AARS(var aaSeq: Vector[AA], var translations:Map[(AA, Int),List[(Double, I
     "\n" + "aaRS: " + aaSeq.mkString(", ") + "\nlifeticks: " + lifeticks + "\nTranslations: " + translations.mkString(", ")
   }*/
 
+  /**
+    * packs the information from translations into HTML code
+    * @param codons used to translate codon IDs to Strings
+    * @return a html presentation of the translations as String
+    */
   def translationsToHtmlString(codons:Array[Any]):String= {
     val codonNumb = codons.length
     var tableContent = ""

@@ -242,8 +242,6 @@ class Cell(val r: Random) {
     unambiguousness = sum
 
     codeTableFitness = (translatedAaCounter.toDouble / aaNumb.toDouble) * unambiguousness
-
-
   }
 
   /**
@@ -299,7 +297,7 @@ class Cell(val r: Random) {
     * @param initAA     initially existing and used amino acids TODO: allow having new/non proteinogenic amino acids TODO start with non essential amino acids
     * @param codonNumb  Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
     */
-  def init(basePath: String, mrnaSeed: Int, codonNumb: Int, geneLength: Int, geneNumb: Int, mrnaId: Int, initAaNumb: Int, similarAars: Boolean = true, aarsSeed: Int, maxAnticodonNumb: Int, aarsLifeticksStartValue: Int, livingAarsStartNumb: Int, livingAarsSeed: Int, outputSeed: Int, addToOutput: Boolean): Boolean = {
+  def init(basePath: String, mrnaSeed: Int, codonNumb: Int, geneLength: Int, geneNumb: Int, initAaNumb: Int, similarAars: Boolean = true, aarsSeed: Int, maxAnticodonNumb: Int, aarsLifeticksStartValue: Int, livingAarsStartNumb: Int, livingAarsSeed: Int, outputSeed: Int, addToOutput: Boolean): Boolean = {
     path = basePath
 
     this.codonNumb = codonNumb
@@ -310,7 +308,7 @@ class Cell(val r: Random) {
     codeTable = Array.ofDim[Double](codonNumb, aaNumb)
 
     //init mRNA
-    val mrnaName = writeNewMrna(path, mrnaSeed, codons, geneLength, geneNumb, mrnaId)
+    val mrnaName = writeNewMrna(path, mrnaSeed, codons, geneLength, geneNumb)
     path += s"$mrnaName\\"
     mRNA = readMrna(path + s"$mrnaName.csv")
 
@@ -356,14 +354,14 @@ class Cell(val r: Random) {
     * @param id
     * @return fileName: name of the mRNA file that fits to the given parameters
     */
-  def writeNewMrna(path: String, mrnaSeed: Int, codons: IndexedSeq[(Any)], geneLength: Int, geneNumb: Int, id: Int): (String, Boolean) = {
-    val mrnaName = s"mRNA_s$mrnaSeed" + s"_c${codons.length}" + s"_gl$geneLength" + s"_gn$geneNumb" + s"_#$id"
+  def writeNewMrna(path: String, mrnaSeed: Int, codons: IndexedSeq[(Any)], geneLength: Int, geneNumb: Int): (String, Boolean) = {
+    val mrnaName = s"mRNA_s$mrnaSeed" + s"_c${codons.length}" + s"_gl$geneLength" + s"_gn$geneNumb"
     val mrnaPath = path + mrnaName + "\\"
     var newCombi = false
     if (!new File(mrnaPath).exists()) {
       newCombi = true
       new File(mrnaPath).mkdirs()
-      val mRNA: List[List[Int]] = getRandomMRNA(codons.toList, geneLength, geneNumb)
+      val mRNA: List[List[Int]] = getRandomMRNA(codons.toList, geneLength, geneNumb, mrnaSeed)
       writeMRNAtoFile(codons.toList, geneLength, geneNumb, new File(mrnaPath + mrnaName + ".csv"))
     }
     (mrnaName, newCombi)
@@ -557,9 +555,9 @@ class Cell(val r: Random) {
     * @param geneNumb   number of aaRS
     * @return mRNA having genes having codons; for example: Vector(Vector(AA, CU, AG), Vector(UA, CC, GC),...)
     */
-  def getRandomMRNA(codons: List[Any], geneLength: Int, geneNumb: Int): List[List[Int]] = {
+  def getRandomMRNA(codons: List[Any], geneLength: Int, geneNumb: Int, seed: Int): List[List[Int]] = {
     var mRNA: List[List[Int]] = List()
-    val r = new scala.util.Random(22)
+    val r = new scala.util.Random(seed)
     val getRandomGene = () => {
       var gene: List[Int] = List()
       for {
