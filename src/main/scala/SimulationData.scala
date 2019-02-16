@@ -9,7 +9,7 @@ import scala.collection.mutable.ListBuffer
   *
   * produces file output
   */
-class SimulationData(path:String, steps:Int) {
+class SimulationData(path:String, steps:Int, toPrint:List[PrintElem]) {
   val maxSize = 1500000
   private[this] var _codeTableFitness: Array[Double] = new Array[Double](maxSize)
   private[this] var protocol:List[String] = List()
@@ -27,12 +27,26 @@ class SimulationData(path:String, steps:Int) {
   def init(): Unit ={
 
       if(!new File(path + "codeTableFitness.csv").exists()){
-        writeToFile("", path+"codeTableFitness.csv", false, false)
-        writeToFile("", path+"aaNumb.csv", false, false)
+        for(
+          elem <- toPrint
+        ) {
+          elem match {
+            case PrintElem.codeTableFitness => writeToFile("", path+"codeTableFitness.csv", false, false)
+            case PrintElem.aaNumb => writeToFile("", path+"aaNumb.csv", false, false)
+            case _ =>
+          }
+        }
       }
       else {
-        writeToFile("", path + "codeTableFitness.csv", true, true)
-        writeToFile("", path + "aaNumb.csv", true, true)
+        for(
+          elem <- toPrint
+        ) {
+          elem match {
+            case PrintElem.codeTableFitness => writeToFile("", path + "codeTableFitness.csv", true, true)
+            case PrintElem.aaNumb => writeToFile("", path + "aaNumb.csv", true, true)
+            case _ =>
+          }
+        }
       }
   }
 
@@ -113,10 +127,7 @@ class SimulationData(path:String, steps:Int) {
     " "
   }
 
-  /**
-    * @param toPrint List of Tuples with filename and file content
-*/
-  def finishOutput(toPrint:List[PrintElem], genID:Int):Unit={
+  def finishOutput(genID:Int):Unit={
     for(
       elem <- toPrint
     ){

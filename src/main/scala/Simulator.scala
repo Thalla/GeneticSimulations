@@ -15,12 +15,18 @@ object Simulator {
     * @param args path, codonNumb, livingAarsSeed, translationMethod
     */
   def main(args: Array[String]): Unit = {
-    val simulator = new Simulator(args(0), args(1).toInt, args(2).toInt, args(3).toInt, args(4))
+    if(args.length != 0){
+      val simulator = new Simulator(args(0), args(1).toInt, args(2).toInt, args(3).toInt, args(4))
+      simulator.simulate()
+    }else{
+      val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree3\\translMethod_affinity\\"
+      val params :Array[String] = Array(basePath, "64", "20", "11", "affinity", "23", "3")
+      AnovaSimulator.main(params)
+      //val simulator = Simulator(basePath, 64, 20, 11, "affinity")
+      //simulator.simulate()
+    }
 
-    //val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree2\\selection_false\\translMethod_affinity\\"
-    //val simulator = new Simulator(basePath, 64, 20, 11)
 
-    simulator.simulate()
   }
 }
 
@@ -135,8 +141,7 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
 
     if (runFlag) {
       // init SimulationData
-      cell.simulationData = new SimulationData(outputPath, steps)
-      cell.toPrint = List(PrintElem.codeTableFitness)
+      cell.simulationData = new SimulationData(outputPath, steps, List(PrintElem.codeTableFitness, PrintElem.livingAars))
       //cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.codons, PrintElem.mRNA, PrintElem.allAars, PrintElem.livingAars)))
 
       //translation
@@ -150,7 +155,7 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
       } while (cell.generationID < (steps - 1))
       //finish output
       cell.simulationData.livingAars = cell.livingAars
-      cell.simulationData.finishOutput(List(PrintElem.codeTableFitness, PrintElem.livingAars), cell.generationID)
+      cell.simulationData.finishOutput(cell.generationID)
     }
   }
 }

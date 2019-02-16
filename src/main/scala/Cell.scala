@@ -23,8 +23,6 @@ import scala.util.Random
 class Cell(val r: Random) {
   var path = ""
   var simulationData: SimulationData = null
-  var toPrint: List[PrintElem] = List()
-
   var codonNumb: Int = 0
   var mRNA: List[List[Int]] = List()
   var aaNumb: Int = _
@@ -51,7 +49,7 @@ class Cell(val r: Random) {
     _codeTableFitness = value
   }
 
-  private[this] var _aaTranslData: (Int, Array[Boolean]) = (0, Array.fill[Boolean](20)(false)) //the second variable exists to remember information from the previous generation to calculate aaChanges
+  private[this] var _aaTranslData: (Int, Array[Boolean]) = (0, Array.fill[Boolean](initAA.length)(false)) //the second variable exists to remember information from the previous generation to calculate aaChanges
   var aaChanges: Array[Int] = new Array[Int](2) //genIds, added amino acids, removed amino acids
   def aaTranslData: (Int, Array[Boolean]) = _aaTranslData
 
@@ -185,7 +183,7 @@ class Cell(val r: Random) {
     *
     */
   def updateCodeTable(): Unit = {
-    val newAaHasTransl = Array.fill[Boolean](20)(false)
+    val newAaHasTransl = Array.fill[Boolean](initAA.length)(false)
     var translatedAaCounter = 0
     val codonTransl = Array.fill[Boolean](codonNumb * aaNumb)(false)
     val codonTranslCounter = Array.fill[Int](codonNumb)(0)
@@ -261,6 +259,7 @@ class Cell(val r: Random) {
     this.codonNumb = codonNumb
     val codons = getCodons(codonNumb)
     this.aaNumb = initAaNumb
+    _aaTranslData = (0, Array.fill[Boolean](aaNumb)(false))
     translate = translationMethod match {
       case "random" => translateRandomly
       case "max" => translateByMax
@@ -636,7 +635,7 @@ class Cell(val r: Random) {
     //val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
     val r = new scala.util.Random(seed)
-    //create 20^3 aaRS
+    //create initAaNumb^3 aaRS
     for (
       i <- 0 until initAaNumb;
       j <- 0 until initAaNumb;
@@ -670,7 +669,7 @@ class Cell(val r: Random) {
     //val r = new scala.util.Random(22)
     // The current genetic code doesn't have more than six different codons per amino acid. The start cell has the same restrictions.
     val r = new scala.util.Random(seed)
-    //create 20^3 aaRS
+    //create initAaNumb^3 aaRS
     for (
       i <- 0 until initAaNumb
     ) {
