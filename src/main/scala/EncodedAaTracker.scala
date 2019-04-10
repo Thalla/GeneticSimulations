@@ -1,4 +1,4 @@
-import akka.actor._
+/*import akka.actor._
 
 object EncodedAaTracker {
   def props(encodedAA:Array[Array[Int]]) : Props = Props(new EncodedAaTracker(encodedAA))
@@ -32,3 +32,4 @@ class EncodedAaTracker (encodedAA:Array[Array[Int]]) extends Actor {
     case Array() => encodedAaChanges
   }
 }
+*/
