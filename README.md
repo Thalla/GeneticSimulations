@@ -106,5 +106,5 @@ Currently the simulation method is *simulateCell()*. *runSimulation()* needs a s
 - Simulate cell/membrane division: Divide the set of living aaRSs. This can lead to much higher fitness values because less aaRSs and therefor less translations allows for less ambiguity.
 - The fittest wins: A translation step is simulated with various seeds and the fittest result is the cell for the next generation.
 
-**Simulate special cases**
+**Simulate special cases**  
 To simulate a specific set of genes or aaRSs or living aaRSs the simulation must be run with the correct parameters first and afterwards the desired detail changes can be made in the files that were generated. A second run of the simulation will use the changed files and perform the desired simulation. A second run is only possible when the ouput folder was deleted in before. Otherwise, when the first run had addToOutput = false nothing happens and when addToOutput was true the second simulation uses the last set of aaRSs from the first simulation.
