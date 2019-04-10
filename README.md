@@ -1,6 +1,8 @@
 # GeneticSimulations
 Analysis part can be found in repository [GeneticSimulationsR](https://github.com/Thalla/GeneticSimulationsR).  
 
+Running the main method of object Simulator with an empty args parameter results in a couple of simulations and the results are saved in the subfolder "SimulationResults". This folder has to be created or the basePath parameter in the main method has to be changed before running the simulation.
+
 
 **Caution:** When simulation breaks, all folders of files that may not be finished correctly must be deleted before running the simulation again. 
 When a file shall be recreated, the folder of the file must be deleted.
