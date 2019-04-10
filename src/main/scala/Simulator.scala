@@ -15,10 +15,10 @@ object Simulator {
       val simulator = new Simulator(args(0), args(1).toInt, args(2).toInt, args(3).toInt, args(4))
       simulator.simulate()
     } else {
-      val basePath = ""
+      val basePath = "SimulationResults\\"
       time({
-        val simulator = new Simulator(basePath, 64, 20, 10, "affinity")
-        val cells: List[Map[String, Any]] = simulator.initSimulation(23413425, 3, Seq(20), Seq(false), Seq(20), Seq(6), Seq(20), 30, Seq(10), 7, false)
+        val simulator = new Simulator(basePath, 64, 20, 1000, "affinity")
+        val cells: List[Map[String, Any]] = simulator.initSimulation(200, 3, Seq(20,40), Seq(false), Seq(20), Seq(6), Seq(20), 30, Seq(10), 1, true)
         simulator.runSimulation(cells, simulator.simulateCell)
       })
     }
@@ -122,7 +122,7 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
           bw.close()
         }
       } else {
-        println("Living aaRSs start numb" + livingAarsStartNumb + " hasn't been used because it is greater than number of existing aaRSs.")
+        println("Living aaRSs start numb " + livingAarsStartNumb + " hasn't been used because it is greater than number of existing aaRSs.")
       }
     }))))))
     cells
