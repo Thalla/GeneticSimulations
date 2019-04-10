@@ -2,65 +2,75 @@ import java.io.{BufferedWriter, File, FileWriter}
 import scala.math.pow
 
 /**
-  * controls biological simulation using class Cell
-  * receives simulation data from Cell and transfers it to SimulationData
-  *
-  * @version 4.5 failure corrections, some documentation added
-  * @TODO always finish output folder even if program is stopped
-  * @TODO codonNumb = 3 -> sth. else can't be higher than ... ???
+  * Runs a mostly predefined set of simulations
+  * @version 5.0
   */
 object Simulator {
   /**
-    * Runs a mostly predefined set of simulations
-    * @param args path, codonNumb, livingAarsSeed, translationMethod
+    * This main Method is also used by other main objects
+    * @param args path, codonNumb, livingAarsSeed, steps, translationMethod
     */
   def main(args: Array[String]): Unit = {
-    if(args.length != 0){
+    if (args.length != 0) {
       val simulator = new Simulator(args(0), args(1).toInt, args(2).toInt, args(3).toInt, args(4))
       simulator.simulate()
-    }else{
-      val basePath = "C:\\Users\\feroc\\Documents\\ThesisLocal\\SimulationTree3\\translMethod_affinity\\"
-      val params :Array[String] = Array(basePath, "64", "20", "11", "affinity", "23", "3")
-      AnovaSimulator.main(params)
-      //val simulator = Simulator(basePath, 64, 20, 11, "affinity")
-      //simulator.simulate()
+    } else {
+      val basePath = ""
+      time({
+        val simulator = new Simulator(basePath, 64, 20, 10, "affinity")
+        val cells: List[Map[String, Any]] = simulator.initSimulation(23413425, 3, Seq(20), Seq(false), Seq(20), Seq(6), Seq(20), 30, Seq(10), 7, false)
+        simulator.runSimulation(cells, simulator.simulateCell)
+      })
     }
+  }
 
-
+  /**
+    * Timer
+    * @param block
+    * @tparam R
+    * @return R
+    */
+  def time[R](block: => R): R = {
+    val t0 = System.nanoTime()
+    val result = block
+    println("Elapsed time: " + (System.nanoTime - t0) + "ns")
+    result
   }
 }
 
 /**
-  *
-  * @param basePath
-  * @param codonNumb
-  * @param livingAarsSeed
-  * @param steps
-  * @param translationMethod
+  * Controls biological simulation of the aaRS feedback loop. Uses objects of class Cell.
+  * @param basePath path were the folders with the results of the simulation are created
+  * @param codonNumb number of codons that is used for mRNA and aaRSs translations creation
+  * @param livingAarsSeed seed for random number generator that decides on which living aaRSs the simulation starts with
+  * @param steps number of generations that shall be simulated
+  * @param translationMethod defines how the decision which translation will be taken is made in the case of an unambiguous codon
   */
-class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: Int, translationMethod:String) {
+class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: Int, translationMethod: String) {
   /**
     * initializes and starts simulation
     */
   def simulate() {
     val cells: List[Map[String, Any]] = initSimulation()
-    runSimulation(cells)
+    runSimulation(cells, simulateCell)
   }
 
   /**
-    * Defines the file structure and initializes the following files: config, mRNA, aaRS, livingAars.
-    * @param mrnaSeed
-    * @param geneLength
-    * @param geneNumbs
-    * @param similarAarss
-    * @param initAaNumbs
-    * @param maxAnticodonNumbs
-    * @param aarsLifeticksStartValues
-    * @param aarsSeed
-    * @param livingAarsStartNumbs
-    * @param outputSeed
-    * @param addToOutput
-    * @return
+    * Initializes the folder system and the following files: config, mRNA, aaRS, livingAars.
+    * This is a pre-step for cell initialisation that happens in parallel afterwards.
+    *
+    * @param mrnaSeed seed value for the random number generator that chooses the codons used for the mRNA after all codons have been used once
+    * @param geneLength defines length of aaRS sequence and is always three
+    * @param geneNumbs number of genes that are translated in each cell generation
+    * @param similarAarss true -> similar aaRSs sequences also have similar translations
+    * @param initAaNumbs number of amino acids that are available in the simulation, maximal 23, for more amino acids Enum AA must be extended
+    * @param maxAnticodonNumbs maximal number of translations an aaRSs can have
+    * @param aarsLifeticksStartValues defines how long aaRSs live. An aaRS with ten lifeticks survives ten generations.
+    * @param aarsSeed seed value for random number generator that defines the translations each aaRS has
+    * @param livingAarsStartNumbs number of living aaRSs in the beginning of the simulation
+    * @param outputSeed seed for random number generator that influences which translation is taken in the case of translation method "random" or "affinity"
+    * @param addToOutput true -> the last set of living aaRSs is saved in a file. A second run of the same parameter combinations starts with the last saved set of living aaRSs.
+    * @return cells: The initialization information for each cell.
     */
   def initSimulation(mrnaSeed: Int = 2000, geneLength: Int = 3, geneNumbs: Seq[Int] = Seq(2, 5, 15, 20, 30), similarAarss: Seq[Boolean] = Seq(true, false), initAaNumbs: Seq[Int] = Seq(3, 4, 8, 10, 16, 20), maxAnticodonNumbs: Seq[Int] = Seq(2, 4, 6, 8), aarsLifeticksStartValues: Seq[Int] = Seq(2, 5, 10, 15), aarsSeed: Int = 200, livingAarsStartNumbs: Seq[Int] = Seq(2, 5, 15, 20, 30), outputSeed: Int = 1, addToOutput: Boolean = true): List[Map[String, Any]] = {
     val r = new scala.util.Random(outputSeed)
@@ -69,6 +79,7 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
 
     implicit def bool2int(b: Boolean): Int = if (b) 1 else 0
 
+    // for each parameter combination the parameter information is packed into the array "cellInfo".
     geneNumbs.foreach(geneNumb => initAaNumbs.foreach(initAaNumb => similarAarss.foreach(similarAars => maxAnticodonNumbs.foreach(maxAnticodonNumb => aarsLifeticksStartValues.foreach(aarsLifeticksStartValue => livingAarsStartNumbs.foreach(livingAarsStartNumb => {
       //param validity check
       if (!(livingAarsStartNumb > pow(geneLength, initAaNumb))) {
@@ -111,32 +122,31 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
           bw.close()
         }
       } else {
-        println("Living aaRS start numb" + livingAarsStartNumb + " hasn't been used because it is greater than number of existing aaRS.")
+        println("Living aaRSs start numb" + livingAarsStartNumb + " hasn't been used because it is greater than number of existing aaRSs.")
       }
     }))))))
     cells
   }
 
   /**
-    *
+    * Runs simulations in parallel with the given simulation method
     * @param cells
+    * @param simulationMethod
     */
-  def runSimulation(cells: List[Map[String, Any]]): Unit = {
+  def runSimulation(cells: List[Map[String, Any]], simulationMethod: Map[String, Any] => Unit): Unit = {
     System.gc()
-
-    cells.par.foreach(cellInfo => simulateCell(cellInfo))
+    cells.par.foreach(cellInfo => simulationMethod(cellInfo))
   }
 
   /**
     *
     * @param cellInfo
     */
-  def simulateCell(cellInfo: Map[String, Any]): Unit = {
+  val simulateCell = (cellInfo: Map[String, Any]) => {
     //init cell
     val outputSeed = cellInfo("outputSeed").asInstanceOf[Int]
     val r = new scala.util.Random(outputSeed)
     val cell = new Cell(r)
-    cell.path = basePath
     val (runFlag, outputPath) = cell.initProperties(cellInfo("translationMethod").toString, cellInfo("codonNumb").asInstanceOf[Int], cellInfo("initAaNumb").asInstanceOf[Int], cellInfo("mrnaPath").asInstanceOf[String], cellInfo("aarsPath").asInstanceOf[String], cellInfo("aarsLifeticksStartValue").asInstanceOf[Int], cellInfo("livingAarsPath").asInstanceOf[String], cellInfo("livingAarsDir").asInstanceOf[String], outputSeed, cellInfo("addToOutput").asInstanceOf[Boolean])
 
     if (runFlag) {
@@ -147,15 +157,25 @@ class Simulator(basePath: String, codonNumb: Int, livingAarsSeed: Int, steps: In
       //translation
       do {
         cell.translationStep() // results in a new generation
-        cell.simulationData.updateCodeTableFitness(cell.codeTableFitness, cell.generationID) //((newCell.unambiguousness.foldLeft(0.0)(_+_)) /codonNumb.toDouble
+        cell.simulationData.updateCodeTableFitness(cell.codeTableFitness, cell.generationID)
         //cell.simulationData.updateAaNumb(cell.aaTranslData._1, cell.generationID)
         //cell.simulationData.updateAaHasTransl(cell.aaTranslData._2, cell.generationID)
         //cell.simulationData.updateProtocol(cell.toHtmlString(List(PrintElem.livingAars, PrintElem.codeTable)))
-        //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //10 sec per 500000 (Energiesparmodus)
+        //mRNAdata = newCell.mRNAdata.reverse :: mRNAdata //+10 sec per 500000 (in power save mode)
       } while (cell.generationID < (steps - 1))
       //finish output
       cell.simulationData.livingAars = cell.livingAars
       cell.simulationData.finishOutput(cell.generationID)
     }
   }
+
+  /**
+    * @TODO
+    */
+  val simulateCellWithEvolutionaryAlg = (cellInfo: Map[String, Any]) => {
+
+  }
+
+
+
 }

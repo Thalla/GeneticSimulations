@@ -9,31 +9,24 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
 /** Cell holds the state of the simulation.
-  * State: Everything fits to the generation ID except the livingAARS which are the ones of the next generation.
+  * State: Everything fits to the generation ID except the livingAARSs which are the ones of the next generation.
   * The generation ID changes with the translation. So each generation is one translated set. Except generation -1 .
   * Cell is responsible for computing the next simulation state by translating mRNA and getting a new set of living aaRS
-  * TODO connect states, reduce constructor parameters
   *
+  * @param r random number generator that is used in the translation process, not for initialisation
   * @param mRNA         to be translated to get the aaRS and therefore the codeTable for the next cell generation
   * @param codeTable    either check the code table or the current aaRSs themselves to find out about the translation from codon to amino acid
   * @param livingAARSs  current set of aaRS, used for translating the mRNA to get the aaRS set for the next cell generation
   * @param allAARS      this list holds all valid aaRS that could exist and their randomly predefined behaviour
-  * @param generationID nextCell has generationID+1
+  * @elem generationID nextCell has generationID+1
   */
 class Cell(val r: Random) {
-  var path = ""
+
   var simulationData: SimulationData = null
   var codonNumb: Int = 0
   var mRNA: List[List[Int]] = List()
   var aaNumb: Int = _
   var initAA: Vector[AA] = Vector()
-  private[this] var _aaRSnumb: Int = _
-
-  def aaRSnumb: Int = _aaRSnumb
-
-  def aaRSnumb_=(value: Int): Unit = {
-    _aaRSnumb = value
-  }
 
   var allAars: Array[Array[Array[AARS]]] = Array()
   var livingAars: ListBuffer[AARS] = ListBuffer()
@@ -132,7 +125,6 @@ class Cell(val r: Random) {
       val aaRS = livingAARSIt.next().reduceLifeTicks()
       if (aaRS.lifeticks > 0) newLivingAARSs += aaRS
     }
-
 
     val mrnaIt = mRNA.iterator
     // foreach gene
@@ -297,7 +289,7 @@ class Cell(val r: Random) {
     * @param codonNumb  Either 16 (set of twoTuples is created) or 64 (set of real codons is created) or 48 (set of strong commafree codons is created) (this version uses 64, others are not tested)
     */
   def init(basePath: String, mrnaSeed: Int, codonNumb: Int, geneLength: Int, geneNumb: Int, initAaNumb: Int, similarAars: Boolean = true, aarsSeed: Int, maxAnticodonNumb: Int, aarsLifeticksStartValue: Int, livingAarsStartNumb: Int, livingAarsSeed: Int, outputSeed: Int, addToOutput: Boolean): Boolean = {
-    path = basePath
+    var path:String = basePath
 
     this.codonNumb = codonNumb
     val codons = getCodons(codonNumb)
@@ -360,8 +352,8 @@ class Cell(val r: Random) {
     if (!new File(mrnaPath).exists()) {
       newCombi = true
       new File(mrnaPath).mkdirs()
-      val mRNA: List[List[Int]] = getRandomMRNA(codons.toList, geneLength, geneNumb, mrnaSeed)
-      writeMRNAtoFile(codons.toList, geneLength, geneNumb, new File(mrnaPath + mrnaName + ".csv"))
+      //val mRNA: List[List[Int]] = getRandomMRNA(codons.toList, geneLength, geneNumb, mrnaSeed)
+      writeMRNAtoFile(codons.toList, geneLength, geneNumb, mrnaSeed, new File(mrnaPath + mrnaName + ".csv"))
     }
     (mrnaName, newCombi)
   }
@@ -588,10 +580,10 @@ class Cell(val r: Random) {
     * @param geneNumb
     * @param file
     */
-  def writeMRNAtoFile(codons: List[Any], geneLength: Int, geneNumb: Int, file: File): Unit = {
+  def writeMRNAtoFile(codons: List[Any], geneLength: Int, geneNumb: Int, seed:Int,  file: File): Unit = {
     var mRNA: List[List[String]] = List()
     val writer = CSVWriter.open(file)
-    val r = new scala.util.Random(22)
+    val r = new scala.util.Random(seed)
     var codonCounter = 0
     for (
       _ <- 0 until geneNumb
