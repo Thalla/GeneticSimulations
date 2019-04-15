@@ -1,8 +1,7 @@
 # GeneticSimulations
 The code for analysing the simulation results can be found in repository [GeneticSimulationsR](https://github.com/Thalla/GeneticSimulationsR).  
 
-Running the main method of object Simulator with an empty args parameter results in a couple of simulations and the results are saved in the subfolder "SimulationResults". This folder has to be created or the basePath parameter in the main method has to be changed before running the simulation.
-
+Running the main method of object Simulator with an empty args parameter results in a couple of simulations and the results are saved in the subfolder "SimulationResults". 
 
 **Caution:** When simulation breaks, all folders of files that may not be finished correctly must be deleted before running the simulation again. 
 When a file shall be recreated, the folder of the file must be deleted.
@@ -99,6 +98,17 @@ The remaining parameters are used with their default values (see Simulator).
 
 ### Custom Simulator
 The main method needs values for all parameters.
+
+# Files
+**Naming Convention:**  
+*SimulationResults\mRNA_s200_c64_gl3_gn20\initAaNumb_20\similar_false\aaRS_s30_ac6_lt20\livingAars_n10_s20\output_s1*
+This path leads to the fitness file of a simulation with the following parameters:
+- mRNA with seed value 200, codon number 64, gene length 3, gene number 20
+- 20 amino acids
+- aaRSs with no similarity
+- aaRSs with seed value 30, anticodon number 6 and 20 lifeticks
+- 10 living aaRSs with seed value 20
+- output seed 1
 
 # How to make changes
 **Change the simulation method**  
