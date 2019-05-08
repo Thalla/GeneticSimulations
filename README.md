@@ -1,6 +1,8 @@
 # GeneticSimulations
 The code for analysing the simulation results can be found in repository [GeneticSimulationsR](https://github.com/Thalla/GeneticSimulationsR).  
 
+In the case of questions and/or comments, which are highly appreciated, write to temerita16@gmail.com .
+
 Running the main method of object Simulator with an empty args parameter results in a couple of simulations and the results are saved in the subfolder "SimulationResults". 
 
 **Caution:** When simulation breaks, all folders of files that may not be finished correctly must be deleted before running the simulation again. 
