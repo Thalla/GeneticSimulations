@@ -122,3 +122,13 @@ Currently the simulation method is *simulateCell()*. *runSimulation()* needs a s
 
 **Simulate special cases**  
 To simulate a specific set of genes or aaRSs or living aaRSs the simulation must be run with the correct parameters first and afterwards the desired detail changes can be made in the files that were generated. A second run of the simulation will use the changed files and perform the desired simulation. A second run is only possible when the ouput folder was deleted in before. Otherwise, when the first run had addToOutput = false nothing happens and when addToOutput was true the second simulation uses the last set of aaRSs from the first simulation.
+
+# Future Features
+**Feedback on which feature shall be implemented next is highly appreciated**
+- Cell division: set of aaRS is divided into two sets. This leads to an overall fitness improvement.
+  - Two or more possible divisions are made, the case that leads to the best fitness is used for furhter simulation.
+- Not all peptides with length three are valid aaRSs. 
+- Peptides that are no aaRSs have some kind of functionality and/or a positive or negative influence on translation fidelity etc.
+- mRNA mutations
+  - random
+  - directed so that fitness improves
