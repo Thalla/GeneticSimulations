@@ -3,7 +3,12 @@ The code for analysing the simulation results can be found in repository [Geneti
 
 In the case of questions and/or comments, which are highly appreciated, write to temerita16@gmail.com .
 
-Running the main method of object Simulator with an empty args parameter results in a couple of simulations and the results are saved in the subfolder "SimulationResults". 
+## Project Description
+It can be assumed that the first genetic code didn’t have the high structure of today’s code but a more random structure. A random structure means that today’s stable aaRS feedback loop hasn’t been stable in early evolution. The given aaRSs didn’t support their own reproduction but the production of other kinds of aaRSs. This behaviour is founded in an ambiguous genetic code and it is unclear how ambiguity and therefore a stable feedback cycle evolved. This project assumes that the aaRS feedback loop was an important driver of genetic code evolution. 
+This repository provides the opportunity to run customized simulations of the aaRS feedback loop to receive genetic code fitness data that can be analysed further. The simulation is based on a mathematically described model. 
+
+## How to start
+To get a first impression run the main method of object Simulator with an empty args parameter. This results in a couple of simulations and the results are saved in the subfolder "SimulationResults" in the project folder.
 
 ## Parameter descriptions
 - **basePath:** path were the folders with the results of the simulation are created
