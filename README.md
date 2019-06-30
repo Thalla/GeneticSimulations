@@ -5,10 +5,6 @@ In the case of questions and/or comments, which are highly appreciated, write to
 
 Running the main method of object Simulator with an empty args parameter results in a couple of simulations and the results are saved in the subfolder "SimulationResults". 
 
-**Caution:** When simulation breaks, all folders of files that may not be finished correctly must be deleted before running the simulation again. 
-When a file shall be recreated, the folder of the file must be deleted.
-
-
 ## Parameter descriptions
 - **basePath:** path were the folders with the results of the simulation are created
 - **codonNumb:** number of codons that is used for mRNA and aaRSs translations creation
@@ -132,3 +128,7 @@ To simulate a specific set of genes or aaRSs or living aaRSs the simulation must
 - mRNA mutations
   - random
   - directed so that fitness improves
+  
+# Caution
+When simulation breaks, all folders of files that may not be finished correctly must be deleted before running the simulation again. 
+When a file shall be recreated, the folder of the file must be deleted.
